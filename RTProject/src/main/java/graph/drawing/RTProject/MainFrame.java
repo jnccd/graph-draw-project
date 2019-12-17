@@ -7,16 +7,26 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JLayeredPane;
+import javax.swing.JOptionPane;
+
 import java.awt.GridLayout;
 import javax.swing.SwingConstants;
 import javax.swing.BoxLayout;
 import javax.swing.SpringLayout;
 import java.awt.Color;
+import java.awt.Component;
+import javax.swing.Box;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
 
 public class MainFrame extends JFrame {
 
 	private JPanel contentPane;
+	private final JFrame frame = this;
+	private JFileChooser fc = new JFileChooser();
 
 	/**
 	 * Launch the application.
@@ -55,17 +65,40 @@ public class MainFrame extends JFrame {
 		contentPane.add(panel);
 		
 		JLayeredPane layeredPane = new JLayeredPane();
-		sl_contentPane.putConstraint(SpringLayout.WEST, layeredPane, 0, SpringLayout.WEST, contentPane);
+		sl_contentPane.putConstraint(SpringLayout.WEST, layeredPane, -440, SpringLayout.EAST, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, layeredPane, 0, SpringLayout.SOUTH, contentPane);
+		sl_contentPane.putConstraint(SpringLayout.EAST, layeredPane, 0, SpringLayout.EAST, contentPane);
 		contentPane.add(layeredPane);
 		layeredPane.setLayout(new BoxLayout(layeredPane, BoxLayout.X_AXIS));
 		
-		JButton leftButton = new JButton("<");
-		leftButton.setHorizontalAlignment(SwingConstants.LEFT);
-		layeredPane.add(leftButton);
+		JButton btnLeft = new JButton("<");
+		btnLeft.setHorizontalAlignment(SwingConstants.LEFT);
+		layeredPane.add(btnLeft);
 		
-		JButton rightButton = new JButton(">");
-		rightButton.setHorizontalAlignment(SwingConstants.RIGHT);
-		layeredPane.add(rightButton);
+		JButton btnRight = new JButton(">");
+		btnRight.setHorizontalAlignment(SwingConstants.RIGHT);
+		layeredPane.add(btnRight);
+		
+		Component horizontalGlue = Box.createHorizontalGlue();
+		layeredPane.add(horizontalGlue);
+		
+		JButton btnLoadFile = new JButton("Load File");
+		btnLoadFile.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int returnVal = fc.showOpenDialog(frame);
+
+		        if (returnVal == JFileChooser.APPROVE_OPTION) {
+		            File file = fc.getSelectedFile();
+		            if (file.canRead())
+		            	GraphLoader.load(file.getAbsolutePath(), frame);
+		            else
+		            	JOptionPane.showMessageDialog(frame,
+		    				    "I can't read that file :/");
+		        }
+			}
+		});
+		btnLoadFile.setHorizontalAlignment(SwingConstants.RIGHT);
+		layeredPane.add(btnLoadFile);
 	}
 }
