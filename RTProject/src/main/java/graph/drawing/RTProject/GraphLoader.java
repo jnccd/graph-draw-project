@@ -1,5 +1,7 @@
 package graph.drawing.RTProject;
 
+import java.awt.Component;
+import java.awt.Graphics;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -11,6 +13,7 @@ import java.util.stream.Collectors;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import org.eclipse.elk.graph.ElkConnectableShape;
 import org.eclipse.elk.graph.ElkEdge;
 import org.eclipse.elk.graph.ElkNode;
 import org.eclipse.elk.graph.util.ElkGraphUtil;
@@ -18,10 +21,32 @@ import org.eclipse.elk.graph.util.ElkGraphUtil;
 public class GraphLoader {
 	static ElkNode curGraph = null;
 	
-	public static void load(String path, JFrame frame) {
+	public static void load(String path, JFrame frame, Component target) {
 		curGraph = parseTextFile(path, frame);
 		
+		// Add some size
+		for (ElkNode n : curGraph.getChildren()) {
+			n.setWidth(25);
+			n.setHeight(25);
+		}
 		
+		// Sample layout
+		try {
+			curGraph.getChildren().stream().filter(x -> x.getIdentifier().contentEquals("OwO")).findFirst().get().setX(100);
+		} catch (Exception e) {}
+
+		Graphics g = target.getGraphics();
+		g.drawString("Hi", 10, 10);
+		for (ElkNode n : curGraph.getChildren()) {
+			g.drawRect((int)n.getX(), (int)n.getY(), (int)n.getWidth(), (int)n.getHeight());
+			g.drawString(n.getIdentifier(), (int)n.getX(), (int)n.getY());
+		}
+		for (ElkEdge e : curGraph.getContainedEdges()) {
+			ElkConnectableShape src = e.getSources().get(0);
+			ElkConnectableShape tar = e.getTargets().get(0);
+			g.drawLine((int)src.getX() + (int)src.getWidth() / 2, (int)src.getY() + (int)src.getHeight() / 2, 
+					(int)tar.getX() + (int)tar.getWidth() / 2, (int)tar.getY() + (int)tar.getHeight() / 2);
+		}
 	}
 	
 	
