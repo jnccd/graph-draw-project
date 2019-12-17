@@ -2,6 +2,7 @@ package graph.drawing.RTProject;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.Graphics;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -72,10 +73,22 @@ public class MainFrame extends JFrame {
 		layeredPane.setLayout(new BoxLayout(layeredPane, BoxLayout.X_AXIS));
 		
 		JButton btnLeft = new JButton("<");
+		btnLeft.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				
+			}
+		});
 		btnLeft.setHorizontalAlignment(SwingConstants.LEFT);
 		layeredPane.add(btnLeft);
 		
 		JButton btnRight = new JButton(">");
+		btnRight.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				
+			}
+		});
 		btnRight.setHorizontalAlignment(SwingConstants.RIGHT);
 		layeredPane.add(btnRight);
 		
@@ -91,7 +104,7 @@ public class MainFrame extends JFrame {
 		        if (returnVal == JFileChooser.APPROVE_OPTION) {
 		            File file = fc.getSelectedFile();
 		            if (file.canRead())
-		            	GraphLoader.load(file.getAbsolutePath(), frame);
+		            	GraphLoader.load(file.getAbsolutePath(), frame, contentPane.getComponent(0));
 		            else
 		            	JOptionPane.showMessageDialog(frame,
 		    				    "I can't read that file :/");
