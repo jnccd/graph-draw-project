@@ -59,7 +59,7 @@ public class MainFrame extends JFrame {
 		
 		JPanel panel = new JPanel();
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, panel, -30, SpringLayout.SOUTH, contentPane);
-		panel.setBackground(Color.MAGENTA);
+		panel.setBackground(Color.LIGHT_GRAY);
 		sl_contentPane.putConstraint(SpringLayout.NORTH, panel, 0, SpringLayout.NORTH, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.WEST, panel, 0, SpringLayout.WEST, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.EAST, panel, 0, SpringLayout.EAST, contentPane);
