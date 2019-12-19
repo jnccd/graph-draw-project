@@ -28,15 +28,20 @@ public class GraphLoader {
 		curGraph = parseTextFile(path, frame);
 		
 		// Add some size
-		for (ElkNode n : curGraph.getChildren()) {
+		for (ElkNode n : curGraph.getChildren())
+		if (n.getWidth() == 0 || n.getHeight() == 0) {
 			n.setWidth(25);
 			n.setHeight(25);
 		}
 		
-		// Sample layout
+		// layout
+		BasicProgressMonitor monitor = new BasicProgressMonitor();
 		try {
-			curGraph.getChildren().stream().filter(x -> x.getIdentifier().contentEquals("OwO")).findFirst().get().setX(100);
-		} catch (Exception e) {}
+			new RTLayoutPhase().apply(curGraph, monitor);
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 
 		Graphics g = target.getGraphics();
 		g.drawString("Hi", 10, 10);
