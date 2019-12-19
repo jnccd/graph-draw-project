@@ -1,7 +1,10 @@
 package graph.drawing.RTProject;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.geom.Ellipse2D;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -27,33 +30,47 @@ public class GraphLoader {
 	public static void load(String path, JFrame frame, Component target) {
 		curGraph = parseTextFile(path, frame);
 		
-		// Add some size
+		// Add node sizes
 		for (ElkNode n : curGraph.getChildren())
-		if (n.getWidth() == 0 || n.getHeight() == 0) {
-			n.setWidth(25);
-			n.setHeight(25);
-		}
+			if (n.getWidth() == 0 || n.getHeight() == 0) {
+				n.setWidth(40);
+				n.setHeight(40);
+			}
+		curGraph.setWidth(target.getWidth());
+		curGraph.setHeight(target.getHeight());
 		
-		// layout
-		BasicProgressMonitor monitor = new BasicProgressMonitor();
-		try {
-			new RTLayoutPhase().apply(curGraph, monitor);
-		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		callRTOnGraph(curGraph);
 
-		Graphics g = target.getGraphics();
-		g.drawString("Hi", 10, 10);
-		for (ElkNode n : curGraph.getChildren()) {
-			g.drawRect((int)n.getX(), (int)n.getY(), (int)n.getWidth(), (int)n.getHeight());
-			g.drawString(n.getIdentifier(), (int)n.getX(), (int)n.getY());
-		}
+		drawGraph(curGraph, target.getGraphics());
+	}
+	
+	
+	private static void drawGraph(ElkNode graph, Graphics g) {
 		for (ElkEdge e : curGraph.getContainedEdges()) {
 			ElkConnectableShape src = e.getSources().get(0);
 			ElkConnectableShape tar = e.getTargets().get(0);
 			g.drawLine((int)src.getX() + (int)src.getWidth() / 2, (int)src.getY() + (int)src.getHeight() / 2, 
 					(int)tar.getX() + (int)tar.getWidth() / 2, (int)tar.getY() + (int)tar.getHeight() / 2);
+		}
+		
+		for (ElkNode n : curGraph.getChildren()) {
+			g.drawRect((int)n.getX(), (int)n.getY(), (int)n.getWidth(), (int)n.getHeight());
+			g.setColor(Color.CYAN);
+			g.fillRect((int)n.getX(), (int)n.getY(), (int)n.getWidth(), (int)n.getHeight());
+			g.setColor(Color.BLACK);
+			g.drawString(n.getIdentifier(), 
+					(int)(n.getX() + (n.getWidth() - g.getFontMetrics().stringWidth(n.getIdentifier())) / 2), 
+					(int)(n.getY() + g.getFontMetrics().getHeight()));
+		}
+	}
+	
+	private static void callRTOnGraph(ElkNode graph) {
+		BasicProgressMonitor monitor = new BasicProgressMonitor();
+		try {
+			new RTLayoutPhase().apply(curGraph, monitor);
+		} catch (Exception e) {
+			System.out.println("------------ LAYOUT ERROR! ------------");
+			e.printStackTrace();
 		}
 	}
 	
