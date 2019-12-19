@@ -34,13 +34,13 @@ public class GraphLoader {
 		curGraph = parseTextFile(path, frame);
 		
 		// Add graph sizes
+		curGraph.setWidth(target.getWidth());
+		curGraph.setHeight(target.getHeight());
 		for (ElkNode n : curGraph.getChildren())
 			if (n.getWidth() == 0 || n.getHeight() == 0) {
 				n.setWidth(40);
 				n.setHeight(40);
 			}
-		curGraph.setWidth(target.getWidth());
-		curGraph.setHeight(target.getHeight());
 		
 		applyPhase(curGraph, new RTLayoutPhase());
 
