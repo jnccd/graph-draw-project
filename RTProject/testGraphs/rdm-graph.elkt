@@ -1,0 +1,153 @@
+algorithm: LayeredLayouting
+
+node n0
+node n1
+node n2
+node n3
+node n4
+node n5
+node n6
+node n7
+node n8
+node n9
+node n10
+node n11
+node n12
+node n13
+node n14
+node n15
+node n16
+node n17
+node n18
+node n19
+node n20
+node n21
+node n22
+node n23
+node n24
+node n25
+node n26
+node n27
+node n28
+node n29
+node n30
+node n31
+node n32
+node n33
+node n34
+node n35
+node n36
+node n37
+node n38
+node n39
+node n40
+node n41
+node n42
+node n43
+node n44
+node n45
+node n46
+node n47
+node n48
+node n49
+
+edge n44 -> n39
+edge n18 -> n19
+edge n42 -> n9
+edge n39 -> n7
+edge n31 -> n23
+edge n46 -> n12
+edge n44 -> n5
+edge n6 -> n46
+edge n11 -> n49
+edge n24 -> n18
+edge n10 -> n8
+edge n24 -> n2
+edge n43 -> n14
+edge n18 -> n16
+edge n6 -> n7
+edge n17 -> n21
+edge n33 -> n21
+edge n15 -> n27
+edge n40 -> n4
+edge n2 -> n42
+edge n31 -> n49
+edge n14 -> n20
+edge n11 -> n28
+edge n23 -> n1
+edge n39 -> n26
+edge n22 -> n9
+edge n38 -> n18
+edge n19 -> n16
+edge n8 -> n25
+edge n2 -> n5
+edge n18 -> n35
+edge n29 -> n37
+edge n41 -> n38
+edge n35 -> n21
+edge n45 -> n43
+edge n46 -> n26
+edge n43 -> n47
+edge n22 -> n5
+edge n15 -> n14
+edge n35 -> n6
+edge n44 -> n0
+edge n33 -> n26
+edge n36 -> n33
+edge n29 -> n31
+edge n19 -> n15
+edge n33 -> n39
+edge n13 -> n40
+edge n14 -> n44
+edge n16 -> n8
+edge n48 -> n43
+edge n32 -> n34
+edge n32 -> n41
+edge n2 -> n27
+edge n28 -> n5
+edge n21 -> n35
+edge n43 -> n35
+edge n25 -> n34
+edge n1 -> n23
+edge n9 -> n27
+edge n25 -> n34
+edge n48 -> n24
+edge n44 -> n46
+edge n14 -> n2
+edge n13 -> n26
+edge n33 -> n12
+edge n38 -> n31
+edge n0 -> n37
+edge n3 -> n22
+edge n25 -> n24
+edge n38 -> n39
+edge n10 -> n30
+edge n44 -> n37
+edge n8 -> n11
+edge n12 -> n5
+edge n19 -> n1
+edge n1 -> n21
+edge n7 -> n34
+edge n8 -> n41
+edge n20 -> n26
+edge n16 -> n37
+edge n35 -> n36
+edge n49 -> n42
+edge n49 -> n13
+edge n34 -> n40
+edge n34 -> n48
+edge n17 -> n3
+edge n8 -> n9
+edge n39 -> n32
+edge n6 -> n12
+edge n29 -> n42
+edge n0 -> n20
+edge n48 -> n7
+edge n43 -> n15
+edge n23 -> n43
+edge n25 -> n28
+edge n10 -> n29
+edge n42 -> n39
+edge n33 -> n24
+edge n39 -> n36
+edge n20 -> n11

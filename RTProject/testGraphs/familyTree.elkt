@@ -1,0 +1,36 @@
+algorithm: LayeredLayouting 
+
+node QueenElizabeth2
+node Phillip
+
+node Charles
+node Diana
+node Camilla
+node Anne
+node Andrew
+node Edward
+
+node Whilliam
+node Harry
+
+edge QueenElizabeth2 -> Phillip
+edge Phillip -> QueenElizabeth2
+
+edge QueenElizabeth2 -> Charles
+edge QueenElizabeth2 -> Anne
+edge QueenElizabeth2 -> Andrew
+edge QueenElizabeth2 -> Edward
+
+edge Phillip -> Charles
+edge Phillip -> Anne
+edge Phillip -> Andrew
+edge Phillip -> Edward
+
+edge Charles -> Diana
+edge Diana -> Charles
+
+edge Charles -> Camilla
+edge Camilla -> Charles
+
+edge Charles -> Whilliam
+edge Charles -> Harry
