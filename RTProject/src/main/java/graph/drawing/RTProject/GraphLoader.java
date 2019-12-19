@@ -24,13 +24,16 @@ import org.eclipse.elk.graph.ElkEdge;
 import org.eclipse.elk.graph.ElkNode;
 import org.eclipse.elk.graph.util.ElkGraphUtil;
 
+import phases.Phase;
+import phases.RTLayoutPhase;
+
 public class GraphLoader {
 	static ElkNode curGraph = null;
 	
 	public static void load(String path, JFrame frame, Component target) {
 		curGraph = parseTextFile(path, frame);
 		
-		// Add node sizes
+		// Add graph sizes
 		for (ElkNode n : curGraph.getChildren())
 			if (n.getWidth() == 0 || n.getHeight() == 0) {
 				n.setWidth(40);
@@ -39,7 +42,7 @@ public class GraphLoader {
 		curGraph.setWidth(target.getWidth());
 		curGraph.setHeight(target.getHeight());
 		
-		callRTOnGraph(curGraph);
+		applyPhase(curGraph, new RTLayoutPhase());
 
 		drawGraph(curGraph, target.getGraphics());
 	}
@@ -64,10 +67,10 @@ public class GraphLoader {
 		}
 	}
 	
-	private static void callRTOnGraph(ElkNode graph) {
+	private static void applyPhase(ElkNode graph, Phase p) {
 		BasicProgressMonitor monitor = new BasicProgressMonitor();
 		try {
-			new RTLayoutPhase().apply(curGraph, monitor);
+			p.apply(curGraph, monitor);
 		} catch (Exception e) {
 			System.out.println("------------ LAYOUT ERROR! ------------");
 			e.printStackTrace();
