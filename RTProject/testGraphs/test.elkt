@@ -1,0 +1,33 @@
+algorithm: Trees 
+
+layoutAlgorithm: 1
+
+node n1
+node n2
+node n3 
+node n4
+node n5
+node n6
+node n7
+node n8
+node n9
+node n10
+node n11
+node n12
+
+edge n1 -> n2
+edge n1 -> n3
+
+edge n2 -> n4
+edge n2 -> n5
+
+edge n3 -> n6
+edge n3 -> n7
+
+edge n4 -> n8
+
+edge n6 -> n9
+edge n6 -> n10
+
+edge n7 -> n11
+edge n7 -> n12
