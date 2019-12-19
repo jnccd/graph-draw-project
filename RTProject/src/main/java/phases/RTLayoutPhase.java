@@ -1,4 +1,4 @@
-package graph.drawing.RTProject;
+package phases;
 
 import java.util.List;
 
@@ -7,9 +7,10 @@ import org.eclipse.elk.core.util.IElkProgressMonitor;
 import org.eclipse.elk.graph.ElkNode;
 import org.eclipse.emf.common.util.EList;
 
+import graph.drawing.RTProject.Options;
 import helper.Help;
 
-public class RTLayoutPhase {
+public class RTLayoutPhase implements Phase {
     double minSep = 25;
 
     public void apply(ElkNode layoutGraph, IElkProgressMonitor monitor) throws Exception {
