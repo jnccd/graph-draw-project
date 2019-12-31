@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 import org.eclipse.elk.core.RecursiveGraphLayoutEngine;
 import org.eclipse.elk.core.util.BasicProgressMonitor;
@@ -24,13 +25,21 @@ import org.eclipse.elk.graph.ElkEdge;
 import org.eclipse.elk.graph.ElkNode;
 import org.eclipse.elk.graph.util.ElkGraphUtil;
 
+import helper.Graph;
+import phases.InorderLayoutPhase;
 import phases.Phase;
 import phases.RTLayoutPhase;
 
 public class GraphLoader {
 	static ElkNode curGraph = null;
+	
+	public static ElkNode getGraph() {
+		return curGraph;
+	}
 
-	public static void load(String path, JFrame frame, Component target) {
+	public static void load(String path, MainFrame frame, JPanel target) {
+		frame.clearStates();
+		
 		curGraph = parseTextFile(path, frame);
 
 		// Add graph sizes
@@ -42,9 +51,11 @@ public class GraphLoader {
 				n.setHeight(40);
 			}
 
-		applyPhase(curGraph, new RTLayoutPhase());
-
-		drawGraph(curGraph, target.getGraphics());
+		applyPhase(curGraph, new InorderLayoutPhase());
+		
+		frame.addState(new GraphState(Graph.fromElk(curGraph)));
+		target.repaint();
+		//drawGraph(curGraph, target.getGraphics());
 	}
 
 	private static void drawGraph(ElkNode graph, Graphics g) {
