@@ -3,6 +3,8 @@ package properties;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.elk.graph.ElkNode;
+
 public class NodeProperty {
     public boolean isDummy = false;
     
@@ -13,5 +15,5 @@ public class NodeProperty {
     // RT
     public double mod = 0;
     public double xOffset = 0;
-    public List<Double> leftContour = new ArrayList<Double>(), rightContour = new ArrayList<Double>();
+    public ElkNode leftThread, rightThread;
 }
