@@ -1,9 +1,12 @@
 package phases;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.eclipse.elk.core.math.ElkPadding;
 import org.eclipse.elk.core.util.IElkProgressMonitor;
+import org.eclipse.elk.core.util.Pair;
 import org.eclipse.elk.graph.ElkNode;
 import org.eclipse.emf.common.util.EList;
 
@@ -57,12 +60,16 @@ public class RTLayoutPhase implements Phase {
         if (rightChild != null)
             Help.getProp(rightChild).xOffset = minSep;
         
-        double dv = minSep * 2, dl = 0, dr = 0;
-        double[] lC = getContour(leftChild, false);
-        double[] rC = getContour(rightChild, true);
-        for (int i = 0; i < Math.min(lC.length, rC.length); i++) {
-            if (rC[i] - lC[i] + dv < 0)
-                dv = lC[i] - rC[i] + minSep;
+        double dv = minSep * 2;
+        List<Pair<Double, ElkNode>> lC = new ArrayList<Pair<Double,ElkNode>>();
+        List<Pair<Double, ElkNode>> rC = new ArrayList<Pair<Double,ElkNode>>();
+        if (leftChild != null && rightChild != null) {
+        	lC = getContour(leftChild, false);
+            rC = getContour(rightChild, true);
+            for (int i = 0; i < Math.min(lC.size(), rC.size()); i++) {
+                if (rC.get(i).getFirst() - lC.get(i).getFirst() + dv < 0)
+                    dv = lC.get(i).getFirst() - rC.get(i).getFirst() + minSep;
+            }
         }
         
         // Center child if there is only one, not doing this would make 
@@ -76,42 +83,51 @@ public class RTLayoutPhase implements Phase {
             Help.getProp(rightChild).xOffset = dv / 2;
         }
         
-        states.addState(new GraphState("Postorder: Set offsets of childs of " + n.getIdentifier(), Graph.fromElk(layoutGraph), n));
+        List<ElkNode> contours = (List<ElkNode>) lC.stream().map(x -> x.getSecond()).collect(Collectors.toList());
+        contours.addAll(rC.stream().map(x -> x.getSecond()).collect(Collectors.toList()));
+        states.addState(new GraphState("Postorder: Set offsets of childs of " + n.getIdentifier(), 
+        		Graph.fromElk(layoutGraph), n, contours));
     }
     
-    double[] getContour(ElkNode root, boolean left) { // Inefficient but it works
-        if (root == null)
-            return new double[] { 0 };
+    List<Pair<Double, ElkNode>> getContour(ElkNode root, boolean left) { // Inefficient but it works
+        if (root == null) {
+        	ArrayList<Pair<Double, ElkNode>> l = new ArrayList<Pair<Double, ElkNode>>();
+        	l.add(new Pair<Double, ElkNode>(0.0, root));
+        	return l;
+        }
         
         List<ElkNode> c = Help.getChilds(root);
         
-        if (c.size() == 0)
-            return new double[] { 0 };
+        if (c.size() == 0){
+        	ArrayList<Pair<Double, ElkNode>> l = new ArrayList<Pair<Double, ElkNode>>();
+        	l.add(new Pair<Double, ElkNode>(0.0, root));
+        	return l;
+        }
         
         ElkNode lc = c.get(0);
         ElkNode rc = c.get(c.size() - 1);
         
-        double[] lC = getContour(lc, left);
-        double[] rC = getContour(rc, left);
+        List<Pair<Double, ElkNode>> lC = getContour(lc, left);
+        List<Pair<Double, ElkNode>> rC = getContour(rc, left);
         
-        double[] re = new double[Math.max(lC.length, rC.length) + 1];
-        re[0] = 0;
-        for (int i = 1; i < re.length; i++) {
+        List<Pair<Double, ElkNode>> re = new ArrayList<Pair<Double,ElkNode>>(Math.max(lC.size(), rC.size()) + 1);
+        re.add(new Pair<Double, ElkNode>(0.0, root));
+        for (int i = 1; i < re.size(); i++) {
             if (left) {
-                re[i] = Integer.MAX_VALUE;
-                
-                if (lC.length > i - 1)
-                    re[i] = Math.min(lC[i - 1] + Help.getProp(lc).xOffset, re[i]);
-                if (rC.length > i - 1)
-                    re[i] = Math.min(rC[i - 1] + Help.getProp(rc).xOffset, re[i]);
+            	if (lC.size() > i - 1 && 
+            			lC.get(i - 1).getFirst() + Help.getProp(lc).xOffset < 
+            			rC.get(i - 1).getFirst() + Help.getProp(rc).xOffset)
+            		re.add(lC.get(i - 1));
+            	else
+            		re.add(rC.get(i - 1));
             }
             else{
-                re[i] = Integer.MIN_VALUE;
-                
-                if (lC.length > i - 1)
-                    re[i] = Math.max(lC[i - 1] + Help.getProp(lc).xOffset + lc.getWidth(), re[i]);
-                if (rC.length > i - 1)
-                    re[i] = Math.max(rC[i - 1] + Help.getProp(rc).xOffset + rc.getWidth(), re[i]);
+            	if (lC.size() > i - 1 && 
+            			lC.get(i - 1).getFirst() + Help.getProp(lc).xOffset > 
+            			rC.get(i - 1).getFirst() + Help.getProp(rc).xOffset)
+            		re.add(lC.get(i - 1));
+            	else
+            		re.add(rC.get(i - 1));
             }
         }
         

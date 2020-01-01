@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.util.List;
 
 import org.eclipse.elk.graph.ElkConnectableShape;
 import org.eclipse.elk.graph.ElkEdge;
@@ -17,6 +18,7 @@ public class GraphState {
 	private String title;
 	private Graph graph;
 	private ElkNode markedNode;
+	private List<ElkNode> contourNodes;
 
 	public GraphState(String title, Graph g) {
 		super();
@@ -29,6 +31,14 @@ public class GraphState {
 		this.graph = graph;
 		this.title = title;
 		this.markedNode = markedNode;
+	}
+
+	public GraphState(String title, Graph graph, ElkNode markedNode, List<ElkNode> contourNodes) {
+		super();
+		this.title = title;
+		this.graph = graph;
+		this.markedNode = markedNode;
+		this.contourNodes = contourNodes;
 	}
 
 	public String getTitle() {
@@ -61,13 +71,23 @@ public class GraphState {
 		}
 
 		for (Node n : graph.nodes) {
+			boolean isContour = contourNodes != null && contourNodes.stream().filter(x -> x.getIdentifier().contentEquals(n.name)).findAny()
+					.isPresent();
+
 			g.drawRect((int) n.x, (int) n.y, (int) n.w, (int) n.h);
 			if (markedNode != null && n.name.contentEquals(markedNode.getIdentifier()))
 				g.setColor(Color.ORANGE);
+			else if (contourNodes != null && isContour)
+				g.setColor(Color.DARK_GRAY);
 			else
 				g.setColor(Color.CYAN);
 			g.fillRect((int) n.x, (int) n.y, (int) n.w, (int) n.h);
-			g.setColor(Color.BLACK);
+
+			
+			if (isContour)
+				g.setColor(Color.WHITE);
+			else
+				g.setColor(Color.BLACK);
 			g.drawString(n.name, (int) (n.x + (n.w - g.getFontMetrics().stringWidth(n.name)) / 2),
 					(int) (n.y + g.getFontMetrics().getHeight()));
 
