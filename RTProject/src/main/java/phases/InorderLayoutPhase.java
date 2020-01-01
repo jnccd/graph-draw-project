@@ -25,7 +25,7 @@ public class InorderLayoutPhase implements Phase {
         double curX = padding.left;
         for (ElkNode n : inorderVisiting) {
             n.setX(curX);
-            n.setY(rootDistance(n, root) * (n.getHeight() + nodeNodeSpacing));
+            n.setY(rootDistance(n, root) * (n.getHeight() + nodeNodeSpacing) + padding.top);
             
             curX += n.getWidth() + nodeNodeSpacing;
         }
