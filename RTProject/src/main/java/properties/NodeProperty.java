@@ -15,5 +15,5 @@ public class NodeProperty {
     // RT
     public double mod = 0;
     public double xOffset = 0;
-    public ElkNode leftThread, rightThread;
+    public ElkNode rightThread, leftThread;
 }

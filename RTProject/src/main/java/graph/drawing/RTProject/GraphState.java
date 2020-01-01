@@ -74,6 +74,7 @@ public class GraphState {
 			boolean isContour = contourNodes != null && contourNodes.stream().filter(x -> x.getIdentifier().contentEquals(n.name)).findAny()
 					.isPresent();
 
+			g.setColor(Color.BLACK);
 			g.drawRect((int) n.x, (int) n.y, (int) n.w, (int) n.h);
 			if (markedNode != null && n.name.contentEquals(markedNode.getIdentifier()))
 				g.setColor(Color.ORANGE);

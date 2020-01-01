@@ -28,7 +28,8 @@ import org.eclipse.elk.graph.util.ElkGraphUtil;
 import helper.Graph;
 import phases.InorderLayoutPhase;
 import phases.Phase;
-import phases.RTLayoutPhase;
+import phases.RTLayoutPhaseSimple;
+import phases.RTLayoutPhaseWithThreads;
 
 public class GraphLoader {
 	static ElkNode curGraph = null;
@@ -55,7 +56,7 @@ public class GraphLoader {
 		
 		frame.states.addState(new GraphState("Initial State", Graph.fromElk(curGraph)));
 		
-		applyPhase(curGraph, new RTLayoutPhase(frame.states));
+		applyPhase(curGraph, new RTLayoutPhaseSimple(frame.states));
 	}
 
 	private static BasicProgressMonitor applyPhase(ElkNode graph, Phase p) {
