@@ -38,33 +38,26 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Set;
+import javax.swing.JLabel;
 
 public class MainFrame extends JFrame {
 
-	private JPanel contentPane;
 	private final MainFrame frame = this;
+	private JLabel stateLabel;
+	private JPanel contentPane;
 	private JFileChooser fc = new JFileChooser();
-
-	private int statesIndex = 0;
-	private ArrayList<GraphState> states = new ArrayList<GraphState>();
+	
+	public GraphStatesManager states = new GraphStatesManager();
 	private JPanel panel = new JPanel() {
 		private static final long serialVersionUID = 1L;
 
 		@Override
 		public void paint(Graphics g) {
+			g.clearRect(0, 0, panel.getWidth(), panel.getHeight());
 			if (states.size() != 0)
-				states.get(statesIndex).draw(g, panel, frame);
+				states.getCurrentState().draw(g, panel, frame);
 		}
 	};
-
-	public void clearStates() {
-		statesIndex = 0;
-		states.clear();
-	}
-
-	public void addState(GraphState gs) {
-		states.add(gs);
-	}
 
 	/**
 	 * Launch the application.
@@ -81,6 +74,11 @@ public class MainFrame extends JFrame {
 			}
 		});
 	}
+	
+	void refresh() {
+		panel.repaint();
+		stateLabel.setText(states.getCurrentState().getTitle());
+	}
 
 	/**
 	 * Create the frame.
@@ -93,10 +91,17 @@ public class MainFrame extends JFrame {
 		setContentPane(contentPane);
 		SpringLayout sl_contentPane = new SpringLayout();
 		contentPane.setLayout(sl_contentPane);
+		
+		stateLabel = new JLabel("No Graph Loaded");
+		sl_contentPane.putConstraint(SpringLayout.NORTH, panel, 17, SpringLayout.NORTH, stateLabel);
+		stateLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		sl_contentPane.putConstraint(SpringLayout.NORTH, stateLabel, 0, SpringLayout.NORTH, contentPane);
+		sl_contentPane.putConstraint(SpringLayout.WEST, stateLabel, 0, SpringLayout.WEST, contentPane);
+		sl_contentPane.putConstraint(SpringLayout.EAST, stateLabel, 0, SpringLayout.EAST, contentPane);
+		contentPane.add(stateLabel);
 
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, panel, -30, SpringLayout.SOUTH, contentPane);
 		panel.setBackground(Color.LIGHT_GRAY);
-		sl_contentPane.putConstraint(SpringLayout.NORTH, panel, 0, SpringLayout.NORTH, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.WEST, panel, 0, SpringLayout.WEST, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.EAST, panel, 0, SpringLayout.EAST, contentPane);
 		contentPane.add(panel);
@@ -112,7 +117,8 @@ public class MainFrame extends JFrame {
 		btnLeft.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-
+				states.backwardStep();
+				refresh();
 			}
 		});
 		SpringLayout sl_layeredPane = new SpringLayout();
@@ -130,7 +136,8 @@ public class MainFrame extends JFrame {
 		btnRight.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-
+				states.forwardStep();
+				refresh();
 			}
 		});
 		btnRight.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -151,6 +158,7 @@ public class MainFrame extends JFrame {
 						GraphLoader.load(file.getAbsolutePath(), frame, panel);
 					else
 						JOptionPane.showMessageDialog(frame, "I can't read that file :/");
+					refresh();
 				}
 			}
 		});
