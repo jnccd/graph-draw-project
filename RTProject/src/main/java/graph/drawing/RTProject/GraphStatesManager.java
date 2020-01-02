@@ -11,17 +11,32 @@ public class GraphStatesManager {
 	}
 	
 	public GraphState getCurrentState() {
-		return states.get(statesIndex);
+		if (size() != 0) 
+			return states.get(statesIndex);
+		else
+			return null;
+	}
+	
+	public int getCurrentStateIndex() {
+		return statesIndex;
+	}
+	
+	public boolean isLastState() {
+		return statesIndex == states.size() - 1;
 	}
 	
 	public void forwardStep() {
-		statesIndex = (statesIndex + 1) % size();
-		System.out.println("Current step " + statesIndex);
+		if (size() != 0) {
+			statesIndex = (statesIndex + 1) % size();
+			System.out.println("Current step " + statesIndex);
+		}
 	}
 	
 	public void backwardStep() {
-		statesIndex = statesIndex == 0 ? size() - 1 : statesIndex - 1;
-		System.out.println("Current step " + statesIndex);
+		if (size() != 0) {
+			statesIndex = statesIndex == 0 ? size() - 1 : statesIndex - 1;
+			System.out.println("Current step " + statesIndex);
+		}
 	}
 	
 	public void clearStates() {
