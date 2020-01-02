@@ -50,6 +50,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import javax.swing.JScrollPane;
 import javax.swing.JScrollBar;
+import javax.swing.ScrollPaneConstants;
 
 public class MainFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -84,12 +85,12 @@ public class MainFrame extends JFrame {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-//		try {
-//			UIManager.setLookAndFeel (new MaterialLookAndFeel ());
-//		}
-//		catch (UnsupportedLookAndFeelException e) {
-//			
-//		}
+		try {
+			UIManager.setLookAndFeel (new MaterialLookAndFeel ());
+		}
+		catch (UnsupportedLookAndFeelException e) {
+			
+		}
 		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -175,9 +176,8 @@ public class MainFrame extends JFrame {
 		
 		JPanel optionsPanel = new JPanel();
 		sl_contentPane.putConstraint(SpringLayout.NORTH, optionsPanel, 0, SpringLayout.NORTH, contentPane);
+		sl_contentPane.putConstraint(SpringLayout.WEST, optionsPanel, -250, SpringLayout.EAST, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.EAST, stateLabel, 0, SpringLayout.WEST, optionsPanel);
-		sl_contentPane.putConstraint(SpringLayout.WEST, optionsPanel, -200, SpringLayout.EAST, contentPane);
-		optionsPanel.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, null, null, null, null));
 		optionsPanel.setBackground(SystemColor.controlHighlight);
 		sl_contentPane.putConstraint(SpringLayout.EAST, drawPanel, -5, SpringLayout.WEST, optionsPanel);
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, optionsPanel, 0, SpringLayout.SOUTH, contentPane);
@@ -185,7 +185,6 @@ public class MainFrame extends JFrame {
 		contentPane.add(optionsPanel);
 
 		JLayeredPane layeredPane = new JLayeredPane();
-		layeredPane.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
 		layeredPane.setBackground(SystemColor.scrollbar);
 		sl_contentPane.putConstraint(SpringLayout.NORTH, layeredPane, 5, SpringLayout.SOUTH, drawPanel);
 		sl_contentPane.putConstraint(SpringLayout.WEST, layeredPane, 0, SpringLayout.WEST, contentPane);
@@ -207,6 +206,7 @@ public class MainFrame extends JFrame {
 		optionsTab.add(label);
 		
 		JSlider sizeSlider = new JSlider();
+		sizeSlider.setBorder(null);
 		sizeSlider.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseReleased(MouseEvent e) {
@@ -229,6 +229,7 @@ public class MainFrame extends JFrame {
 		editorTab.setLayout(new BoxLayout(editorTab, BoxLayout.X_AXIS));
 		
 		editorPane = new JEditorPane();
+		editorPane.setBackground(UIManager.getColor("Desktop.background"));
 		editorPane.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
@@ -259,12 +260,14 @@ public class MainFrame extends JFrame {
 		editorTab.add(editorPane);
 		
 		JScrollPane scrollPane = new JScrollPane(editorPane);
+		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		editorTab.add(scrollPane);
 		
 		contentPane.add(layeredPane);
 		layeredPane.setLayout(new BoxLayout(layeredPane, BoxLayout.X_AXIS));
 
 		JButton btnRight = new JButton(">");
+		btnRight.setFont(new Font("Noto Sans", Font.PLAIN, 25));
 		btnRight.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -274,6 +277,7 @@ public class MainFrame extends JFrame {
 		});
 
 		JButton btnLeft = new JButton("<");
+		btnLeft.setFont(new Font("Noto Sans", Font.PLAIN, 25));
 		btnLeft.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -287,7 +291,7 @@ public class MainFrame extends JFrame {
 		layeredPane.add(btnRight);
 
 		btnPlay = new JButton("►");
-		btnPlay.setFont(new Font("SansSerif", Font.BOLD, 12));
+		btnPlay.setFont(new Font("SansSerif", Font.BOLD, 18));
 		btnPlay.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -313,6 +317,7 @@ public class MainFrame extends JFrame {
 		layeredPane.add(slider);
 
 		JButton btnLoadFile = new JButton("Load File");
+		btnLoadFile.setFont(new Font("Noto Sans", Font.BOLD, 18));
 		btnLoadFile.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
