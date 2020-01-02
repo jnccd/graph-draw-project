@@ -1,47 +1,26 @@
 package graph.drawing.RTProject;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.Graphics;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import javax.tools.DiagnosticListener;
-import javax.tools.JavaCompiler;
-import javax.tools.JavaFileManager;
-import javax.tools.JavaFileObject;
-import javax.tools.StandardJavaFileManager;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
 
-import java.awt.GridLayout;
-import java.awt.List;
-
 import javax.swing.SwingConstants;
-import javax.swing.BoxLayout;
 import javax.swing.SpringLayout;
 import java.awt.Color;
-import java.awt.Component;
-
-import javax.lang.model.SourceVersion;
-import javax.swing.Box;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Writer;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Locale;
-import java.util.Set;
 import javax.swing.JLabel;
 
 public class MainFrame extends JFrame {
-
+	private static final long serialVersionUID = 1L;
 	private final MainFrame frame = this;
 	private JLabel stateLabel;
 	private JPanel contentPane;
@@ -50,7 +29,7 @@ public class MainFrame extends JFrame {
 	public GraphStatesManager states = new GraphStatesManager();
 	private JPanel panel = new JPanel() {
 		private static final long serialVersionUID = 1L;
-
+		
 		@Override
 		public void paint(Graphics g) {
 			g.clearRect(0, 0, panel.getWidth(), panel.getHeight());
