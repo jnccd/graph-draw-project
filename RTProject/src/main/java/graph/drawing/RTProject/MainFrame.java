@@ -23,15 +23,26 @@ import javax.swing.BoxLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.Component;
+import java.awt.Dimension;
+
 import javax.swing.Box;
 import java.awt.SystemColor;
 import javax.swing.border.BevelBorder;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.LineBorder;
+import java.awt.Color;
+import java.awt.BorderLayout;
+import javax.swing.border.MatteBorder;
+import javax.swing.border.SoftBevelBorder;
 
 public class MainFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private final MainFrame frame = this;
 	private JLabel stateLabel;
 	private JPanel contentPane;
+	private JSlider slider;
+	private JButton btnPlay;
 	private JFileChooser fc = new JFileChooser();
 
 	public GraphStatesManager states = new GraphStatesManager();
@@ -45,12 +56,12 @@ public class MainFrame extends JFrame {
 				states.getCurrentState().draw(g, panel, frame);
 		}
 	};
-	private JSlider slider;
 	
 	private long counter = 0;
 	private boolean playing = false;
-	private JButton btnPlay;
-
+	
+	private String currentFilePath;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -111,7 +122,8 @@ public class MainFrame extends JFrame {
 			}
 		});
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 623, 456);
+		setBounds(100, 100, 725, 512);
+		setMinimumSize(new Dimension(700, 500));
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -132,6 +144,7 @@ public class MainFrame extends JFrame {
 		contentPane.add(panel);
 		
 		JPanel optionsPanel = new JPanel();
+		optionsPanel.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, null, null, null, null));
 		optionsPanel.setBackground(SystemColor.controlHighlight);
 		sl_contentPane.putConstraint(SpringLayout.EAST, panel, -5, SpringLayout.WEST, optionsPanel);
 		sl_contentPane.putConstraint(SpringLayout.WEST, optionsPanel, -150, SpringLayout.EAST, contentPane);
@@ -147,10 +160,32 @@ public class MainFrame extends JFrame {
 		sl_contentPane.putConstraint(SpringLayout.WEST, layeredPane, 0, SpringLayout.WEST, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, layeredPane, 0, SpringLayout.SOUTH, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.EAST, layeredPane, -5, SpringLayout.WEST, optionsPanel);
-		optionsPanel.setLayout(new BoxLayout(optionsPanel, BoxLayout.X_AXIS));
+		optionsPanel.setLayout(new BoxLayout(optionsPanel, BoxLayout.Y_AXIS));
 		
-		JSlider slider_1 = new JSlider();
-		optionsPanel.add(slider_1);
+		JLabel lblNewLabel = new JLabel("Node Size");
+		lblNewLabel.setVerticalAlignment(SwingConstants.TOP);
+		lblNewLabel.setAlignmentY(0.0f);
+		lblNewLabel.setHorizontalAlignment(SwingConstants.LEFT);
+		optionsPanel.add(lblNewLabel);
+		
+		JSlider sliderSize = new JSlider();
+		sliderSize.setMaximum(125);
+		sliderSize.setMinimum(30);
+		sliderSize.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				Options.NODE_SIZE = sliderSize.getValue();
+				GraphLoader.load(currentFilePath, frame, panel);
+				refresh();
+			}
+		});
+		sliderSize.setBackground(SystemColor.controlHighlight);
+		sliderSize.setAlignmentY(0.0f);
+		sliderSize.setValue(Options.NODE_SIZE);
+		optionsPanel.add(sliderSize);
+		
+		Component verticalStrut = Box.createVerticalStrut(20);
+		optionsPanel.add(verticalStrut);
 		contentPane.add(layeredPane);
 		layeredPane.setLayout(new BoxLayout(layeredPane, BoxLayout.X_AXIS));
 
@@ -210,8 +245,10 @@ public class MainFrame extends JFrame {
 
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					File file = fc.getSelectedFile();
-					if (file.canRead())
-						GraphLoader.load(file.getAbsolutePath(), frame, panel);
+					if (file.canRead()) {
+						currentFilePath = file.getAbsolutePath();
+						GraphLoader.load(currentFilePath, frame, panel);
+					}
 					else
 						JOptionPane.showMessageDialog(frame, "I can't read that file :/");
 					refresh();
