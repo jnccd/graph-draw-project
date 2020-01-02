@@ -48,6 +48,7 @@ public class GraphLoader {
 			new BinaryTreeCheckPhase().apply(curGraph, new BasicProgressMonitor());
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, e.getMessage());
+			return;
 		}
 
 		applyPhase(curGraph, new InorderLayoutPhase());
