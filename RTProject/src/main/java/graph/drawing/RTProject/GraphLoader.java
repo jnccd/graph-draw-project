@@ -33,7 +33,11 @@ public class GraphLoader {
 	}
 
 	public static void load(String path, MainFrame frame, JPanel target) {
-		curGraph = parseTextFile(path, frame);
+		try {
+			curGraph = parseTextFile(path, frame);
+		} catch (Exception e) {
+			return;
+		}
 
 		// test if graph is binary tree
 		try {
@@ -73,7 +77,7 @@ public class GraphLoader {
 		return monitor;
 	}
 
-	private static ElkNode parseTextFile(String path, JFrame frame) {
+	private static ElkNode parseTextFile(String path, JFrame frame) throws IOException {
 		String file = readTextfile(path);
 		if (file.equals("")) {
 			JOptionPane.showMessageDialog(frame, "I can't read that file :/");
@@ -131,14 +135,10 @@ public class GraphLoader {
 		return graph;
 	}
 
-	private static String readTextfile(String path) {
+	private static String readTextfile(String path) throws IOException {
 		String content = "";
 
-		try {
-			content = new String(Files.readAllBytes(Paths.get(path)));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		content = new String(Files.readAllBytes(Paths.get(path)));
 
 		return content;
 	}
