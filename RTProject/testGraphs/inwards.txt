@@ -15,4 +15,3 @@ ll -> llr
 
 lr -> lrl
 lr -> lrr
-
