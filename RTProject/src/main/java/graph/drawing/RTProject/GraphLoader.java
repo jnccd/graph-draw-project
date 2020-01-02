@@ -53,12 +53,6 @@ public class GraphLoader {
 				n.setWidth(Options.NODE_SIZE);
 				n.setHeight(Options.NODE_SIZE);
 			}
-
-		// Apply frame min height
-		frame.setMinimumSize(new Dimension(
-				frame.getMinimumSize().width, 
-				Help.depth(curGraph.getChildren().stream().filter(x -> x.getIncomingEdges().size() == 0).findFirst().get()) * 
-					(Options.NODE_SIZE + Options.SPACING_NODE_NODE)));
 		
 		// Layouting
 		applyPhase(curGraph, new InorderLayoutPhase());

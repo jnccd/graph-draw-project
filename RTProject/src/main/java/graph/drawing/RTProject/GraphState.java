@@ -19,6 +19,9 @@ public class GraphState {
 	private Graph graph;
 	private ElkNode markedNode;
 	private List<ElkNode> contourNodes;
+	
+	private ElkNode leftArrowNode, rightArrowNode;
+	private int leftArrowNumber, rightArrowNumber;
 
 	public GraphState(String title, Graph g) {
 		super();
@@ -41,6 +44,19 @@ public class GraphState {
 		this.contourNodes = contourNodes;
 	}
 
+	public GraphState(String title, Graph graph, ElkNode markedNode, List<ElkNode> contourNodes, ElkNode leftArrowNode,
+			ElkNode rightArrowNode, int leftArrowNumber, int rightArrowNumber) {
+		super();
+		this.title = title;
+		this.graph = graph;
+		this.markedNode = markedNode;
+		this.contourNodes = contourNodes;
+		this.leftArrowNode = leftArrowNode;
+		this.rightArrowNode = rightArrowNode;
+		this.leftArrowNumber = leftArrowNumber;
+		this.rightArrowNumber = rightArrowNumber;
+	}
+
 	public String getTitle() {
 		return title;
 	}
@@ -57,10 +73,12 @@ public class GraphState {
 
 		for (Node n : graph.nodes) {
 			n.x = ((n.x - minX) + target.getWidth() / 2 - (maxX - minX) / 2);
-			n.y = ((n.y - minY) * target.getHeight()) / (maxY - minY);
+			n.y = ((n.y - minY) + target.getHeight() / 2 - (maxY - minY) / 2);
 		}
 
-		frame.setMinimumSize(new Dimension((int) (maxX - minX) + (int)Options.PADDING.left + (int)Options.PADDING.right + 10, frame.getMinimumSize().height));
+		frame.setMinimumSize(new Dimension(
+				(int) (maxX - minX) + (int)Options.PADDING.left + (int)Options.PADDING.right + (frame.getWidth() - target.getWidth()), 
+				(int) (maxY - minY) + (int)Options.PADDING.top + (int)Options.PADDING.bottom + (frame.getHeight() - target.getHeight())));
 
 		// draw
 		for (Edge e : graph.edges) {
@@ -94,6 +112,20 @@ public class GraphState {
 
 			g.drawString(n.note, (int) (n.x + (n.w - g.getFontMetrics().stringWidth(n.note)) / 2),
 					(int) (n.y + g.getFontMetrics().getHeight() + 20));
+		}
+		
+		if (leftArrowNode != null && rightArrowNode != null) {
+			g.drawLine(
+					(int)(leftArrowNode.getX() + leftArrowNode.getWidth() + Options.SPACING_NODE_NODE / 2), 
+					(int)(leftArrowNode.getY() + leftArrowNode.getHeight() / 2), 
+					(int)(rightArrowNode.getX() - Options.SPACING_NODE_NODE), 
+					(int)(rightArrowNode.getY() + rightArrowNode.getHeight() / 2));
+			g.drawString(Integer.toString(leftArrowNumber), 
+					(int)(leftArrowNode.getX() + leftArrowNode.getWidth() + Options.SPACING_NODE_NODE / 2), 
+					(int)(leftArrowNode.getY() + leftArrowNode.getHeight() / 2 - 15));
+			g.drawString(Integer.toString(rightArrowNumber), 
+					(int)(rightArrowNode.getX() - Options.SPACING_NODE_NODE), 
+					(int)(leftArrowNode.getY() + leftArrowNode.getHeight() / 2 - 15));
 		}
 	}
 }
