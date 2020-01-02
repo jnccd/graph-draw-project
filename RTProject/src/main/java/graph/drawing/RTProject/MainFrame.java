@@ -12,10 +12,15 @@ import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
 
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.SpringLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+
 import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.JSlider;
@@ -36,6 +41,16 @@ import java.awt.BorderLayout;
 import javax.swing.border.MatteBorder;
 import javax.swing.border.SoftBevelBorder;
 
+import mdlaf.MaterialLookAndFeel;
+
+import javax.swing.JTextArea;
+import javax.swing.JTabbedPane;
+import javax.swing.JEditorPane;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import javax.swing.JScrollPane;
+import javax.swing.JScrollBar;
+
 public class MainFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private final MainFrame frame = this;
@@ -43,17 +58,18 @@ public class MainFrame extends JFrame {
 	private JPanel contentPane;
 	private JSlider slider;
 	private JButton btnPlay;
+	private JEditorPane editorPane;
 	private JFileChooser fc = new JFileChooser();
 
 	public GraphStatesManager states = new GraphStatesManager();
-	private JPanel panel = new JPanel() {
+	private JPanel drawPanel = new JPanel() {
 		private static final long serialVersionUID = 1L;
 
 		@Override
 		public void paint(Graphics g) {
-			g.clearRect(0, 0, panel.getWidth(), panel.getHeight());
+			g.clearRect(0, 0, drawPanel.getWidth(), drawPanel.getHeight());
 			if (states.size() != 0)
-				states.getCurrentState().draw(g, panel, frame);
+				states.getCurrentState().draw(g, drawPanel, frame);
 		}
 	};
 	
@@ -61,11 +77,20 @@ public class MainFrame extends JFrame {
 	private boolean playing = false;
 	
 	private String currentFilePath;
+	private String lastPathPath = ".//lastPath.txt";
+	private String tmpPath = ".//tmp.graph";
 	
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+//		try {
+//			UIManager.setLookAndFeel (new MaterialLookAndFeel ());
+//		}
+//		catch (UnsupportedLookAndFeelException e) {
+//			
+//		}
+		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -79,7 +104,7 @@ public class MainFrame extends JFrame {
 	}
 
 	void refresh() {
-		panel.repaint();
+		drawPanel.repaint();
 		if (states.getCurrentState() != null) {
 			stateLabel.setText(states.getCurrentState().getTitle());
 			
@@ -92,6 +117,12 @@ public class MainFrame extends JFrame {
 	 * Create the frame.
 	 */
 	public MainFrame() {
+		try {
+			fc.setSelectedFile(new File(GraphLoader.readTextfile(lastPathPath)));
+		} catch (Exception e) {
+			
+		}
+		
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowOpened(WindowEvent e) {
@@ -129,26 +160,26 @@ public class MainFrame extends JFrame {
 		setContentPane(contentPane);
 		SpringLayout sl_contentPane = new SpringLayout();
 		
-				sl_contentPane.putConstraint(SpringLayout.SOUTH, panel, -30, SpringLayout.SOUTH, contentPane);
+				sl_contentPane.putConstraint(SpringLayout.SOUTH, drawPanel, -30, SpringLayout.SOUTH, contentPane);
 		contentPane.setLayout(sl_contentPane);
 
 		stateLabel = new JLabel("No Graph Loaded");
-		sl_contentPane.putConstraint(SpringLayout.NORTH, panel, 27, SpringLayout.NORTH, stateLabel);
+		sl_contentPane.putConstraint(SpringLayout.NORTH, drawPanel, 27, SpringLayout.NORTH, stateLabel);
 		stateLabel.setFont(new Font("Open Sans", Font.BOLD, 20));
 		stateLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		sl_contentPane.putConstraint(SpringLayout.NORTH, stateLabel, 0, SpringLayout.NORTH, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.WEST, stateLabel, 0, SpringLayout.WEST, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.EAST, stateLabel, 0, SpringLayout.EAST, contentPane);
 		contentPane.add(stateLabel);
-		sl_contentPane.putConstraint(SpringLayout.WEST, panel, 0, SpringLayout.WEST, contentPane);
-		contentPane.add(panel);
+		sl_contentPane.putConstraint(SpringLayout.WEST, drawPanel, 0, SpringLayout.WEST, contentPane);
+		contentPane.add(drawPanel);
 		
 		JPanel optionsPanel = new JPanel();
+		sl_contentPane.putConstraint(SpringLayout.WEST, optionsPanel, -200, SpringLayout.EAST, contentPane);
 		optionsPanel.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, null, null, null, null));
 		optionsPanel.setBackground(SystemColor.controlHighlight);
-		sl_contentPane.putConstraint(SpringLayout.EAST, panel, -5, SpringLayout.WEST, optionsPanel);
-		sl_contentPane.putConstraint(SpringLayout.WEST, optionsPanel, -150, SpringLayout.EAST, contentPane);
-		sl_contentPane.putConstraint(SpringLayout.NORTH, optionsPanel, 0, SpringLayout.NORTH, panel);
+		sl_contentPane.putConstraint(SpringLayout.EAST, drawPanel, -5, SpringLayout.WEST, optionsPanel);
+		sl_contentPane.putConstraint(SpringLayout.NORTH, optionsPanel, 0, SpringLayout.NORTH, drawPanel);
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, optionsPanel, 0, SpringLayout.SOUTH, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.EAST, optionsPanel, 0, SpringLayout.EAST, contentPane);
 		contentPane.add(optionsPanel);
@@ -156,36 +187,80 @@ public class MainFrame extends JFrame {
 		JLayeredPane layeredPane = new JLayeredPane();
 		layeredPane.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
 		layeredPane.setBackground(SystemColor.scrollbar);
-		sl_contentPane.putConstraint(SpringLayout.NORTH, layeredPane, 5, SpringLayout.SOUTH, panel);
+		sl_contentPane.putConstraint(SpringLayout.NORTH, layeredPane, 5, SpringLayout.SOUTH, drawPanel);
 		sl_contentPane.putConstraint(SpringLayout.WEST, layeredPane, 0, SpringLayout.WEST, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, layeredPane, 0, SpringLayout.SOUTH, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.EAST, layeredPane, -5, SpringLayout.WEST, optionsPanel);
 		optionsPanel.setLayout(new BoxLayout(optionsPanel, BoxLayout.Y_AXIS));
 		
-		JLabel lblNewLabel = new JLabel("Node Size");
-		lblNewLabel.setVerticalAlignment(SwingConstants.TOP);
-		lblNewLabel.setAlignmentY(0.0f);
-		lblNewLabel.setHorizontalAlignment(SwingConstants.LEFT);
-		optionsPanel.add(lblNewLabel);
+		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		optionsPanel.add(tabbedPane);
 		
-		JSlider sliderSize = new JSlider();
-		sliderSize.setMaximum(125);
-		sliderSize.setMinimum(30);
-		sliderSize.addMouseListener(new MouseAdapter() {
+		JPanel optionsTab = new JPanel();
+		tabbedPane.addTab("Options", null, optionsTab, null);
+		optionsTab.setLayout(new BoxLayout(optionsTab, BoxLayout.Y_AXIS));
+		
+		JLabel label = new JLabel("Node Size");
+		label.setVerticalAlignment(SwingConstants.TOP);
+		label.setHorizontalAlignment(SwingConstants.LEFT);
+		label.setAlignmentX(0.5f);
+		optionsTab.add(label);
+		
+		JSlider sizeSlider = new JSlider();
+		sizeSlider.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				Options.NODE_SIZE = sliderSize.getValue();
-				GraphLoader.load(currentFilePath, frame, panel);
+				Options.NODE_SIZE = sizeSlider.getValue();
+				GraphLoader.load(currentFilePath, frame, drawPanel);
 				refresh();
 			}
 		});
-		sliderSize.setBackground(SystemColor.controlHighlight);
-		sliderSize.setAlignmentY(0.0f);
-		sliderSize.setValue(Options.NODE_SIZE);
-		optionsPanel.add(sliderSize);
+		sizeSlider.setValue(40);
+		sizeSlider.setMinimum(30);
+		sizeSlider.setMaximum(125);
+		sizeSlider.setAlignmentY(0.0f);
+		optionsTab.add(sizeSlider);
 		
 		Component verticalStrut = Box.createVerticalStrut(20);
-		optionsPanel.add(verticalStrut);
+		optionsTab.add(verticalStrut);
+		
+		JPanel editorTab = new JPanel();
+		tabbedPane.addTab("Editor", null, editorTab, null);
+		editorTab.setLayout(new BoxLayout(editorTab, BoxLayout.X_AXIS));
+		
+		editorPane = new JEditorPane();
+		editorPane.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				
+			}
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == 83 && e.isControlDown()) {
+					String path = "";
+					try {
+						GraphLoader.saveTextfile(currentFilePath, editorPane.getText());
+						path = currentFilePath;
+					} catch (IOException e1) {
+						try {
+							new File(tmpPath).createNewFile();
+							GraphLoader.saveTextfile(tmpPath, editorPane.getText());
+							path = tmpPath;
+						} catch (IOException e2) {
+							
+						}
+					}
+					
+					GraphLoader.load(path, frame, drawPanel);
+					refresh();
+				}
+			}
+		});
+		editorTab.add(editorPane);
+		
+		JScrollPane scrollPane = new JScrollPane(editorPane);
+		editorTab.add(scrollPane);
+		
 		contentPane.add(layeredPane);
 		layeredPane.setLayout(new BoxLayout(layeredPane, BoxLayout.X_AXIS));
 
@@ -247,7 +322,15 @@ public class MainFrame extends JFrame {
 					File file = fc.getSelectedFile();
 					if (file.canRead()) {
 						currentFilePath = file.getAbsolutePath();
-						GraphLoader.load(currentFilePath, frame, panel);
+						GraphLoader.load(currentFilePath, frame, drawPanel);
+						
+						File lastPath = new File(lastPathPath);
+						try {
+							if (lastPath.createNewFile())
+								GraphLoader.saveTextfile(lastPath.getAbsolutePath(), currentFilePath);
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						}
 					}
 					else
 						JOptionPane.showMessageDialog(frame, "I can't read that file :/");
@@ -260,5 +343,8 @@ public class MainFrame extends JFrame {
 		layeredPane.add(sliderPadding2);
 		btnLoadFile.setHorizontalAlignment(SwingConstants.RIGHT);
 		layeredPane.add(btnLoadFile);
+	}
+	public JEditorPane getEditorPane() {
+		return editorPane;
 	}
 }

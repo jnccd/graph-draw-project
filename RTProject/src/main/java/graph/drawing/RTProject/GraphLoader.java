@@ -1,8 +1,9 @@
 package graph.drawing.RTProject;
 
-import java.awt.Dimension;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.OpenOption;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
@@ -19,7 +20,6 @@ import org.eclipse.elk.graph.ElkNode;
 import org.eclipse.elk.graph.util.ElkGraphUtil;
 
 import helper.Graph;
-import helper.Help;
 import phases.BinaryTreeCheckPhase;
 import phases.InorderLayoutPhase;
 import phases.Phase;
@@ -27,6 +27,7 @@ import phases.RTLayoutPhaseSubtreeLayering;
 
 public class GraphLoader {
 	static ElkNode curGraph = null;
+	static String fileContent;
 
 	public static ElkNode getGraph() {
 		return curGraph;
@@ -77,14 +78,16 @@ public class GraphLoader {
 		return monitor;
 	}
 
-	private static ElkNode parseTextFile(String path, JFrame frame) throws IOException {
-		String file = readTextfile(path);
-		if (file.equals("")) {
+	private static ElkNode parseTextFile(String path, MainFrame frame) throws IOException {
+		fileContent = readTextfile(path);
+		if (fileContent.equals("")) {
 			JOptionPane.showMessageDialog(frame, "I can't read that file :/");
 			return null;
 		}
+		
+		frame.getEditorPane().setText(fileContent);
 
-		String[] lines = file.split("\n");
+		String[] lines = fileContent.split("\n");
 		List<String> nodeNames = Arrays.stream(lines)
 				.filter(x -> !x.contains("->") && x.trim().length() > 0 && !x.contains(":")).map(x -> {
 					if (x.startsWith("node "))
@@ -135,11 +138,23 @@ public class GraphLoader {
 		return graph;
 	}
 
-	private static String readTextfile(String path) throws IOException {
+	public static String readTextfile(String path) throws IOException {
 		String content = "";
 
 		content = new String(Files.readAllBytes(Paths.get(path)));
 
 		return content;
+	}
+	
+	public static boolean saveTextfile(String path, String content) throws IOException {
+		FileWriter f = new FileWriter(path);
+		try {
+			f.write(content);
+		} catch (Exception e) {
+			return false;
+		} finally {
+			f.close();
+		}
+		return true;
 	}
 }
