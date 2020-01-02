@@ -164,22 +164,22 @@ public class MainFrame extends JFrame {
 		contentPane.setLayout(sl_contentPane);
 
 		stateLabel = new JLabel("No Graph Loaded");
+		sl_contentPane.putConstraint(SpringLayout.WEST, stateLabel, 0, SpringLayout.WEST, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.NORTH, drawPanel, 27, SpringLayout.NORTH, stateLabel);
 		stateLabel.setFont(new Font("Open Sans", Font.BOLD, 20));
 		stateLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		sl_contentPane.putConstraint(SpringLayout.NORTH, stateLabel, 0, SpringLayout.NORTH, contentPane);
-		sl_contentPane.putConstraint(SpringLayout.WEST, stateLabel, 0, SpringLayout.WEST, contentPane);
-		sl_contentPane.putConstraint(SpringLayout.EAST, stateLabel, 0, SpringLayout.EAST, contentPane);
 		contentPane.add(stateLabel);
 		sl_contentPane.putConstraint(SpringLayout.WEST, drawPanel, 0, SpringLayout.WEST, contentPane);
 		contentPane.add(drawPanel);
 		
 		JPanel optionsPanel = new JPanel();
+		sl_contentPane.putConstraint(SpringLayout.NORTH, optionsPanel, 0, SpringLayout.NORTH, contentPane);
+		sl_contentPane.putConstraint(SpringLayout.EAST, stateLabel, 0, SpringLayout.WEST, optionsPanel);
 		sl_contentPane.putConstraint(SpringLayout.WEST, optionsPanel, -200, SpringLayout.EAST, contentPane);
 		optionsPanel.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, null, null, null, null));
 		optionsPanel.setBackground(SystemColor.controlHighlight);
 		sl_contentPane.putConstraint(SpringLayout.EAST, drawPanel, -5, SpringLayout.WEST, optionsPanel);
-		sl_contentPane.putConstraint(SpringLayout.NORTH, optionsPanel, 0, SpringLayout.NORTH, drawPanel);
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, optionsPanel, 0, SpringLayout.SOUTH, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.EAST, optionsPanel, 0, SpringLayout.EAST, contentPane);
 		contentPane.add(optionsPanel);
