@@ -28,36 +28,6 @@ public class RTLayoutPhaseWithThreads implements Phase {
 		this.states = states;
 	}
 
-	int depth(ElkNode root) {
-		List<ElkNode> childs = Help.getChilds(root);
-		if (childs.size() == 0)
-			return 1;
-		else
-			return childs.stream().map(x -> depth(x)).max(Integer::compare).get() + 1;
-	}
-
-	int rootDistance(ElkNode n, ElkNode root) {
-		if (n == root)
-			return 0;
-		ElkNode p = (ElkNode) n.getIncomingEdges().get(0).getSources().get(0);
-		return rootDistance(p, root) + 1;
-	}
-
-	List<ElkNode> getSubtree(ElkNode n) {
-		if (Help.getChilds(n).size() == 0) {
-			List<ElkNode> re = new ArrayList<ElkNode>();
-			re.add(n);
-			return re;
-		}
-
-		return Help.getChilds(n).stream().map(x -> getSubtree(x)).reduce((x, y) -> {
-			List<ElkNode> re = new ArrayList<ElkNode>();
-			re.addAll(x);
-			re.addAll(y);
-			return re;
-		}).get();
-	}
-
 	public void apply(ElkNode layoutGraph, IElkProgressMonitor monitor) throws Exception {
 		EList<ElkNode> nodes = layoutGraph.getChildren();
 		double nodeNodeSpacing = Options.SPACING_NODE_NODE;
@@ -67,12 +37,12 @@ public class RTLayoutPhaseWithThreads implements Phase {
 		this.layoutGraph = layoutGraph;
 
 		layers = new ArrayList<List<ElkNode>>();
-		int depth = depth(root);
+		int depth = Help.depth(root);
 		for (int i = 0; i < depth; i++)
 			layers.add(new ArrayList<ElkNode>());
 
 		for (ElkNode n : nodes)
-			layers.get(rootDistance(n, root)).add(n);
+			layers.get(Help.rootDistance(n, root)).add(n);
 
 		phase1(root);
 		states.addState(new GraphState("Phase 1: Done!", Graph.fromElk(layoutGraph)));
@@ -156,8 +126,8 @@ public class RTLayoutPhaseWithThreads implements Phase {
 		}
 
 		if (leftChild != null && rightChild != null) {
-			int lDepth = depth(leftChild);
-			int rDepth = depth(rightChild);
+			int lDepth = Help.depth(leftChild);
+			int rDepth = Help.depth(rightChild);
 			if (lDepth > rDepth) {
 
 			}

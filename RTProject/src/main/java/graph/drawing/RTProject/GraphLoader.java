@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.swing.JFrame;
@@ -29,6 +30,7 @@ import helper.Graph;
 import phases.InorderLayoutPhase;
 import phases.Phase;
 import phases.RTLayoutPhaseSimple;
+import phases.RTLayoutPhaseSubtreeLayering;
 import phases.RTLayoutPhaseWithThreads;
 
 public class GraphLoader {
@@ -56,7 +58,7 @@ public class GraphLoader {
 		
 		frame.states.addState(new GraphState("Initial State", Graph.fromElk(curGraph)));
 		
-		applyPhase(curGraph, new RTLayoutPhaseSimple(frame.states));
+		applyPhase(curGraph, new RTLayoutPhaseSubtreeLayering(frame.states));
 	}
 
 	private static BasicProgressMonitor applyPhase(ElkNode graph, Phase p) {
@@ -98,10 +100,29 @@ public class GraphLoader {
 		}
 		for (List<String> e : edgeNames) {
 			ElkEdge edge = ElkGraphUtil.createEdge(graph);
-			edge.getSources().add(
-					graph.getChildren().stream().filter(x -> x.getIdentifier().equals(e.get(0))).findFirst().get());
-			edge.getTargets().add(
-					graph.getChildren().stream().filter(x -> x.getIdentifier().equals(e.get(1))).findFirst().get());
+			
+			Optional<ElkNode> snode = graph.getChildren().stream().filter(x -> x.getIdentifier().equals(e.get(0))).findFirst();
+			if (snode.isPresent())
+				edge.getSources().add(snode.get());
+			else {
+				ElkNode node = ElkGraphUtil.createNode(graph);
+				node.setIdentifier(e.get(0));
+				graph.getChildren().add(node);
+				
+				edge.getSources().add(node);
+			}
+			
+			snode = graph.getChildren().stream().filter(x -> x.getIdentifier().equals(e.get(1))).findFirst();
+			if (snode.isPresent())
+				edge.getTargets().add(snode.get());
+			else {
+				ElkNode node = ElkGraphUtil.createNode(graph);
+				node.setIdentifier(e.get(1));
+				graph.getChildren().add(node);
+				
+				edge.getTargets().add(node);
+			}
+			
 			graph.getContainedEdges().add(edge);
 		}
 
