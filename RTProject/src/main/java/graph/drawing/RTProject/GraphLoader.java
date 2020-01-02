@@ -1,14 +1,8 @@
 package graph.drawing.RTProject;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.geom.Ellipse2D;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -18,31 +12,27 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import org.eclipse.elk.core.RecursiveGraphLayoutEngine;
 import org.eclipse.elk.core.util.BasicProgressMonitor;
-import org.eclipse.elk.core.util.IElkProgressMonitor;
-import org.eclipse.elk.graph.ElkConnectableShape;
 import org.eclipse.elk.graph.ElkEdge;
 import org.eclipse.elk.graph.ElkNode;
 import org.eclipse.elk.graph.util.ElkGraphUtil;
 
 import helper.Graph;
+import phases.BinaryTreeCheckPhase;
 import phases.InorderLayoutPhase;
 import phases.Phase;
-import phases.RTLayoutPhaseSimple;
 import phases.RTLayoutPhaseSubtreeLayering;
-import phases.RTLayoutPhaseWithThreads;
 
 public class GraphLoader {
 	static ElkNode curGraph = null;
-	
+
 	public static ElkNode getGraph() {
 		return curGraph;
 	}
 
 	public static void load(String path, MainFrame frame, JPanel target) {
 		frame.states.clearStates();
-		
+
 		curGraph = parseTextFile(path, frame);
 
 		// Add graph sizes
@@ -50,14 +40,20 @@ public class GraphLoader {
 		curGraph.setHeight(target.getHeight());
 		for (ElkNode n : curGraph.getChildren())
 			if (n.getWidth() == 0 || n.getHeight() == 0) {
-				n.setWidth(40);
-				n.setHeight(40);
+				n.setWidth(Options.NODE_SIZE);
+				n.setHeight(Options.NODE_SIZE);
 			}
+		
+		try {
+			new BinaryTreeCheckPhase().apply(curGraph, new BasicProgressMonitor());
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, e.getMessage());
+		}
 
 		applyPhase(curGraph, new InorderLayoutPhase());
-		
+
 		frame.states.addState(new GraphState("Initial State", Graph.fromElk(curGraph)));
-		
+
 		applyPhase(curGraph, new RTLayoutPhaseSubtreeLayering(frame.states));
 	}
 
@@ -100,18 +96,19 @@ public class GraphLoader {
 		}
 		for (List<String> e : edgeNames) {
 			ElkEdge edge = ElkGraphUtil.createEdge(graph);
-			
-			Optional<ElkNode> snode = graph.getChildren().stream().filter(x -> x.getIdentifier().equals(e.get(0))).findFirst();
+
+			Optional<ElkNode> snode = graph.getChildren().stream().filter(x -> x.getIdentifier().equals(e.get(0)))
+					.findFirst();
 			if (snode.isPresent())
 				edge.getSources().add(snode.get());
 			else {
 				ElkNode node = ElkGraphUtil.createNode(graph);
 				node.setIdentifier(e.get(0));
 				graph.getChildren().add(node);
-				
+
 				edge.getSources().add(node);
 			}
-			
+
 			snode = graph.getChildren().stream().filter(x -> x.getIdentifier().equals(e.get(1))).findFirst();
 			if (snode.isPresent())
 				edge.getTargets().add(snode.get());
@@ -119,10 +116,10 @@ public class GraphLoader {
 				ElkNode node = ElkGraphUtil.createNode(graph);
 				node.setIdentifier(e.get(1));
 				graph.getChildren().add(node);
-				
+
 				edge.getTargets().add(node);
 			}
-			
+
 			graph.getContainedEdges().add(edge);
 		}
 
