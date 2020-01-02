@@ -60,7 +60,7 @@ public class GraphState {
 			n.y = ((n.y - minY) * target.getHeight()) / (maxY - minY);
 		}
 
-		frame.setMinimumSize(new Dimension((int) (maxX - minX) + 10, 0));
+		frame.setMinimumSize(new Dimension((int) (maxX - minX) + (int)Options.PADDING.left + (int)Options.PADDING.right + 10, frame.getMinimumSize().height));
 
 		// draw
 		for (Edge e : graph.edges) {

@@ -14,7 +14,7 @@ import helper.Graph;
 import helper.Help;
 
 public class RTLayoutPhaseSimple implements Phase {
-    double minSep = 25;
+    double minSep = Options.SPACING_NODE_NODE;
     GraphStatesManager states;
     ElkNode root;
     ElkNode layoutGraph;

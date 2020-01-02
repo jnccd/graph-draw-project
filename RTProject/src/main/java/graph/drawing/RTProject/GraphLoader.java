@@ -1,5 +1,6 @@
 package graph.drawing.RTProject;
 
+import java.awt.Dimension;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -18,6 +19,7 @@ import org.eclipse.elk.graph.ElkNode;
 import org.eclipse.elk.graph.util.ElkGraphUtil;
 
 import helper.Graph;
+import helper.Help;
 import phases.BinaryTreeCheckPhase;
 import phases.InorderLayoutPhase;
 import phases.Phase;
@@ -31,9 +33,17 @@ public class GraphLoader {
 	}
 
 	public static void load(String path, MainFrame frame, JPanel target) {
-		frame.states.clearStates();
-
 		curGraph = parseTextFile(path, frame);
+
+		// test if graph is binary tree
+		try {
+			new BinaryTreeCheckPhase().apply(curGraph, new BasicProgressMonitor());
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, e.getMessage());
+			return;
+		}
+
+		frame.states.clearStates();
 
 		// Add graph sizes
 		curGraph.setWidth(target.getWidth());
@@ -43,14 +53,14 @@ public class GraphLoader {
 				n.setWidth(Options.NODE_SIZE);
 				n.setHeight(Options.NODE_SIZE);
 			}
-		
-		try {
-			new BinaryTreeCheckPhase().apply(curGraph, new BasicProgressMonitor());
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(null, e.getMessage());
-			return;
-		}
 
+		// Apply frame min height
+		frame.setMinimumSize(new Dimension(
+				frame.getMinimumSize().width, 
+				Help.depth(curGraph.getChildren().stream().filter(x -> x.getIncomingEdges().size() == 0).findFirst().get()) * 
+					(Options.NODE_SIZE + Options.SPACING_NODE_NODE)));
+		
+		// Layouting
 		applyPhase(curGraph, new InorderLayoutPhase());
 
 		frame.states.addState(new GraphState("Initial State", Graph.fromElk(curGraph)));

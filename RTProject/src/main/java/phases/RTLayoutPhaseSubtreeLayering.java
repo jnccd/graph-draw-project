@@ -18,7 +18,7 @@ import helper.Graph;
 import helper.Help;
 
 public class RTLayoutPhaseSubtreeLayering implements Phase {
-	double minSep = 25;
+	double minSep = Options.SPACING_NODE_NODE;
 	GraphStatesManager states;
 	ElkNode root;
 	ElkNode layoutGraph;
@@ -48,7 +48,6 @@ public class RTLayoutPhaseSubtreeLayering implements Phase {
 		states.addState(new GraphState("Phase 1: Done!", Graph.fromElk(layoutGraph)));
 
 		Help.getProp(root).xOffset = phase2(root) + padding.left;
-		states.addState(new GraphState("Set offset of root " + root.getIdentifier(), Graph.fromElk(layoutGraph), root));
 		states.addState(new GraphState("Phase 2: Done!", Graph.fromElk(layoutGraph)));
 
 		phase3(root, root.getX(), 0, nodeNodeSpacing, padding);
@@ -114,21 +113,26 @@ public class RTLayoutPhaseSubtreeLayering implements Phase {
 				leftContour.add(leftSubtreeLayerRightmost);
 				rightContour.add(rightSubtreeLayerLeftmost);
 				
-				states.addState(new GraphState("Postorder: Set offsets of childs of " + n.getIdentifier() + 
+				states.addState(new GraphState("Phase 1, Postorder: Set offsets of childs of " + n.getIdentifier() + 
 						" | Check difference of " + leftSubtreeLayerRightmost.getIdentifier() + " and " + rightSubtreeLayerLeftmost.getIdentifier(),
 						Graph.fromElk(layoutGraph), n, Help.concat(leftContour, rightContour)));
 			} 
 		} else
-			states.addState(new GraphState("Postorder: Visit " + n.getIdentifier(),
+			states.addState(new GraphState("Phase 1, Postorder: Visit " + n.getIdentifier(),
 					Graph.fromElk(layoutGraph), n));
 	}
 
 	double phase2(ElkNode r) {
 		double re = 0.0;
 		while (Help.getChilds(r).size() > 0) {
+			states.addState(new GraphState("Phase 2, get total X position of the root: " + re,
+					Graph.fromElk(layoutGraph), r));
+			
 			re += Help.getProp(r).xOffset + r.getWidth() / 2;
 			r = Help.getChilds(r).get(0);
 		}
+		states.addState(new GraphState("Phase 2, total X position of the root: " + re,
+				Graph.fromElk(layoutGraph), r));
 		return re;
 	}
 
@@ -144,7 +148,7 @@ public class RTLayoutPhaseSubtreeLayering implements Phase {
 		r.setY(depth * (r.getHeight() + nodeNodeSpacing) + padding.top);
 
 		states.addState(
-				new GraphState("Preorder: Apply offset to " + r.getIdentifier(), Graph.fromElk(layoutGraph), r));
+				new GraphState("Phase 3, Preorder: Apply offset to " + r.getIdentifier(), Graph.fromElk(layoutGraph), r));
 
 		for (ElkNode c : childs)
 			phase3(c, r.getX(), depth + 1, nodeNodeSpacing, padding);
