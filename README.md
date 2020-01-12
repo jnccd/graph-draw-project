@@ -44,3 +44,13 @@ Contour calculations using threads might also be implemented depending on how mu
 The GUI and Parser is mostly functional so I don't intend to change much there but I might add some more Options to the Options Panel.\
 Maybe different node drawing/texture options similar to the ones in ELK.\
 Maybe also an options that hides certain steps from the algorithm, because "level of detail" options are listed in the MUST features in the project describtion in the iLearn. This is quite easy to implement, however I don't see why that would make this program more educational so I don't know if its really nessecary.
+
+## Additionally
+
+#### Your documentation MUST consist of: The way you deal with additional data (i.e. layers)
+
+I don't deal with additional data.
+
+#### Your documentation MUST consist of: Description of the visualization you are envisioning.
+
+I hope the TODO Section contains that to a satisfactory degree.
