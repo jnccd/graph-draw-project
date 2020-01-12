@@ -1,1 +1,0 @@
-/home/dobiko/Git/graph-draw-project/RTProject/testGraphs/inwards.txt
