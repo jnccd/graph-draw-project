@@ -74,8 +74,25 @@ public class GraphState {
 		for (Edge e : graph.edges) {
 			Node src = e.sources.get(0);
 			Node tar = e.targets.get(0);
-			g.drawLine((int) src.x + (int) src.w / 2, (int) src.y + (int) src.h / 2, 
-					(int) tar.x + (int) tar.w / 2, (int) tar.y + (int) tar.h / 2);
+			
+			int srcX, srcY, tarX, tarY;
+			if (src.x < tar.x) {
+				srcX = (int)(src.x + src.w);
+				tarX = (int)tar.x;
+			} else {
+				srcX = (int)src.x;
+				tarX = (int)(tar.x + tar.w);
+			}
+			
+			if (src.y < tar.y) {
+				srcY = (int)(src.y + src.h);
+				tarY = (int)tar.y;
+			} else {
+				srcY = (int)src.y;
+				tarY = (int)(tar.y + tar.h);
+			}
+			
+			g.drawLine(srcX, srcY, tarX, tarY);
 		}
 
 		for (Node n : graph.nodes) {
@@ -92,7 +109,6 @@ public class GraphState {
 				g.setColor(Color.CYAN);
 			g.fillRect((int) n.x, (int) n.y, (int) n.w, (int) n.h);
 
-			
 			if (isContour)
 				g.setColor(Color.WHITE);
 			else
@@ -113,10 +129,10 @@ public class GraphState {
 					(int)(rightArrowNode.getY() + rightArrowNode.getHeight() / 2));
 			g.drawString(Integer.toString(leftArrowNumber), 
 					(int)(leftArrowNode.getX() + leftArrowNode.getWidth() + Options.SPACING_NODE_NODE / 2), 
-					(int)(leftArrowNode.getY() + leftArrowNode.getHeight() / 2 - 8));
+					(int)(leftArrowNode.getY() + leftArrowNode.getHeight() / 2 - 5));
 			g.drawString(Integer.toString(rightArrowNumber), 
 					(int)(rightArrowNode.getX() - Options.SPACING_NODE_NODE), 
-					(int)(leftArrowNode.getY() + leftArrowNode.getHeight() / 2 - 8));
+					(int)(leftArrowNode.getY() + leftArrowNode.getHeight() / 2 - 5));
 		}
 	}
 	private void fixDrawEnvironment(Component target, MainFrame frame) {
