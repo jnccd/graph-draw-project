@@ -157,6 +157,7 @@ public class MainFrame extends JFrame {
 		setBounds(100, 100, 725, 512);
 		setMinimumSize(new Dimension(700, 500));
 		contentPane = new JPanel();
+		contentPane.setBackground(SystemColor.controlHighlight);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		SpringLayout sl_contentPane = new SpringLayout();
@@ -165,20 +166,22 @@ public class MainFrame extends JFrame {
 		contentPane.setLayout(sl_contentPane);
 
 		stateLabel = new JLabel("No Graph Loaded");
-		sl_contentPane.putConstraint(SpringLayout.WEST, stateLabel, 0, SpringLayout.WEST, contentPane);
-		sl_contentPane.putConstraint(SpringLayout.NORTH, drawPanel, 27, SpringLayout.NORTH, stateLabel);
-		stateLabel.setFont(new Font("Open Sans", Font.BOLD, 20));
-		stateLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		sl_contentPane.putConstraint(SpringLayout.NORTH, stateLabel, 0, SpringLayout.NORTH, contentPane);
+		stateLabel.setBackground(SystemColor.controlHighlight);
+		sl_contentPane.putConstraint(SpringLayout.WEST, stateLabel, 0, SpringLayout.WEST, contentPane);
+		stateLabel.setFont(new Font("Open Sans", Font.BOLD, 24));
+		stateLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		contentPane.add(stateLabel);
 		sl_contentPane.putConstraint(SpringLayout.WEST, drawPanel, 0, SpringLayout.WEST, contentPane);
+		drawPanel.setBackground(SystemColor.controlLtHighlight);
 		contentPane.add(drawPanel);
 		
 		JPanel optionsPanel = new JPanel();
+		sl_contentPane.putConstraint(SpringLayout.NORTH, drawPanel, 40, SpringLayout.NORTH, optionsPanel);
+		optionsPanel.setBackground(SystemColor.controlHighlight);
 		sl_contentPane.putConstraint(SpringLayout.NORTH, optionsPanel, 0, SpringLayout.NORTH, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.WEST, optionsPanel, -250, SpringLayout.EAST, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.EAST, stateLabel, 0, SpringLayout.WEST, optionsPanel);
-		optionsPanel.setBackground(SystemColor.controlHighlight);
 		sl_contentPane.putConstraint(SpringLayout.EAST, drawPanel, -5, SpringLayout.WEST, optionsPanel);
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, optionsPanel, 0, SpringLayout.SOUTH, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.EAST, optionsPanel, 0, SpringLayout.EAST, contentPane);
@@ -190,10 +193,52 @@ public class MainFrame extends JFrame {
 		sl_contentPane.putConstraint(SpringLayout.WEST, layeredPane, 0, SpringLayout.WEST, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, layeredPane, 0, SpringLayout.SOUTH, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.EAST, layeredPane, -5, SpringLayout.WEST, optionsPanel);
-		optionsPanel.setLayout(new BoxLayout(optionsPanel, BoxLayout.Y_AXIS));
+		SpringLayout sl_optionsPanel = new SpringLayout();
+		optionsPanel.setLayout(sl_optionsPanel);
 		
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		sl_optionsPanel.putConstraint(SpringLayout.NORTH, tabbedPane, -23, SpringLayout.NORTH, optionsPanel);
+		sl_optionsPanel.putConstraint(SpringLayout.WEST, tabbedPane, 0, SpringLayout.WEST, optionsPanel);
+		sl_optionsPanel.putConstraint(SpringLayout.SOUTH, tabbedPane, 0, SpringLayout.SOUTH, optionsPanel);
+		sl_optionsPanel.putConstraint(SpringLayout.EAST, tabbedPane, 0, SpringLayout.EAST, optionsPanel);
 		optionsPanel.add(tabbedPane);
+		
+		JPanel editorTab = new JPanel();
+		tabbedPane.addTab("Editor", null, editorTab, null);
+		editorTab.setLayout(new BoxLayout(editorTab, BoxLayout.X_AXIS));
+		
+		editorPane = new JEditorPane();
+		editorPane.setBackground(SystemColor.text);
+		editorPane.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				
+			}
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == 83 && e.isControlDown()) {
+					String path = "";
+					try {
+						GraphLoader.saveTextfile(currentFilePath, editorPane.getText());
+						path = currentFilePath;
+					} catch (IOException e1) {
+						try {
+							new File(tmpPath).createNewFile();
+							GraphLoader.saveTextfile(tmpPath, editorPane.getText());
+							path = tmpPath;
+						} catch (IOException e2) {
+							
+						}
+					}
+					
+					GraphLoader.load(path, frame, drawPanel);
+					refresh();
+				}
+			}
+		});
+		JScrollPane scrollPane = new JScrollPane(editorPane);
+		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		editorTab.add(scrollPane);
 		
 		JPanel optionsTab = new JPanel();
 		tabbedPane.addTab("Options", null, optionsTab, null);
@@ -224,49 +269,11 @@ public class MainFrame extends JFrame {
 		Component verticalStrut = Box.createVerticalStrut(20);
 		optionsTab.add(verticalStrut);
 		
-		JPanel editorTab = new JPanel();
-		tabbedPane.addTab("Editor", null, editorTab, null);
-		editorTab.setLayout(new BoxLayout(editorTab, BoxLayout.X_AXIS));
-		
-		editorPane = new JEditorPane();
-		editorPane.setBackground(UIManager.getColor("Desktop.background"));
-		editorPane.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyTyped(KeyEvent e) {
-				
-			}
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == 83 && e.isControlDown()) {
-					String path = "";
-					try {
-						GraphLoader.saveTextfile(currentFilePath, editorPane.getText());
-						path = currentFilePath;
-					} catch (IOException e1) {
-						try {
-							new File(tmpPath).createNewFile();
-							GraphLoader.saveTextfile(tmpPath, editorPane.getText());
-							path = tmpPath;
-						} catch (IOException e2) {
-							
-						}
-					}
-					
-					GraphLoader.load(path, frame, drawPanel);
-					refresh();
-				}
-			}
-		});
-		editorTab.add(editorPane);
-		
-		JScrollPane scrollPane = new JScrollPane(editorPane);
-		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		editorTab.add(scrollPane);
-		
 		contentPane.add(layeredPane);
 		layeredPane.setLayout(new BoxLayout(layeredPane, BoxLayout.X_AXIS));
 
 		JButton btnRight = new JButton(">");
+		btnRight.setBackground(SystemColor.controlLtHighlight);
 		btnRight.setFont(new Font("Noto Sans", Font.PLAIN, 25));
 		btnRight.addMouseListener(new MouseAdapter() {
 			@Override
@@ -277,6 +284,7 @@ public class MainFrame extends JFrame {
 		});
 
 		JButton btnLeft = new JButton("<");
+		btnLeft.setBackground(SystemColor.controlLtHighlight);
 		btnLeft.setFont(new Font("Noto Sans", Font.PLAIN, 25));
 		btnLeft.addMouseListener(new MouseAdapter() {
 			@Override
@@ -295,6 +303,7 @@ public class MainFrame extends JFrame {
 		layeredPane.add(sliderPadding1);
 		
 				btnPlay = new JButton("►");
+				btnPlay.setBackground(SystemColor.controlLtHighlight);
 				btnPlay.setFont(new Font("SansSerif", Font.BOLD, 18));
 				btnPlay.addMouseListener(new MouseAdapter() {
 					@Override
@@ -311,12 +320,13 @@ public class MainFrame extends JFrame {
 				layeredPane.add(btnPlay);
 
 		slider = new JSlider();
-		slider.setBackground(SystemColor.controlHighlight);
+		slider.setBackground(SystemColor.controlLtHighlight);
 		slider.setValue(0);
 		slider.setEnabled(false);
 		layeredPane.add(slider);
 
 		JButton btnLoadFile = new JButton("Load File");
+		btnLoadFile.setBackground(SystemColor.controlLtHighlight);
 		btnLoadFile.setFont(new Font("Noto Sans", Font.BOLD, 18));
 		btnLoadFile.addMouseListener(new MouseAdapter() {
 			@Override
