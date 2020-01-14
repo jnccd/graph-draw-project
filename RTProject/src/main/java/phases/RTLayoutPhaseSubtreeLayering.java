@@ -18,7 +18,8 @@ import helper.Graph;
 import helper.Help;
 
 public class RTLayoutPhaseSubtreeLayering implements Phase {
-	double minSep = Options.SPACING_NODE_NODE;
+	int gridSize = -1;
+	int minSep = 1;
 	GraphStatesManager states;
 	ElkNode root;
 	ElkNode layoutGraph;
@@ -32,6 +33,9 @@ public class RTLayoutPhaseSubtreeLayering implements Phase {
 		EList<ElkNode> nodes = layoutGraph.getChildren();
 		double nodeNodeSpacing = Options.SPACING_NODE_NODE;
 		ElkPadding padding = Options.PADDING;
+		
+		gridSize = (int)nodeNodeSpacing + (int)Math.max(nodes.stream().map(x -> x.getWidth()).max(Double::compare).get(), 
+				nodes.stream().map(x -> x.getHeight()).max(Double::compare).get());
 
 		root = nodes.stream().filter(x -> x.getIncomingEdges().size() == 0).findFirst().get();
 		this.layoutGraph = layoutGraph;
@@ -47,9 +51,9 @@ public class RTLayoutPhaseSubtreeLayering implements Phase {
 		phase1(root);
 		states.addState(new GraphState("Phase 1: Done!", Graph.fromElk(layoutGraph)));
 
-		Help.getProp(root).xOffset = phase2(root) + padding.left;
+		root.setX(-phase2(root) * gridSize);
 		states.addState(new GraphState("Phase 2: Done!", Graph.fromElk(layoutGraph)));
-
+		
 		phase3(root, root.getX(), 0, nodeNodeSpacing, padding);
 		states.addState(new GraphState("Phase 3: Done!", Graph.fromElk(layoutGraph)));
 	}
@@ -69,13 +73,11 @@ public class RTLayoutPhaseSubtreeLayering implements Phase {
 		for (ElkNode c : childs)
 			phase1(c);
 
-		double dv = minSep * 2;
+		int dv = minSep * 2;
 		if (leftChild != null)
-			dv += leftChild.getWidth();
-		if (leftChild != null)
-			Help.getProp(leftChild).xOffset = -minSep;
+			Help.getProp(leftChild).xOffset = -1;
 		if (rightChild != null)
-			Help.getProp(rightChild).xOffset = minSep;
+			Help.getProp(rightChild).xOffset = 1;
 		
 		List<ElkNode> leftContour = new ArrayList<ElkNode>(), rightContour = new ArrayList<ElkNode>();
 		if (leftChild != null && rightChild != null) {
@@ -90,20 +92,20 @@ public class RTLayoutPhaseSubtreeLayering implements Phase {
 				List<ElkNode> rightSubtreeLayer = rightSubtree.stream().
 						filter(x -> Help.rootDistance(x, rightChild) == f).collect(Collectors.toList());
 				
-				Double leftSubtreeLayerRightmostNumber = leftSubtreeLayer.stream().map(x -> Help.getProp(x).xOffset).max(Double::compare).get();
+				Integer leftSubtreeLayerRightmostNumber = leftSubtreeLayer.stream().map(x -> Help.getProp(x).xOffset).max(Double::compare).get();
 				ElkNode leftSubtreeLayerRightmost = leftSubtreeLayer.stream().filter(x -> Help.getProp(x).xOffset == leftSubtreeLayerRightmostNumber).findFirst().get();
 				
-				Double rightSubtreeLayerLeftmostNumber = rightSubtreeLayer.stream().map(x -> Help.getProp(x).xOffset).min(Double::compare).get();
+				Integer rightSubtreeLayerLeftmostNumber = rightSubtreeLayer.stream().map(x -> Help.getProp(x).xOffset).min(Double::compare).get();
 				ElkNode rightSubtreeLayerLeftmost = rightSubtreeLayer.stream().filter(x -> Help.getProp(x).xOffset == rightSubtreeLayerLeftmostNumber).findFirst().get();
 				
-				Double leftSubtreeLayerRightmostTotalX = Help.xOffsetRT(leftSubtreeLayerRightmost, n) + leftSubtreeLayerRightmost.getWidth();
-				Double rightSubtreeLayerLeftmostTotalX = Help.xOffsetRT(rightSubtreeLayerLeftmost, n);
+				Integer leftSubtreeLayerRightmostTotalX = Help.xOffsetRT(leftSubtreeLayerRightmost, n);
+				Integer rightSubtreeLayerLeftmostTotalX = Help.xOffsetRT(rightSubtreeLayerLeftmost, n);
 				
 				if (n.getIdentifier().contentEquals("n1"))
 					getClass();
 				
 				if (leftSubtreeLayerRightmostTotalX + minSep > rightSubtreeLayerLeftmostTotalX - minSep)
-					dv = leftSubtreeLayerRightmostTotalX - rightSubtreeLayerLeftmostTotalX + minSep * 2;
+					dv = leftSubtreeLayerRightmostTotalX - rightSubtreeLayerLeftmostTotalX + 2 + minSep * 2;
 				
 				if (-dv / 2 < Help.getProp(leftChild).xOffset)
 					Help.getProp(leftChild).xOffset = -dv / 2;
@@ -122,13 +124,13 @@ public class RTLayoutPhaseSubtreeLayering implements Phase {
 					Graph.fromElk(layoutGraph), n));
 	}
 
-	double phase2(ElkNode r) {
-		double re = 0.0;
+	int phase2(ElkNode r) {
+		int re = 0;
 		while (Help.getChilds(r).size() > 0) {
 			states.addState(new GraphState("Phase 2, get total X position of the root: " + re,
 					Graph.fromElk(layoutGraph), r));
 			
-			re += Help.getProp(r).xOffset + r.getWidth() / 2;
+			re += Help.getProp(r).xOffset;
 			r = Help.getChilds(r).get(0);
 		}
 		states.addState(new GraphState("Phase 2, total X position of the root: " + re,
@@ -138,19 +140,16 @@ public class RTLayoutPhaseSubtreeLayering implements Phase {
 
 	void phase3(ElkNode r, double rootOffset, int depth, double nodeNodeSpacing, ElkPadding padding) {
 		List<ElkNode> childs = Help.getChilds(r);
-		ElkNode leftChild = null, rightChild = null;
-		if (childs.size() > 0)
-			leftChild = childs.get(0);
-		if (childs.size() > 1)
-			rightChild = childs.get(1);
-
-		r.setX(Help.getProp(r).xOffset + rootOffset);
-		r.setY(depth * (r.getHeight() + nodeNodeSpacing) + padding.top);
+		
+		int offset = Help.getProp(r).xOffset;
+		r.setX(offset * gridSize + rootOffset);
+		r.setY(Help.rootDistance(r, root) * (r.getHeight() + nodeNodeSpacing) + padding.top);
 
 		states.addState(
 				new GraphState("Phase 3, Preorder: Apply offset to " + r.getIdentifier(), Graph.fromElk(layoutGraph), r));
 
 		for (ElkNode c : childs)
-			phase3(c, r.getX(), depth + 1, nodeNodeSpacing, padding);
+			if (c != null)
+				phase3(c, r.getX(), depth + 1, nodeNodeSpacing, padding);
 	}
 }

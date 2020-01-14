@@ -75,10 +75,16 @@ public class GraphState {
 			n.x = ((n.x - minX) + target.getWidth() / 2 - (maxX - minX) / 2);
 			n.y = ((n.y - minY) + target.getHeight() / 2 - (maxY - minY) / 2);
 		}
-
-		frame.setMinimumSize(new Dimension(
-				(int) (maxX - minX) + (int)Options.PADDING.left + (int)Options.PADDING.right + (frame.getWidth() - target.getWidth()), 
-				(int) (maxY - minY) + (int)Options.PADDING.top + (int)Options.PADDING.bottom + (frame.getHeight() - target.getHeight())));
+		
+		int minSizeX = (int) (maxX - minX) + (int)Options.PADDING.left + 
+				(int)Options.PADDING.right + (frame.getWidth() - target.getWidth());
+		int minSizeY = (int) (maxY - minY) + (int)Options.PADDING.top + 
+				(int)Options.PADDING.bottom + (frame.getHeight() - target.getHeight());
+		if (minSizeX > 1920)
+			minSizeX = 1920;
+		if (minSizeY > 900)
+			minSizeY = 900;
+		frame.setMinimumSize(new Dimension(minSizeX, minSizeY));
 
 		// draw
 		for (Edge e : graph.edges) {

@@ -39,7 +39,7 @@ public class Help {
 		return rootDistance(p, root) + 1;
 	}
 	
-	public static double xOffsetRT(ElkNode n, ElkNode root) {
+	public static int xOffsetRT(ElkNode n, ElkNode root) {
 		if (n == root)
 			return 0;
 		ElkNode p = Help.getParents(n).get(0);

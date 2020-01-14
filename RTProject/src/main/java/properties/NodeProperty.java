@@ -13,7 +13,6 @@ public class NodeProperty {
     public boolean visited = false;
     
     // RT
-    public double mod = 0;
-    public double xOffset = 0;
+    public int xOffset = 0;
     public ElkNode rightThread, leftThread;
 }
