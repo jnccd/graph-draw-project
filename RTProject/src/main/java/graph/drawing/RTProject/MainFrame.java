@@ -289,26 +289,26 @@ public class MainFrame extends JFrame {
 		layeredPane.add(btnLeft);
 		btnRight.setHorizontalAlignment(SwingConstants.RIGHT);
 		layeredPane.add(btnRight);
-
-		btnPlay = new JButton("►");
-		btnPlay.setFont(new Font("SansSerif", Font.BOLD, 18));
-		btnPlay.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				counter = 0;
-				playing = !playing;
-				
-				if (playing)
-					btnPlay.setText("❚❚");
-				else
-					btnPlay.setText("►");
-			}
-		});
-		layeredPane.add(btnPlay);
 		
 		Component sliderPadding1 = Box.createHorizontalStrut(20);
 		sliderPadding1.setBackground(SystemColor.controlHighlight);
 		layeredPane.add(sliderPadding1);
+		
+				btnPlay = new JButton("►");
+				btnPlay.setFont(new Font("SansSerif", Font.BOLD, 18));
+				btnPlay.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						counter = 0;
+						playing = !playing;
+						
+						if (playing)
+							btnPlay.setText("❚❚");
+						else
+							btnPlay.setText("►");
+					}
+				});
+				layeredPane.add(btnPlay);
 
 		slider = new JSlider();
 		slider.setBackground(SystemColor.controlHighlight);
