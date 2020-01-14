@@ -26,4 +26,17 @@ public class Node {
 		this.outgoing = outgoing;
 		this.parent = parent;
 	}
+	
+	public double getX() {
+		return x;
+	}
+	public double getY() {
+		return y;
+	}
+	public double getWidth() {
+		return w;
+	}
+	public double getHeight() {
+		return h;
+	}
 }

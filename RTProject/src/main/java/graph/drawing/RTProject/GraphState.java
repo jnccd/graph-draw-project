@@ -20,7 +20,7 @@ public class GraphState {
 	private ElkNode markedNode;
 	private List<ElkNode> contourNodes;
 	
-	private ElkNode leftArrowNode, rightArrowNode;
+	private Node leftArrowNode, rightArrowNode;
 	private int leftArrowNumber, rightArrowNumber;
 
 	public GraphState(String title, Graph g) {
@@ -51,10 +51,13 @@ public class GraphState {
 		this.graph = graph;
 		this.markedNode = markedNode;
 		this.contourNodes = contourNodes;
-		this.leftArrowNode = leftArrowNode;
-		this.rightArrowNode = rightArrowNode;
 		this.leftArrowNumber = leftArrowNumber;
 		this.rightArrowNumber = rightArrowNumber;
+		
+		this.leftArrowNode = graph.nodes.stream().
+				filter(x -> x.name == leftArrowNode.getIdentifier()).findFirst().get();
+		this.rightArrowNode = graph.nodes.stream().
+				filter(x -> x.name == rightArrowNode.getIdentifier()).findFirst().get();
 	}
 
 	public String getTitle() {
@@ -65,33 +68,14 @@ public class GraphState {
 		if (graph.nodes.size() == 0)
 			return;
 
-		// fix draw environment
-		Double minX = graph.nodes.stream().map(x -> x.x).min(Double::compare).get();
-		Double minY = graph.nodes.stream().map(x -> x.y).min(Double::compare).get();
-		Double maxX = graph.nodes.stream().map(x -> x.x + x.w + 1).max(Double::compare).get();
-		Double maxY = graph.nodes.stream().map(x -> x.y + x.h + 1).max(Double::compare).get();
-
-		for (Node n : graph.nodes) {
-			n.x = ((n.x - minX) + target.getWidth() / 2 - (maxX - minX) / 2);
-			n.y = ((n.y - minY) + target.getHeight() / 2 - (maxY - minY) / 2);
-		}
+		fixDrawEnvironment(target, frame);
 		
-		int minSizeX = (int) (maxX - minX) + (int)Options.PADDING.left + 
-				(int)Options.PADDING.right + (frame.getWidth() - target.getWidth());
-		int minSizeY = (int) (maxY - minY) + (int)Options.PADDING.top + 
-				(int)Options.PADDING.bottom + (frame.getHeight() - target.getHeight());
-		if (minSizeX > 1920)
-			minSizeX = 1920;
-		if (minSizeY > 900)
-			minSizeY = 900;
-		frame.setMinimumSize(new Dimension(minSizeX, minSizeY));
-
 		// draw
 		for (Edge e : graph.edges) {
 			Node src = e.sources.get(0);
 			Node tar = e.targets.get(0);
-			g.drawLine((int) src.x + (int) src.w / 2, (int) src.y + (int) src.h / 2, (int) tar.x + (int) tar.w / 2,
-					(int) tar.y + (int) tar.h / 2);
+			g.drawLine((int) src.x + (int) src.w / 2, (int) src.y + (int) src.h / 2, 
+					(int) tar.x + (int) tar.w / 2, (int) tar.y + (int) tar.h / 2);
 		}
 
 		for (Node n : graph.nodes) {
@@ -120,18 +104,40 @@ public class GraphState {
 					(int) (n.y + g.getFontMetrics().getHeight() + 20));
 		}
 		
+		g.setColor(Color.BLACK);
 		if (leftArrowNode != null && rightArrowNode != null) {
 			g.drawLine(
-					(int)(leftArrowNode.getX() + leftArrowNode.getWidth() + Options.SPACING_NODE_NODE / 2), 
+					(int)(leftArrowNode.getX() + leftArrowNode.getWidth() + Options.SPACING_NODE_NODE / 4), 
 					(int)(leftArrowNode.getY() + leftArrowNode.getHeight() / 2), 
-					(int)(rightArrowNode.getX() - Options.SPACING_NODE_NODE), 
+					(int)(rightArrowNode.getX() - Options.SPACING_NODE_NODE / 4), 
 					(int)(rightArrowNode.getY() + rightArrowNode.getHeight() / 2));
 			g.drawString(Integer.toString(leftArrowNumber), 
 					(int)(leftArrowNode.getX() + leftArrowNode.getWidth() + Options.SPACING_NODE_NODE / 2), 
-					(int)(leftArrowNode.getY() + leftArrowNode.getHeight() / 2 - 15));
+					(int)(leftArrowNode.getY() + leftArrowNode.getHeight() / 2 - 8));
 			g.drawString(Integer.toString(rightArrowNumber), 
 					(int)(rightArrowNode.getX() - Options.SPACING_NODE_NODE), 
-					(int)(leftArrowNode.getY() + leftArrowNode.getHeight() / 2 - 15));
+					(int)(leftArrowNode.getY() + leftArrowNode.getHeight() / 2 - 8));
 		}
+	}
+	private void fixDrawEnvironment(Component target, MainFrame frame) {
+		Double minX = graph.nodes.stream().map(x -> x.x).min(Double::compare).get();
+		Double minY = graph.nodes.stream().map(x -> x.y).min(Double::compare).get();
+		Double maxX = graph.nodes.stream().map(x -> x.x + x.w + 1).max(Double::compare).get();
+		Double maxY = graph.nodes.stream().map(x -> x.y + x.h + 1).max(Double::compare).get();
+
+		for (Node n : graph.nodes) {
+			n.x = ((n.x - minX) + target.getWidth() / 2 - (maxX - minX) / 2);
+			n.y = ((n.y - minY) + target.getHeight() / 2 - (maxY - minY) / 2);
+		}
+		
+		int minSizeX = (int) (maxX - minX) + (int)Options.PADDING.left + 
+				(int)Options.PADDING.right + (frame.getWidth() - target.getWidth());
+		int minSizeY = (int) (maxY - minY) + (int)Options.PADDING.top + 
+				(int)Options.PADDING.bottom + (frame.getHeight() - target.getHeight());
+		if (minSizeX > 1920)
+			minSizeX = 1920;
+		if (minSizeY > 900)
+			minSizeY = 900;
+		frame.setMinimumSize(new Dimension(minSizeX, minSizeY));
 	}
 }
