@@ -96,26 +96,22 @@ public class GraphState {
 		}
 
 		for (Node n : graph.nodes) {
-			boolean isContour = contourNodes != null && contourNodes.stream().filter(x -> x.getIdentifier().contentEquals(n.name)).findAny()
+			boolean isContour = contourNodes != null && contourNodes.stream().
+					filter(x -> x.getIdentifier().contentEquals(n.name)).findAny()
 					.isPresent();
 
 			g.setColor(Color.BLACK);
 			g.drawRect((int) n.x, (int) n.y, (int) n.w, (int) n.h);
-			if (markedNode != null && n.name.contentEquals(markedNode.getIdentifier()))
-				g.setColor(Color.ORANGE);
-			else if (contourNodes != null && isContour)
-				g.setColor(Color.DARK_GRAY);
-			else
-				g.setColor(Color.CYAN);
+			
+			if (markedNode != null && n.name.contentEquals(markedNode.getIdentifier())) g.setColor(Color.ORANGE);
+			else if (contourNodes != null && isContour) g.setColor(Color.DARK_GRAY);
+			else g.setColor(Color.CYAN);
 			g.fillRect((int) n.x, (int) n.y, (int) n.w, (int) n.h);
 
-			if (isContour)
-				g.setColor(Color.WHITE);
-			else
-				g.setColor(Color.BLACK);
+			if (isContour) g.setColor(Color.WHITE);
+			else g.setColor(Color.BLACK);
 			g.drawString(n.name, (int) (n.x + (n.w - g.getFontMetrics().stringWidth(n.name)) / 2),
 					(int) (n.y + g.getFontMetrics().getHeight()));
-
 			g.drawString(n.note, (int) (n.x + (n.w - g.getFontMetrics().stringWidth(n.note)) / 2),
 					(int) (n.y + g.getFontMetrics().getHeight() + 20));
 		}
