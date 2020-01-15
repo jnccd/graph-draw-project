@@ -68,7 +68,8 @@ public class MainFrame extends JFrame {
 
 		@Override
 		public void paint(Graphics g) {
-			g.clearRect(0, 0, drawPanel.getWidth(), drawPanel.getHeight());
+			g.setColor(drawPanel.getBackground());
+			g.fillRect(0, 0, drawPanel.getWidth(), drawPanel.getHeight());
 			if (states.size() != 0)
 				states.getCurrentState().draw(g, drawPanel, frame);
 		}
