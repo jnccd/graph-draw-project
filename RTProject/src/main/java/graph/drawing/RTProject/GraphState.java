@@ -71,6 +71,7 @@ public class GraphState {
 		fixDrawEnvironment(target, frame);
 		
 		// draw
+		g.setColor(Color.BLACK);
 		for (Edge e : graph.edges) {
 			Node src = e.sources.get(0);
 			Node tar = e.targets.get(0);
