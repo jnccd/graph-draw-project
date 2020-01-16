@@ -168,7 +168,7 @@ public class MainFrame extends JFrame {
 			     index >= 0;
 			     index = editorPane.getText().indexOf("\n" + markedNode + " ", index + 1)) {
 				DefaultHighlighter.DefaultHighlightPainter highlightPainter = 
-						new DefaultHighlighter.DefaultHighlightPainter(Color.YELLOW);
+						new DefaultHighlighter.DefaultHighlightPainter(Color.ORANGE);
 				try {
 					editorPane.getHighlighter().addHighlight(index, index + markedNode.length() + 1, 
 							highlightPainter);
@@ -181,7 +181,7 @@ public class MainFrame extends JFrame {
 			     index >= 0;
 			     index = editorPane.getText().indexOf(" " + markedNode + "\n", index + 1)) {
 				DefaultHighlighter.DefaultHighlightPainter highlightPainter = 
-						new DefaultHighlighter.DefaultHighlightPainter(Color.YELLOW);
+						new DefaultHighlighter.DefaultHighlightPainter(Color.ORANGE);
 				try {
 					editorPane.getHighlighter().addHighlight(index, index + markedNode.length() + 1, 
 							highlightPainter);
