@@ -20,6 +20,7 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 
 import javax.swing.JLabel;
 import java.awt.Font;
@@ -41,6 +42,7 @@ import java.awt.BorderLayout;
 import javax.swing.border.MatteBorder;
 import javax.swing.border.SoftBevelBorder;
 
+import helper.Node;
 import mdlaf.MaterialLookAndFeel;
 
 import javax.swing.JTextArea;
@@ -81,6 +83,39 @@ public class MainFrame extends JFrame {
 	private String currentFilePath;
 	private String lastPathPath = ".//lastPath.txt";
 	private String tmpPath = ".//tmp.graph";
+	private JPanel legendPanel = new JPanel() {
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public void paint(Graphics g) {
+			g.setColor(drawPanel.getBackground());
+			g.fillRect(0, 0, drawPanel.getWidth(), drawPanel.getHeight());
+			
+			g.setColor(Color.BLACK);
+			g.setFont(new Font(frame.getStateLabel().getFont().getName(), Font.PLAIN, (int)(20)));
+			g.drawString("Legend:", 10, 5 + g.getFontMetrics().getAscent());
+			
+			int curY = 10 + g.getFontMetrics().getAscent();
+			Node normal = new Node(10, curY + 10, 40, 40, "Example", "0.0", new ArrayList<helper.Edge>(), new ArrayList<helper.Edge>(), null);
+			curY += 5 + 50;
+			Node marked = new Node(10, curY + 10, 40, 40, "Example", "0.0", new ArrayList<helper.Edge>(), new ArrayList<helper.Edge>(), null);
+			curY += 5 + 50;
+			Node contour = new Node(10, curY + 10, 40, 40, "Example", "0.0", new ArrayList<helper.Edge>(), new ArrayList<helper.Edge>(), null);
+			
+			GraphState.drawNode(g, legendPanel, frame, normal, (int)normal.x, (int)normal.y, false, false);
+			GraphState.drawNode(g, legendPanel, frame, marked, (int)marked.x, (int)marked.y, false, true);
+			GraphState.drawNode(g, legendPanel, frame, contour, (int)contour.x, (int)contour.y, true, false);
+			
+			g.setColor(Color.BLACK);
+			g.setFont(new Font(frame.getStateLabel().getFont().getName(), Font.PLAIN, (int)(12)));
+			g.drawString("Normal Graph Node", (int)normal.x + (int)normal.w + 10, 
+					(int)normal.y + (int)normal.h / 2 + g.getFontMetrics().getAscent() / 2);
+			g.drawString("Marked Graph Node", (int)marked.x + (int)marked.w + 10, 
+					(int)marked.y + (int)marked.h / 2 + g.getFontMetrics().getAscent() / 2);
+			g.drawString("Contour Graph Node", (int)contour.x + (int)contour.w + 10, 
+					(int)contour.y + (int)contour.h / 2 + g.getFontMetrics().getAscent() / 2);
+		}
+	};
 	
 	/**
 	 * Launch the application.
@@ -258,7 +293,6 @@ public class MainFrame extends JFrame {
 		Component verticalStrut = Box.createVerticalStrut(20);
 		optionsTab.add(verticalStrut);
 		
-		JPanel legendPanel = new JPanel();
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, sidePanel, -2, SpringLayout.NORTH, legendPanel);
 		sl_contentPane.putConstraint(SpringLayout.WEST, legendPanel, 2, SpringLayout.WEST, sidePanel);
 		sl_contentPane.putConstraint(SpringLayout.EAST, legendPanel, -2, SpringLayout.EAST, sidePanel);
@@ -363,5 +397,8 @@ public class MainFrame extends JFrame {
 	}
 	public JLabel getStateLabel() {
 		return stateLabel;
+	}
+	public JPanel getLegendPanel() {
+		return legendPanel;
 	}
 }

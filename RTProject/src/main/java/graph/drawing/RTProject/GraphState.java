@@ -124,42 +124,9 @@ public class GraphState {
 					filter(x -> x.getIdentifier().contentEquals(n.name)).findAny()
 					.isPresent();
 
-			g.setColor(Color.BLACK);
-			g.drawRect((int) n.x * gridSize + (int)pad.left, (int) n.y * gridSize + (int)pad.top, (int) n.w, (int) n.h);
-			
-			if (markedNode != null && n.name.contentEquals(markedNode.getIdentifier())) g.setColor(Color.ORANGE);
-			else if (contourNodes != null && isContour) g.setColor(Color.DARK_GRAY);
-			else g.setColor(Color.CYAN);
-			g.fillRect((int) n.x * gridSize + (int)pad.left, (int) n.y * gridSize + (int)pad.top, (int) n.w, (int) n.h);
-
-			if (isContour) g.setColor(Color.WHITE);
-			else g.setColor(Color.BLACK);
-			
-			// Draw text
-			if (n.h > 30) {
-				g.setFont(new Font(frame.getStateLabel().getFont().getName(), Font.PLAIN, (int)(n.h * 0.4)));
-				
-				String name = new String(n.name);
-				String note = new String(n.note);
-				while (g.getFontMetrics().stringWidth(name) > n.w)
-					name = name.substring(0, name.length() - 2);
-				while (g.getFontMetrics().stringWidth(note) > n.w)
-					note = note.substring(0, note.length() - 2);
-				
-				g.drawString(name, (int) (n.x * gridSize + (int)pad.left + (n.w - g.getFontMetrics().stringWidth(name)) / 2),
-						(int) n.y * gridSize + (int)pad.top + g.getFontMetrics().getAscent() - (int)(n.h * 0.1));
-				g.drawString(note, (int) (n.x * gridSize + (int)pad.left + (n.w - g.getFontMetrics().stringWidth(note)) / 2),
-						(int) n.y * gridSize + (int)pad.top + g.getFontMetrics().getHeight() * 3 / 2 + (int)(n.h * 0.1));
-			} else {
-				g.setFont(new Font(frame.getStateLabel().getFont().getName(), Font.PLAIN, (int)(n.h * 0.9)));
-				
-				String name = new String(n.name);
-				while (g.getFontMetrics().stringWidth(name) > n.w)
-					name = name.substring(0, name.length() - 2);
-				
-				g.drawString(name, (int) (n.x * gridSize + (int)pad.left + (n.w - g.getFontMetrics().stringWidth(name)) / 2),
-						(int) (n.y * gridSize + pad.top + g.getFontMetrics().getAscent() * 1.1 - 5));
-			}
+			drawNode(g, target, frame, n, 
+					(int)n.x * gridSize + (int)pad.left, (int)n.y * gridSize + (int)pad.top, 
+					isContour, markedNode != null && n.name.contentEquals(markedNode.getIdentifier()));
 		}
 		
 		// Draw the contour difference arrows
@@ -179,6 +146,45 @@ public class GraphState {
 						(int)(rightArrowNode.getX() * gridSize + (int)pad.left - Options.SPACING_NODE_NODE), 
 						(int)(leftArrowNode.getY() * gridSize + (int)pad.top + leftArrowNode.getHeight() / 2 - 5));
 			}
+		}
+	}
+	
+	public static void drawNode(Graphics g, Component target, MainFrame frame, Node n, int x, int y, boolean isContour, boolean isMarked) {
+		g.setColor(Color.BLACK);
+		g.drawRect(x, y, (int)n.w, (int)n.h);
+		
+		if (isMarked) g.setColor(Color.ORANGE);
+		else if (isContour) g.setColor(Color.DARK_GRAY);
+		else g.setColor(Color.CYAN);
+		g.fillRect(x, y, (int)n.w, (int)n.h);
+
+		if (isContour) g.setColor(Color.WHITE);
+		else g.setColor(Color.BLACK);
+		
+		// Draw text
+		if (n.h > 30) {
+			g.setFont(new Font(frame.getStateLabel().getFont().getName(), Font.PLAIN, (int)(n.h * 0.4)));
+			
+			String name = new String(n.name);
+			String note = new String(n.note);
+			while (g.getFontMetrics().stringWidth(name) > n.w)
+				name = name.substring(0, name.length() - 2);
+			while (g.getFontMetrics().stringWidth(note) > n.w)
+				note = note.substring(0, note.length() - 2);
+			
+			g.drawString(name, (int) (x + (n.w - g.getFontMetrics().stringWidth(name)) / 2),
+					y + g.getFontMetrics().getAscent() - (int)(n.h * 0.1));
+			g.drawString(note, (int) (x + (n.w - g.getFontMetrics().stringWidth(note)) / 2),
+					y + g.getFontMetrics().getHeight() * 3 / 2 + (int)(n.h * 0.1));
+		} else {
+			g.setFont(new Font(frame.getStateLabel().getFont().getName(), Font.PLAIN, (int)(n.h * 0.9)));
+			
+			String name = new String(n.name);
+			while (g.getFontMetrics().stringWidth(name) > n.w)
+				name = name.substring(0, name.length() - 2);
+			
+			g.drawString(name, (int) (x + (n.w - g.getFontMetrics().stringWidth(name)) / 2),
+					(int) (y + g.getFontMetrics().getAscent() * 1.1 - 5));
 		}
 	}
 }
