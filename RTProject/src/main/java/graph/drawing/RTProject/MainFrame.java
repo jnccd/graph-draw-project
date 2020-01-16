@@ -87,10 +87,10 @@ public class MainFrame extends JFrame {
 				states.getCurrentState().draw(g, drawPanel, frame);
 		}
 	};
-	
+
 	private long counter = 0;
 	private boolean playing = false;
-	
+
 	private String currentFilePath;
 	private String lastPathPath = ".//lastPath.txt";
 	private String tmpPath = ".//tmp.graph";
@@ -101,40 +101,43 @@ public class MainFrame extends JFrame {
 		public void paint(Graphics g) {
 			g.setColor(drawPanel.getBackground());
 			g.fillRect(0, 0, drawPanel.getWidth(), drawPanel.getHeight());
-			
+
 			g.setColor(Color.BLACK);
-			g.setFont(new Font(frame.getStateLabel().getFont().getName(), Font.PLAIN, (int)(20)));
+			g.setFont(new Font(frame.getStateLabel().getFont().getName(), Font.PLAIN, (int) (20)));
 			g.drawString("Legend:", 10, 5 + g.getFontMetrics().getAscent());
-			
+
 			int curY = 10 + g.getFontMetrics().getAscent();
-			Node normal = new Node(10, curY + 10, 40, 40, "Example", "0.0", new ArrayList<helper.Edge>(), new ArrayList<helper.Edge>(), null);
+			Node normal = new Node(10, curY + 10, 40, 40, "Example", "0.0", new ArrayList<helper.Edge>(),
+					new ArrayList<helper.Edge>(), null);
 			curY += 5 + 50;
-			Node marked = new Node(10, curY + 10, 40, 40, "Example", "0.0", new ArrayList<helper.Edge>(), new ArrayList<helper.Edge>(), null);
+			Node marked = new Node(10, curY + 10, 40, 40, "Example", "0.0", new ArrayList<helper.Edge>(),
+					new ArrayList<helper.Edge>(), null);
 			curY += 5 + 50;
-			Node contour = new Node(10, curY + 10, 40, 40, "Example", "0.0", new ArrayList<helper.Edge>(), new ArrayList<helper.Edge>(), null);
-			
-			GraphState.drawNode(g, legendPanel, frame, normal, (int)normal.x, (int)normal.y, false, false);
-			GraphState.drawNode(g, legendPanel, frame, marked, (int)marked.x, (int)marked.y, false, true);
-			GraphState.drawNode(g, legendPanel, frame, contour, (int)contour.x, (int)contour.y, true, false);
-			
+			Node contour = new Node(10, curY + 10, 40, 40, "Example", "0.0", new ArrayList<helper.Edge>(),
+					new ArrayList<helper.Edge>(), null);
+
+			GraphState.drawNode(g, legendPanel, frame, normal, (int) normal.x, (int) normal.y, false, false);
+			GraphState.drawNode(g, legendPanel, frame, marked, (int) marked.x, (int) marked.y, false, true);
+			GraphState.drawNode(g, legendPanel, frame, contour, (int) contour.x, (int) contour.y, true, false);
+
 			g.setColor(Color.BLACK);
-			g.setFont(new Font(frame.getStateLabel().getFont().getName(), Font.PLAIN, (int)(12)));
-			g.drawString("Normal Graph Node", (int)normal.x + (int)normal.w + 10, 
-					(int)normal.y + (int)normal.h / 2 + g.getFontMetrics().getAscent() / 2);
-			g.drawString("Marked Graph Node", (int)marked.x + (int)marked.w + 10, 
-					(int)marked.y + (int)marked.h / 2 + g.getFontMetrics().getAscent() / 2);
-			g.drawString("Contour Graph Node", (int)contour.x + (int)contour.w + 10, 
-					(int)contour.y + (int)contour.h / 2 + g.getFontMetrics().getAscent() / 2);
+			g.setFont(new Font(frame.getStateLabel().getFont().getName(), Font.PLAIN, (int) (12)));
+			g.drawString("Normal Graph Node", (int) normal.x + (int) normal.w + 10,
+					(int) normal.y + (int) normal.h / 2 + g.getFontMetrics().getAscent() / 2);
+			g.drawString("Marked Graph Node", (int) marked.x + (int) marked.w + 10,
+					(int) marked.y + (int) marked.h / 2 + g.getFontMetrics().getAscent() / 2);
+			g.drawString("Contour Graph Node", (int) contour.x + (int) contour.w + 10,
+					(int) contour.y + (int) contour.h / 2 + g.getFontMetrics().getAscent() / 2);
 		}
 	};
-	
+
 	public static void main(String[] args) {
 		try {
-			UIManager.setLookAndFeel (new MaterialLookAndFeel ());
+			UIManager.setLookAndFeel(new MaterialLookAndFeel());
 		} catch (UnsupportedLookAndFeelException e) {
 			System.out.println("My fancy design! Noooooo :c");
 		}
-		
+
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -152,52 +155,52 @@ public class MainFrame extends JFrame {
 		legendPanel.repaint();
 		if (states.getCurrentState() != null) {
 			stateLabel.setText(states.getCurrentState().getTitle());
-			
+
 			slider.setMaximum(states.size() - 1);
 			slider.setValue(states.getCurrentStateIndex());
-			
+
 			highlightMarkednodeInEditor();
 		}
 	}
+
 	void highlightMarkednodeInEditor() {
 		// remove previous highlight
 		Highlighter hilite = editorPane.getHighlighter();
-	    Highlighter.Highlight[] hilites = hilite.getHighlights();
-	    for (int i=0; i<hilites.length; i++)
-	    	hilite.removeHighlight(hilites[i]);
-		
+		Highlighter.Highlight[] hilites = hilite.getHighlights();
+		for (int i = 0; i < hilites.length; i++)
+			hilite.removeHighlight(hilites[i]);
+
 		String markedNode = states.getCurrentState().getMarkedNodeName();
 		if (markedNode.contentEquals(""))
 			return;
-		
+
 		String[] split = editorPane.getText().split("( )|(\n)");
 		for (int i = 0; i < split.length; i++) {
-			if (split[i].contentEquals(markedNode))
-			{
+			if (split[i].contentEquals(markedNode)) {
 				int index = 0;
 				for (int j = 0; j < i; j++)
 					index += split[j].length() + 1;
-				
-				DefaultHighlighter.DefaultHighlightPainter highlightPainter = 
-						new DefaultHighlighter.DefaultHighlightPainter(Color.ORANGE);
+
+				DefaultHighlighter.DefaultHighlightPainter highlightPainter = new DefaultHighlighter.DefaultHighlightPainter(
+						Color.ORANGE);
 				try {
-					editorPane.getHighlighter().addHighlight(index, index + markedNode.length(), 
-							highlightPainter);
+					editorPane.getHighlighter().addHighlight(index, index + markedNode.length(), highlightPainter);
 				} catch (BadLocationException e) {
 					e.printStackTrace();
 				}
 			}
 		}
 	}
-	
-	// This code was mostly generated using WindowBuilder, the only exceptions are the events
+
+	// This code was mostly generated using WindowBuilder, the only exceptions are
+	// the events
 	public MainFrame() {
 		try {
 			fc.setSelectedFile(new File(GraphLoader.readTextfile(lastPathPath)));
 		} catch (Exception e) {
-			
+
 		}
-		
+
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowOpened(WindowEvent e) {
@@ -209,12 +212,11 @@ public class MainFrame extends JFrame {
 						} catch (InterruptedException e1) {
 							e1.printStackTrace();
 						}
-						
-						if (playing && counter % Options.animationFrameInterval == 0)
-						{
+
+						if (playing && counter % Options.animationFrameInterval == 0) {
 							states.forwardStep();
 							refresh();
-							
+
 							if (states.isLastState()) {
 								playing = false;
 								if (playing)
@@ -235,8 +237,8 @@ public class MainFrame extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		SpringLayout sl_contentPane = new SpringLayout();
-		
-				sl_contentPane.putConstraint(SpringLayout.SOUTH, drawPanel, -30, SpringLayout.SOUTH, contentPane);
+
+		sl_contentPane.putConstraint(SpringLayout.SOUTH, drawPanel, -30, SpringLayout.SOUTH, contentPane);
 		contentPane.setLayout(sl_contentPane);
 
 		stateLabel = new JLabel("No Graph Loaded");
@@ -249,7 +251,7 @@ public class MainFrame extends JFrame {
 		sl_contentPane.putConstraint(SpringLayout.WEST, drawPanel, 0, SpringLayout.WEST, contentPane);
 		drawPanel.setBackground(SystemColor.controlLtHighlight);
 		contentPane.add(drawPanel);
-		
+
 		JPanel sidePanel = new JPanel();
 		sl_contentPane.putConstraint(SpringLayout.NORTH, drawPanel, 40, SpringLayout.NORTH, sidePanel);
 		sidePanel.setBackground(SystemColor.controlHighlight);
@@ -268,24 +270,25 @@ public class MainFrame extends JFrame {
 		sl_contentPane.putConstraint(SpringLayout.EAST, botPanel, -5, SpringLayout.WEST, sidePanel);
 		SpringLayout sl_sidePanel = new SpringLayout();
 		sidePanel.setLayout(sl_sidePanel);
-		
+
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		sl_sidePanel.putConstraint(SpringLayout.NORTH, tabbedPane, -23, SpringLayout.NORTH, sidePanel);
 		sl_sidePanel.putConstraint(SpringLayout.WEST, tabbedPane, 0, SpringLayout.WEST, sidePanel);
 		sl_sidePanel.putConstraint(SpringLayout.SOUTH, tabbedPane, 0, SpringLayout.SOUTH, sidePanel);
 		sl_sidePanel.putConstraint(SpringLayout.EAST, tabbedPane, 0, SpringLayout.EAST, sidePanel);
 		sidePanel.add(tabbedPane);
-		
+
 		JPanel editorTab = new JPanel();
 		tabbedPane.addTab("Editor", null, editorTab, null);
-		
+
 		editorPane = new JEditorPane();
 		editorPane.setBackground(SystemColor.text);
 		editorPane.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
-				
+
 			}
+
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == 83 && e.isControlDown()) {
@@ -299,10 +302,10 @@ public class MainFrame extends JFrame {
 							GraphLoader.saveTextfile(tmpPath, editorPane.getText());
 							path = tmpPath;
 						} catch (IOException e2) {
-							
+
 						}
 					}
-					
+
 					GraphLoader.load(path, frame, drawPanel);
 					refresh();
 				}
@@ -317,13 +320,13 @@ public class MainFrame extends JFrame {
 		sl_editorTab.putConstraint(SpringLayout.EAST, editorScrollPane, -5, SpringLayout.EAST, editorTab);
 		editorScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		editorTab.add(editorScrollPane);
-		
+
 		JPanel optionsTab = new JPanel();
 		tabbedPane.addTab("Options", null, optionsTab, null);
-		
+
 		JPanel optionsPanel = new JPanel();
 		optionsPanel.setLayout(new BoxLayout(optionsPanel, BoxLayout.Y_AXIS));
-		
+
 		JScrollPane optionsScrollPane = new JScrollPane(optionsPanel);
 		optionsScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		SpringLayout sl_optionsTab = new SpringLayout();
@@ -332,10 +335,10 @@ public class MainFrame extends JFrame {
 		sl_optionsTab.putConstraint(SpringLayout.SOUTH, optionsScrollPane, -5, SpringLayout.SOUTH, optionsTab);
 		sl_optionsTab.putConstraint(SpringLayout.EAST, optionsScrollPane, -15, SpringLayout.EAST, optionsTab);
 		optionsTab.setLayout(sl_optionsTab);
-		
+
 		JLabel lblPlayAnimationFrame = new JLabel("Play Animation Frame Interval");
 		optionsPanel.add(lblPlayAnimationFrame);
-		
+
 		JSlider animationIntervalSlider = new JSlider();
 		optionsPanel.add(animationIntervalSlider);
 		animationIntervalSlider.setPreferredSize(new Dimension(50, 50));
@@ -345,6 +348,7 @@ public class MainFrame extends JFrame {
 			public void mouseMoved(MouseEvent e) {
 				Options.animationFrameInterval = animationIntervalSlider.getValue();
 			}
+
 			@Override
 			public void mouseDragged(MouseEvent e) {
 				Options.animationFrameInterval = animationIntervalSlider.getValue();
@@ -352,17 +356,18 @@ public class MainFrame extends JFrame {
 		});
 		animationIntervalSlider.setValue(60);
 		animationIntervalSlider.setMinimum(5);
-		
+
 		JCheckBox chckbxHideContourStates = new JCheckBox("Hide Contour States");
 		chckbxHideContourStates.setHorizontalAlignment(SwingConstants.LEFT);
-		optionsPanel.add(chckbxHideContourStates); 
-		
+		optionsPanel.add(chckbxHideContourStates);
+
 		JCheckBox chckbxHideContourDifferenceStates = new JCheckBox("Hide Contour Differences");
 		chckbxHideContourStates.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				Options.hideContourStates = chckbxHideContourStates.isSelected();
-				if (Options.hideContourStates && !chckbxHideContourDifferenceStates.isSelected()) chckbxHideContourDifferenceStates.doClick();
+				if (Options.hideContourStates && !chckbxHideContourDifferenceStates.isSelected())
+					chckbxHideContourDifferenceStates.doClick();
 				GraphLoader.load(currentFilePath, frame, drawPanel);
 				refresh();
 			}
@@ -377,7 +382,7 @@ public class MainFrame extends JFrame {
 		});
 		chckbxHideContourDifferenceStates.setHorizontalAlignment(SwingConstants.LEFT);
 		optionsPanel.add(chckbxHideContourDifferenceStates);
-		
+
 		JCheckBox chckbxHideNodeOffsetValues = new JCheckBox("Hide Node Offset Values");
 		chckbxHideNodeOffsetValues.addMouseListener(new MouseAdapter() {
 			@Override
@@ -387,7 +392,7 @@ public class MainFrame extends JFrame {
 			}
 		});
 		optionsPanel.add(chckbxHideNodeOffsetValues);
-		
+
 		JCheckBox chckbxHideThreads = new JCheckBox("Hide Threads");
 		chckbxHideThreads.addMouseListener(new MouseAdapter() {
 			@Override
@@ -397,11 +402,8 @@ public class MainFrame extends JFrame {
 			}
 		});
 		optionsPanel.add(chckbxHideThreads);
-		
-		JCheckBox chckbxHideMyAss = new JCheckBox("hide my ass");
-		optionsPanel.add(chckbxHideMyAss);
 		optionsTab.add(optionsScrollPane);
-		
+
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, sidePanel, -2, SpringLayout.NORTH, legendPanel);
 		sl_contentPane.putConstraint(SpringLayout.WEST, legendPanel, 2, SpringLayout.WEST, sidePanel);
 		sl_contentPane.putConstraint(SpringLayout.EAST, legendPanel, -2, SpringLayout.EAST, sidePanel);
@@ -411,7 +413,7 @@ public class MainFrame extends JFrame {
 		sl_sidePanel.putConstraint(SpringLayout.EAST, legendPanel, 0, SpringLayout.EAST, sidePanel);
 		contentPane.add(legendPanel);
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, legendPanel, 0, SpringLayout.SOUTH, contentPane);
-		
+
 		contentPane.add(botPanel);
 		botPanel.setLayout(new BoxLayout(botPanel, BoxLayout.X_AXIS));
 
@@ -440,27 +442,27 @@ public class MainFrame extends JFrame {
 		botPanel.add(btnLeft);
 		btnRight.setHorizontalAlignment(SwingConstants.RIGHT);
 		botPanel.add(btnRight);
-		
+
 		Component sliderPadding1 = Box.createHorizontalStrut(20);
 		sliderPadding1.setBackground(SystemColor.controlHighlight);
 		botPanel.add(sliderPadding1);
-		
-				btnPlay = new JButton("►");
-				btnPlay.setBackground(SystemColor.controlLtHighlight);
-				btnPlay.setFont(new Font("SansSerif", Font.BOLD, 18));
-				btnPlay.addMouseListener(new MouseAdapter() {
-					@Override
-					public void mouseClicked(MouseEvent e) {
-						counter = 0;
-						playing = !playing;
-						
-						if (playing)
-							btnPlay.setText("❚❚");
-						else
-							btnPlay.setText("►");
-					}
-				});
-				botPanel.add(btnPlay);
+
+		btnPlay = new JButton("►");
+		btnPlay.setBackground(SystemColor.controlLtHighlight);
+		btnPlay.setFont(new Font("SansSerif", Font.BOLD, 18));
+		btnPlay.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				counter = 0;
+				playing = !playing;
+
+				if (playing)
+					btnPlay.setText("❚❚");
+				else
+					btnPlay.setText("►");
+			}
+		});
+		botPanel.add(btnPlay);
 
 		slider = new JSlider();
 		slider.addMouseMotionListener(new MouseMotionAdapter() {
@@ -488,7 +490,7 @@ public class MainFrame extends JFrame {
 					if (file.canRead()) {
 						currentFilePath = file.getAbsolutePath();
 						GraphLoader.load(currentFilePath, frame, drawPanel);
-						
+
 						File lastPath = new File(lastPathPath);
 						try {
 							if (lastPath.createNewFile())
@@ -496,26 +498,27 @@ public class MainFrame extends JFrame {
 						} catch (IOException e1) {
 							e1.printStackTrace();
 						}
-					}
-					else
+					} else
 						JOptionPane.showMessageDialog(frame, "I can't read that file :/");
 					refresh();
 				}
 			}
 		});
-		
+
 		Component sliderPadding2 = Box.createHorizontalStrut(20);
 		botPanel.add(sliderPadding2);
 		btnLoadFile.setHorizontalAlignment(SwingConstants.RIGHT);
 		botPanel.add(btnLoadFile);
 	}
-	
+
 	public JEditorPane getEditorPane() {
 		return editorPane;
 	}
+
 	public JLabel getStateLabel() {
 		return stateLabel;
 	}
+
 	public JPanel getLegendPanel() {
 		return legendPanel;
 	}

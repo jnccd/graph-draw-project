@@ -11,7 +11,7 @@ public class Node {
 	public List<Edge> incoming;
 	public List<Edge> outgoing;
 
-	public ElkNode parent;
+	public ElkNode parent, thread;
 
 	public Node(double x, double y, double w, double h, String name, String note, List<Edge> incoming,
 			List<Edge> outgoing, ElkNode parent) {
@@ -27,6 +27,21 @@ public class Node {
 		this.parent = parent;
 	}
 	
+	public Node(double x, double y, double w, double h, String name, String note, List<Edge> incoming,
+			List<Edge> outgoing, ElkNode parent, ElkNode thread) {
+		super();
+		this.x = x;
+		this.y = y;
+		this.w = w;
+		this.h = h;
+		this.name = name;
+		this.note = note;
+		this.incoming = incoming;
+		this.outgoing = outgoing;
+		this.parent = parent;
+		this.thread = thread;
+	}
+
 	public double getX() {
 		return x;
 	}

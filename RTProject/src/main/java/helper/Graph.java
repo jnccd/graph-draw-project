@@ -28,7 +28,7 @@ public class Graph {
         
         for (ElkNode n : graph.getChildren())
             g.nodes.add(new Node(n.getX(), n.getY(), n.getWidth(), n.getHeight(), n.getIdentifier(), 
-            		Double.toString(Help.getProp(n).xOffset), new ArrayList<Edge>(), new ArrayList<Edge>(), n));
+            		Double.toString(Help.getProp(n).xOffset), new ArrayList<Edge>(), new ArrayList<Edge>(), n, Help.getProp(n).thread));
         
         for (ElkEdge e : graph.getContainedEdges())
             g.edges.add(new Edge(
