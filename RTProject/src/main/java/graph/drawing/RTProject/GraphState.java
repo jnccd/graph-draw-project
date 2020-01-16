@@ -69,7 +69,10 @@ public class GraphState {
 	}
 	
 	public String getMarkedNodeName() {
-		return markedNode.getIdentifier();
+		if (markedNode != null)
+			return markedNode.getIdentifier();
+		else
+			return "";
 	}
 
 	public void draw(Graphics g, Component target, MainFrame frame) {
@@ -159,14 +162,14 @@ public class GraphState {
 		
 		if (isMarked) g.setColor(Color.ORANGE);
 		else if (isContour) g.setColor(Color.DARK_GRAY);
-		else g.setColor(Color.CYAN);
+		else g.setColor(new Color(79,195,247));
 		g.fillRect(x, y, (int)n.w, (int)n.h);
 
 		if (isContour) g.setColor(Color.WHITE);
 		else g.setColor(Color.BLACK);
 		
 		// Draw text
-		if (n.h > 30) {
+		if (n.h > 30 && !Options.hideNodeOffsetValues) {
 			g.setFont(new Font(frame.getStateLabel().getFont().getName(), Font.PLAIN, (int)(n.h * 0.4)));
 			
 			String name = new String(n.name);

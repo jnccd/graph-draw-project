@@ -53,11 +53,6 @@ public class GraphLoader {
 		// Add graph sizes
 		curGraph.setWidth(target.getWidth());
 		curGraph.setHeight(target.getHeight());
-		for (ElkNode n : curGraph.getChildren())
-			if (n.getWidth() == 0 || n.getHeight() == 0) {
-				n.setWidth(Options.NODE_SIZE);
-				n.setHeight(Options.NODE_SIZE);
-			}
 		
 		// Layouting
 		applyPhase(curGraph, new InorderLayoutPhase());
