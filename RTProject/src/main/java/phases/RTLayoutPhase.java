@@ -17,15 +17,14 @@ import graph.drawing.RTProject.Options;
 import helper.Graph;
 import helper.Help;
 
-public class RTLayoutPhaseSubtreeLayering implements Phase {
-	int gridSize = -1;
+public class RTLayoutPhase implements Phase {
 	int minSep = 1;
 	GraphStatesManager states;
 	ElkNode root;
 	ElkNode layoutGraph;
 	List<List<ElkNode>> layers;
 
-	public RTLayoutPhaseSubtreeLayering(GraphStatesManager states) {
+	public RTLayoutPhase(GraphStatesManager states) {
 		this.states = states;
 	}
 
@@ -34,9 +33,6 @@ public class RTLayoutPhaseSubtreeLayering implements Phase {
 		double nodeNodeSpacing = Options.SPACING_NODE_NODE;
 		ElkPadding padding = Options.PADDING;
 		
-		gridSize = (int)nodeNodeSpacing + (int)Math.max(nodes.stream().map(x -> x.getWidth()).max(Double::compare).get(), 
-				nodes.stream().map(x -> x.getHeight()).max(Double::compare).get());
-
 		root = nodes.stream().filter(x -> x.getIncomingEdges().size() == 0).findFirst().get();
 		this.layoutGraph = layoutGraph;
 
@@ -51,7 +47,7 @@ public class RTLayoutPhaseSubtreeLayering implements Phase {
 		phase1(root);
 		states.addState(new GraphState("Phase 1: Done!", Graph.fromElk(layoutGraph)));
 
-		root.setX(-phase2(root) * gridSize + padding.left);
+		root.setX(-phase2(root));
 		states.addState(new GraphState("Phase 2: Done!", Graph.fromElk(layoutGraph)));
 		
 		phase3(root, root.getX(), 0, nodeNodeSpacing, padding);
@@ -157,11 +153,10 @@ public class RTLayoutPhaseSubtreeLayering implements Phase {
 		List<ElkNode> childs = Help.getChilds(r);
 		
 		int offset = Help.getProp(r).xOffset;
-		r.setX(offset * gridSize + rootOffset);
+		r.setX(offset + rootOffset);
 		r.setY(Help.rootDistance(r, root) * (r.getHeight() + nodeNodeSpacing) + padding.top);
 
-		states.addState(
-				new GraphState("Phase 3, Preorder: Apply offset to " + r.getIdentifier(), 
+		states.addState(new GraphState("Phase 3, Preorder: Apply offset to " + r.getIdentifier(), 
 						Graph.fromElk(layoutGraph), r));
 
 		for (ElkNode c : childs)

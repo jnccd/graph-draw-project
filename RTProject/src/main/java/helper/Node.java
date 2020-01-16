@@ -7,7 +7,7 @@ import org.eclipse.elk.graph.ElkNode;
 public class Node {
 	public double x, y, w, h;
 	public String name, note;
-
+	
 	public List<Edge> incoming;
 	public List<Edge> outgoing;
 
