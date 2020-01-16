@@ -23,7 +23,7 @@ import helper.Graph;
 import phases.BinaryTreeCheckPhase;
 import phases.InorderLayoutPhase;
 import phases.Phase;
-import phases.RTLayoutPhaseSubtreeLayering;
+import phases.RTLayoutPhase;
 
 public class GraphLoader {
 	static ElkNode curGraph = null;
@@ -64,7 +64,7 @@ public class GraphLoader {
 
 		frame.states.addState(new GraphState("Initial State", Graph.fromElk(curGraph)));
 
-		applyPhase(curGraph, new RTLayoutPhaseSubtreeLayering(frame.states));
+		applyPhase(curGraph, new RTLayoutPhase(frame.states));
 	}
 
 	private static BasicProgressMonitor applyPhase(ElkNode graph, Phase p) {

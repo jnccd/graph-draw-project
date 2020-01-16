@@ -177,36 +177,35 @@ public class MainFrame extends JFrame {
 		drawPanel.setBackground(SystemColor.controlLtHighlight);
 		contentPane.add(drawPanel);
 		
-		JPanel optionsPanel = new JPanel();
-		sl_contentPane.putConstraint(SpringLayout.NORTH, drawPanel, 40, SpringLayout.NORTH, optionsPanel);
-		optionsPanel.setBackground(SystemColor.controlHighlight);
-		sl_contentPane.putConstraint(SpringLayout.NORTH, optionsPanel, 0, SpringLayout.NORTH, contentPane);
-		sl_contentPane.putConstraint(SpringLayout.WEST, optionsPanel, -250, SpringLayout.EAST, contentPane);
-		sl_contentPane.putConstraint(SpringLayout.EAST, stateLabel, 0, SpringLayout.WEST, optionsPanel);
-		sl_contentPane.putConstraint(SpringLayout.EAST, drawPanel, -5, SpringLayout.WEST, optionsPanel);
-		sl_contentPane.putConstraint(SpringLayout.SOUTH, optionsPanel, 0, SpringLayout.SOUTH, contentPane);
-		sl_contentPane.putConstraint(SpringLayout.EAST, optionsPanel, 0, SpringLayout.EAST, contentPane);
-		contentPane.add(optionsPanel);
+		JPanel sidePanel = new JPanel();
+		sl_contentPane.putConstraint(SpringLayout.NORTH, drawPanel, 40, SpringLayout.NORTH, sidePanel);
+		sidePanel.setBackground(SystemColor.controlHighlight);
+		sl_contentPane.putConstraint(SpringLayout.NORTH, sidePanel, 0, SpringLayout.NORTH, contentPane);
+		sl_contentPane.putConstraint(SpringLayout.WEST, sidePanel, -250, SpringLayout.EAST, contentPane);
+		sl_contentPane.putConstraint(SpringLayout.EAST, stateLabel, 0, SpringLayout.WEST, sidePanel);
+		sl_contentPane.putConstraint(SpringLayout.EAST, drawPanel, -5, SpringLayout.WEST, sidePanel);
+		sl_contentPane.putConstraint(SpringLayout.SOUTH, sidePanel, 0, SpringLayout.SOUTH, contentPane);
+		sl_contentPane.putConstraint(SpringLayout.EAST, sidePanel, 0, SpringLayout.EAST, contentPane);
+		contentPane.add(sidePanel);
 
-		JLayeredPane layeredPane = new JLayeredPane();
-		layeredPane.setBackground(SystemColor.scrollbar);
-		sl_contentPane.putConstraint(SpringLayout.NORTH, layeredPane, 5, SpringLayout.SOUTH, drawPanel);
-		sl_contentPane.putConstraint(SpringLayout.WEST, layeredPane, 0, SpringLayout.WEST, contentPane);
-		sl_contentPane.putConstraint(SpringLayout.SOUTH, layeredPane, 0, SpringLayout.SOUTH, contentPane);
-		sl_contentPane.putConstraint(SpringLayout.EAST, layeredPane, -5, SpringLayout.WEST, optionsPanel);
-		SpringLayout sl_optionsPanel = new SpringLayout();
-		optionsPanel.setLayout(sl_optionsPanel);
+		JLayeredPane botPanel = new JLayeredPane();
+		botPanel.setBackground(SystemColor.scrollbar);
+		sl_contentPane.putConstraint(SpringLayout.NORTH, botPanel, 5, SpringLayout.SOUTH, drawPanel);
+		sl_contentPane.putConstraint(SpringLayout.WEST, botPanel, 0, SpringLayout.WEST, contentPane);
+		sl_contentPane.putConstraint(SpringLayout.SOUTH, botPanel, 0, SpringLayout.SOUTH, contentPane);
+		sl_contentPane.putConstraint(SpringLayout.EAST, botPanel, -5, SpringLayout.WEST, sidePanel);
+		SpringLayout sl_sidePanel = new SpringLayout();
+		sidePanel.setLayout(sl_sidePanel);
 		
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-		sl_optionsPanel.putConstraint(SpringLayout.NORTH, tabbedPane, -23, SpringLayout.NORTH, optionsPanel);
-		sl_optionsPanel.putConstraint(SpringLayout.WEST, tabbedPane, 0, SpringLayout.WEST, optionsPanel);
-		sl_optionsPanel.putConstraint(SpringLayout.SOUTH, tabbedPane, 0, SpringLayout.SOUTH, optionsPanel);
-		sl_optionsPanel.putConstraint(SpringLayout.EAST, tabbedPane, 0, SpringLayout.EAST, optionsPanel);
-		optionsPanel.add(tabbedPane);
+		sl_sidePanel.putConstraint(SpringLayout.NORTH, tabbedPane, -23, SpringLayout.NORTH, sidePanel);
+		sl_sidePanel.putConstraint(SpringLayout.WEST, tabbedPane, 0, SpringLayout.WEST, sidePanel);
+		sl_sidePanel.putConstraint(SpringLayout.SOUTH, tabbedPane, 0, SpringLayout.SOUTH, sidePanel);
+		sl_sidePanel.putConstraint(SpringLayout.EAST, tabbedPane, 0, SpringLayout.EAST, sidePanel);
+		sidePanel.add(tabbedPane);
 		
 		JPanel editorTab = new JPanel();
 		tabbedPane.addTab("Editor", null, editorTab, null);
-		editorTab.setLayout(new BoxLayout(editorTab, BoxLayout.X_AXIS));
 		
 		editorPane = new JEditorPane();
 		editorPane.setBackground(SystemColor.text);
@@ -237,7 +236,13 @@ public class MainFrame extends JFrame {
 				}
 			}
 		});
+		SpringLayout sl_editorTab = new SpringLayout();
+		editorTab.setLayout(sl_editorTab);
 		JScrollPane scrollPane = new JScrollPane(editorPane);
+		sl_editorTab.putConstraint(SpringLayout.NORTH, scrollPane, 5, SpringLayout.NORTH, editorTab);
+		sl_editorTab.putConstraint(SpringLayout.WEST, scrollPane, 5, SpringLayout.WEST, editorTab);
+		sl_editorTab.putConstraint(SpringLayout.SOUTH, scrollPane, -5, SpringLayout.SOUTH, editorTab);
+		sl_editorTab.putConstraint(SpringLayout.EAST, scrollPane, -5, SpringLayout.EAST, editorTab);
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		editorTab.add(scrollPane);
 		
@@ -245,33 +250,17 @@ public class MainFrame extends JFrame {
 		tabbedPane.addTab("Options", null, optionsTab, null);
 		optionsTab.setLayout(new BoxLayout(optionsTab, BoxLayout.Y_AXIS));
 		
-		JLabel label = new JLabel("Node Size");
+		JLabel label = new JLabel("?");
 		label.setVerticalAlignment(SwingConstants.TOP);
 		label.setHorizontalAlignment(SwingConstants.LEFT);
 		label.setAlignmentX(0.5f);
 		optionsTab.add(label);
 		
-		JSlider sizeSlider = new JSlider();
-		sizeSlider.setBorder(null);
-		sizeSlider.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				Options.NODE_SIZE = sizeSlider.getValue();
-				GraphLoader.load(currentFilePath, frame, drawPanel);
-				refresh();
-			}
-		});
-		sizeSlider.setValue(40);
-		sizeSlider.setMinimum(30);
-		sizeSlider.setMaximum(125);
-		sizeSlider.setAlignmentY(0.0f);
-		optionsTab.add(sizeSlider);
-		
 		Component verticalStrut = Box.createVerticalStrut(20);
 		optionsTab.add(verticalStrut);
 		
-		contentPane.add(layeredPane);
-		layeredPane.setLayout(new BoxLayout(layeredPane, BoxLayout.X_AXIS));
+		contentPane.add(botPanel);
+		botPanel.setLayout(new BoxLayout(botPanel, BoxLayout.X_AXIS));
 
 		JButton btnRight = new JButton(">");
 		btnRight.setBackground(SystemColor.controlLtHighlight);
@@ -295,13 +284,13 @@ public class MainFrame extends JFrame {
 			}
 		});
 		btnLeft.setHorizontalAlignment(SwingConstants.LEFT);
-		layeredPane.add(btnLeft);
+		botPanel.add(btnLeft);
 		btnRight.setHorizontalAlignment(SwingConstants.RIGHT);
-		layeredPane.add(btnRight);
+		botPanel.add(btnRight);
 		
 		Component sliderPadding1 = Box.createHorizontalStrut(20);
 		sliderPadding1.setBackground(SystemColor.controlHighlight);
-		layeredPane.add(sliderPadding1);
+		botPanel.add(sliderPadding1);
 		
 				btnPlay = new JButton("►");
 				btnPlay.setBackground(SystemColor.controlLtHighlight);
@@ -318,13 +307,12 @@ public class MainFrame extends JFrame {
 							btnPlay.setText("►");
 					}
 				});
-				layeredPane.add(btnPlay);
+				botPanel.add(btnPlay);
 
 		slider = new JSlider();
 		slider.setBackground(SystemColor.controlLtHighlight);
 		slider.setValue(0);
-		slider.setEnabled(false);
-		layeredPane.add(slider);
+		botPanel.add(slider);
 
 		JButton btnLoadFile = new JButton("Load File");
 		btnLoadFile.setBackground(SystemColor.controlLtHighlight);
@@ -356,11 +344,14 @@ public class MainFrame extends JFrame {
 		});
 		
 		Component sliderPadding2 = Box.createHorizontalStrut(20);
-		layeredPane.add(sliderPadding2);
+		botPanel.add(sliderPadding2);
 		btnLoadFile.setHorizontalAlignment(SwingConstants.RIGHT);
-		layeredPane.add(btnLoadFile);
+		botPanel.add(btnLoadFile);
 	}
 	public JEditorPane getEditorPane() {
 		return editorPane;
+	}
+	public JLabel getStateLabel() {
+		return stateLabel;
 	}
 }

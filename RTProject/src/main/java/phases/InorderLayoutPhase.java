@@ -16,18 +16,16 @@ public class InorderLayoutPhase implements Phase {
 
     public void apply(ElkNode layoutGraph, IElkProgressMonitor monitor) throws Exception {
         EList<ElkNode> nodes = layoutGraph.getChildren();
-        double nodeNodeSpacing = Options.SPACING_NODE_NODE;
-        ElkPadding padding = Options.PADDING;
         
         ElkNode root = nodes.stream().filter(x -> x.getIncomingEdges().size() == 0).findFirst().get();
         inorder(root);
         
-        double curX = padding.left;
+        int curX = 0;
         for (ElkNode n : inorderVisiting) {
             n.setX(curX);
-            n.setY(Help.rootDistance(n, root) * (n.getHeight() + nodeNodeSpacing) + padding.top);
+            n.setY(Help.rootDistance(n, root));
             
-            curX += n.getWidth() + nodeNodeSpacing;
+            curX += 1;
         }
     }
     
