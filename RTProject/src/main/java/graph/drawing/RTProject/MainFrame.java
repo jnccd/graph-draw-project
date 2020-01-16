@@ -41,11 +41,19 @@ import java.awt.Color;
 import java.awt.BorderLayout;
 import javax.swing.border.MatteBorder;
 import javax.swing.border.SoftBevelBorder;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultHighlighter;
+import javax.swing.text.Highlighter;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyleContext;
 
 import helper.Node;
 import mdlaf.MaterialLookAndFeel;
 
 import javax.swing.JTextArea;
+import javax.swing.JTextPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JEditorPane;
 import java.awt.event.KeyAdapter;
@@ -117,15 +125,11 @@ public class MainFrame extends JFrame {
 		}
 	};
 	
-	/**
-	 * Launch the application.
-	 */
 	public static void main(String[] args) {
 		try {
 			UIManager.setLookAndFeel (new MaterialLookAndFeel ());
-		}
-		catch (UnsupportedLookAndFeelException e) {
-			
+		} catch (UnsupportedLookAndFeelException e) {
+			System.out.println("My fancy design! Noooooo :c");
 		}
 		
 		EventQueue.invokeLater(new Runnable() {
@@ -147,12 +151,47 @@ public class MainFrame extends JFrame {
 			
 			slider.setMaximum(states.size() - 1);
 			slider.setValue(states.getCurrentStateIndex());
+			
+			highlightMarkednodeInEditor();
 		}
 	}
-
-	/**
-	 * Create the frame.
-	 */
+	void highlightMarkednodeInEditor() {
+		// remove previous highlight
+		Highlighter hilite = editorPane.getHighlighter();
+	    Highlighter.Highlight[] hilites = hilite.getHighlights();
+	    for (int i=0; i<hilites.length; i++)
+	    	hilite.removeHighlight(hilites[i]);
+		
+	    // add start of line highlight
+		String markedNode = states.getCurrentState().getMarkedNodeName();
+		for (int index = editorPane.getText().indexOf("\n" + markedNode + " ");
+			     index >= 0;
+			     index = editorPane.getText().indexOf("\n" + markedNode + " ", index + 1)) {
+				DefaultHighlighter.DefaultHighlightPainter highlightPainter = 
+						new DefaultHighlighter.DefaultHighlightPainter(Color.YELLOW);
+				try {
+					editorPane.getHighlighter().addHighlight(index, index + markedNode.length() + 1, 
+							highlightPainter);
+				} catch (BadLocationException e) {
+					e.printStackTrace();
+				}
+			}
+		// add end of line highlight
+		for (int index = editorPane.getText().indexOf(" " + markedNode + "\n");
+			     index >= 0;
+			     index = editorPane.getText().indexOf(" " + markedNode + "\n", index + 1)) {
+				DefaultHighlighter.DefaultHighlightPainter highlightPainter = 
+						new DefaultHighlighter.DefaultHighlightPainter(Color.YELLOW);
+				try {
+					editorPane.getHighlighter().addHighlight(index, index + markedNode.length() + 1, 
+							highlightPainter);
+				} catch (BadLocationException e) {
+					e.printStackTrace();
+				}
+			}
+	}
+	
+	// This code was mostly generated using WindowBuilder, the only exceptions are the events
 	public MainFrame() {
 		try {
 			fc.setSelectedFile(new File(GraphLoader.readTextfile(lastPathPath)));
@@ -392,6 +431,7 @@ public class MainFrame extends JFrame {
 		btnLoadFile.setHorizontalAlignment(SwingConstants.RIGHT);
 		botPanel.add(btnLoadFile);
 	}
+	
 	public JEditorPane getEditorPane() {
 		return editorPane;
 	}
