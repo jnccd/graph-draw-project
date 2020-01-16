@@ -184,7 +184,6 @@ public class MainFrame extends JFrame {
 		sl_contentPane.putConstraint(SpringLayout.WEST, sidePanel, -250, SpringLayout.EAST, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.EAST, stateLabel, 0, SpringLayout.WEST, sidePanel);
 		sl_contentPane.putConstraint(SpringLayout.EAST, drawPanel, -5, SpringLayout.WEST, sidePanel);
-		sl_contentPane.putConstraint(SpringLayout.SOUTH, sidePanel, 0, SpringLayout.SOUTH, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.EAST, sidePanel, 0, SpringLayout.EAST, contentPane);
 		contentPane.add(sidePanel);
 
@@ -258,6 +257,17 @@ public class MainFrame extends JFrame {
 		
 		Component verticalStrut = Box.createVerticalStrut(20);
 		optionsTab.add(verticalStrut);
+		
+		JPanel legendPanel = new JPanel();
+		sl_contentPane.putConstraint(SpringLayout.SOUTH, sidePanel, -2, SpringLayout.NORTH, legendPanel);
+		sl_contentPane.putConstraint(SpringLayout.WEST, legendPanel, 2, SpringLayout.WEST, sidePanel);
+		sl_contentPane.putConstraint(SpringLayout.EAST, legendPanel, -2, SpringLayout.EAST, sidePanel);
+		sl_contentPane.putConstraint(SpringLayout.NORTH, legendPanel, -200, SpringLayout.SOUTH, contentPane);
+		sl_sidePanel.putConstraint(SpringLayout.NORTH, legendPanel, 0, SpringLayout.NORTH, sidePanel);
+		sl_sidePanel.putConstraint(SpringLayout.WEST, legendPanel, 0, SpringLayout.WEST, sidePanel);
+		sl_sidePanel.putConstraint(SpringLayout.EAST, legendPanel, 0, SpringLayout.EAST, sidePanel);
+		contentPane.add(legendPanel);
+		sl_contentPane.putConstraint(SpringLayout.SOUTH, legendPanel, 0, SpringLayout.SOUTH, contentPane);
 		
 		contentPane.add(botPanel);
 		botPanel.setLayout(new BoxLayout(botPanel, BoxLayout.X_AXIS));

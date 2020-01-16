@@ -80,9 +80,16 @@ public class GraphState {
 								     (target.getHeight() - pad.getVertical()) * 0.9 / 
 								     		(graph.nodes.stream().map(x -> x.y).max(Double::compare).get() + 1));
 		
+		// Fix graph - make all coords positive, set size depending on new gridSize
+		int minX = graph.nodes.stream().map(x -> x.x).min(Double::compare).get().intValue(),
+				minY = graph.nodes.stream().map(x -> x.y).min(Double::compare).get().intValue();
 		for (Node n : graph.nodes) {
 			n.w = gridSize * 0.9;
 			n.h = gridSize * 0.9;
+			if (minX < 0)
+				n.x -= minX;
+			if (minY < 0)
+				n.y -= minY;
 		}
 		
 		// Draw the edges
@@ -163,12 +170,15 @@ public class GraphState {
 					(int)(leftArrowNode.getY() * gridSize + (int)pad.top + leftArrowNode.getHeight() / 2), 
 					(int)(rightArrowNode.getX() * gridSize + (int)pad.left - Options.SPACING_NODE_NODE / 4), 
 					(int)(rightArrowNode.getY() * gridSize + (int)pad.top + rightArrowNode.getHeight() / 2));
-			g.drawString(Integer.toString(leftArrowNumber), 
-					(int)(leftArrowNode.getX() * gridSize + (int)pad.left + leftArrowNode.getWidth() + Options.SPACING_NODE_NODE / 2), 
-					(int)(leftArrowNode.getY() * gridSize + (int)pad.top + leftArrowNode.getHeight() / 2 - 5));
-			g.drawString(Integer.toString(rightArrowNumber), 
-					(int)(rightArrowNode.getX() * gridSize + (int)pad.left - Options.SPACING_NODE_NODE), 
-					(int)(leftArrowNode.getY() * gridSize + (int)pad.top + leftArrowNode.getHeight() / 2 - 5));
+			if (gridSize > 50) {
+				g.setFont(new Font(frame.getStateLabel().getFont().getName(), Font.PLAIN, (int)(gridSize * 0.3)));
+				g.drawString(Integer.toString(leftArrowNumber), 
+						(int)(leftArrowNode.getX() * gridSize + (int)pad.left + leftArrowNode.getWidth() + Options.SPACING_NODE_NODE / 2), 
+						(int)(leftArrowNode.getY() * gridSize + (int)pad.top + leftArrowNode.getHeight() / 2 - 5));
+				g.drawString(Integer.toString(rightArrowNumber), 
+						(int)(rightArrowNode.getX() * gridSize + (int)pad.left - Options.SPACING_NODE_NODE), 
+						(int)(leftArrowNode.getY() * gridSize + (int)pad.top + leftArrowNode.getHeight() / 2 - 5));
+			}
 		}
 	}
 }
