@@ -61,6 +61,9 @@ import java.awt.event.KeyEvent;
 import javax.swing.JScrollPane;
 import javax.swing.JScrollBar;
 import javax.swing.ScrollPaneConstants;
+import java.awt.event.MouseMotionAdapter;
+import javax.swing.JCheckBox;
+import java.awt.GridLayout;
 
 public class MainFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -146,6 +149,7 @@ public class MainFrame extends JFrame {
 
 	void refresh() {
 		drawPanel.repaint();
+		legendPanel.repaint();
 		if (states.getCurrentState() != null) {
 			stateLabel.setText(states.getCurrentState().getTitle());
 			
@@ -162,33 +166,28 @@ public class MainFrame extends JFrame {
 	    for (int i=0; i<hilites.length; i++)
 	    	hilite.removeHighlight(hilites[i]);
 		
-	    // add start of line highlight
 		String markedNode = states.getCurrentState().getMarkedNodeName();
-		for (int index = editorPane.getText().indexOf("\n" + markedNode + " ");
-			     index >= 0;
-			     index = editorPane.getText().indexOf("\n" + markedNode + " ", index + 1)) {
+		if (markedNode.contentEquals(""))
+			return;
+		
+		String[] split = editorPane.getText().split("( )|(\n)");
+		for (int i = 0; i < split.length; i++) {
+			if (split[i].contentEquals(markedNode))
+			{
+				int index = 0;
+				for (int j = 0; j < i; j++)
+					index += split[j].length() + 1;
+				
 				DefaultHighlighter.DefaultHighlightPainter highlightPainter = 
 						new DefaultHighlighter.DefaultHighlightPainter(Color.ORANGE);
 				try {
-					editorPane.getHighlighter().addHighlight(index, index + markedNode.length() + 1, 
+					editorPane.getHighlighter().addHighlight(index, index + markedNode.length(), 
 							highlightPainter);
 				} catch (BadLocationException e) {
 					e.printStackTrace();
 				}
 			}
-		// add end of line highlight
-		for (int index = editorPane.getText().indexOf(" " + markedNode + "\n");
-			     index >= 0;
-			     index = editorPane.getText().indexOf(" " + markedNode + "\n", index + 1)) {
-				DefaultHighlighter.DefaultHighlightPainter highlightPainter = 
-						new DefaultHighlighter.DefaultHighlightPainter(Color.ORANGE);
-				try {
-					editorPane.getHighlighter().addHighlight(index, index + markedNode.length() + 1, 
-							highlightPainter);
-				} catch (BadLocationException e) {
-					e.printStackTrace();
-				}
-			}
+		}
 	}
 	
 	// This code was mostly generated using WindowBuilder, the only exceptions are the events
@@ -202,7 +201,7 @@ public class MainFrame extends JFrame {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowOpened(WindowEvent e) {
-				new Thread(() -> {
+				new Thread(() -> { // Clock thread
 					while (true) {
 						counter++;
 						try {
@@ -211,7 +210,7 @@ public class MainFrame extends JFrame {
 							e1.printStackTrace();
 						}
 						
-						if (playing && counter % 60 == 0)
+						if (playing && counter % Options.animationFrameInterval == 0)
 						{
 							states.forwardStep();
 							refresh();
@@ -311,26 +310,97 @@ public class MainFrame extends JFrame {
 		});
 		SpringLayout sl_editorTab = new SpringLayout();
 		editorTab.setLayout(sl_editorTab);
-		JScrollPane scrollPane = new JScrollPane(editorPane);
-		sl_editorTab.putConstraint(SpringLayout.NORTH, scrollPane, 5, SpringLayout.NORTH, editorTab);
-		sl_editorTab.putConstraint(SpringLayout.WEST, scrollPane, 5, SpringLayout.WEST, editorTab);
-		sl_editorTab.putConstraint(SpringLayout.SOUTH, scrollPane, -5, SpringLayout.SOUTH, editorTab);
-		sl_editorTab.putConstraint(SpringLayout.EAST, scrollPane, -5, SpringLayout.EAST, editorTab);
-		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		editorTab.add(scrollPane);
+		JScrollPane editorScrollPane = new JScrollPane(editorPane);
+		sl_editorTab.putConstraint(SpringLayout.NORTH, editorScrollPane, 5, SpringLayout.NORTH, editorTab);
+		sl_editorTab.putConstraint(SpringLayout.WEST, editorScrollPane, 5, SpringLayout.WEST, editorTab);
+		sl_editorTab.putConstraint(SpringLayout.SOUTH, editorScrollPane, -5, SpringLayout.SOUTH, editorTab);
+		sl_editorTab.putConstraint(SpringLayout.EAST, editorScrollPane, -5, SpringLayout.EAST, editorTab);
+		editorScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		editorTab.add(editorScrollPane);
 		
 		JPanel optionsTab = new JPanel();
 		tabbedPane.addTab("Options", null, optionsTab, null);
-		optionsTab.setLayout(new BoxLayout(optionsTab, BoxLayout.Y_AXIS));
 		
-		JLabel label = new JLabel("?");
-		label.setVerticalAlignment(SwingConstants.TOP);
-		label.setHorizontalAlignment(SwingConstants.LEFT);
-		label.setAlignmentX(0.5f);
-		optionsTab.add(label);
+		JPanel optionsPanel = new JPanel();
+		optionsPanel.setLayout(new BoxLayout(optionsPanel, BoxLayout.Y_AXIS));
 		
-		Component verticalStrut = Box.createVerticalStrut(20);
-		optionsTab.add(verticalStrut);
+		JScrollPane optionsScrollPane = new JScrollPane(optionsPanel);
+		optionsScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		SpringLayout sl_optionsTab = new SpringLayout();
+		sl_optionsTab.putConstraint(SpringLayout.NORTH, optionsScrollPane, 5, SpringLayout.NORTH, optionsTab);
+		sl_optionsTab.putConstraint(SpringLayout.WEST, optionsScrollPane, 5, SpringLayout.WEST, optionsTab);
+		sl_optionsTab.putConstraint(SpringLayout.SOUTH, optionsScrollPane, -5, SpringLayout.SOUTH, optionsTab);
+		sl_optionsTab.putConstraint(SpringLayout.EAST, optionsScrollPane, -15, SpringLayout.EAST, optionsTab);
+		optionsTab.setLayout(sl_optionsTab);
+		
+		JLabel lblPlayAnimationFrame = new JLabel("Play Animation Frame Interval");
+		optionsPanel.add(lblPlayAnimationFrame);
+		
+		JSlider animationIntervalSlider = new JSlider();
+		optionsPanel.add(animationIntervalSlider);
+		animationIntervalSlider.setPreferredSize(new Dimension(50, 50));
+		animationIntervalSlider.setMaximum(180);
+		animationIntervalSlider.addMouseMotionListener(new MouseMotionAdapter() {
+			@Override
+			public void mouseMoved(MouseEvent e) {
+				Options.animationFrameInterval = animationIntervalSlider.getValue();
+			}
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				Options.animationFrameInterval = animationIntervalSlider.getValue();
+			}
+		});
+		animationIntervalSlider.setValue(60);
+		animationIntervalSlider.setMinimum(5);
+		
+		JCheckBox chckbxHideContourStates = new JCheckBox("Hide Contour States");
+		chckbxHideContourStates.setHorizontalAlignment(SwingConstants.LEFT);
+		optionsPanel.add(chckbxHideContourStates); 
+		
+		JCheckBox chckbxHideContourDifferenceStates = new JCheckBox("Hide Contour Differences");
+		chckbxHideContourStates.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				Options.hideContourStates = chckbxHideContourStates.isSelected();
+				if (Options.hideContourStates && !chckbxHideContourDifferenceStates.isSelected()) chckbxHideContourDifferenceStates.doClick();
+				GraphLoader.load(currentFilePath, frame, drawPanel);
+				refresh();
+			}
+		});
+		chckbxHideContourDifferenceStates.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				Options.hideContourDifferenceStates = chckbxHideContourDifferenceStates.isSelected();
+				GraphLoader.load(currentFilePath, frame, drawPanel);
+				refresh();
+			}
+		});
+		chckbxHideContourDifferenceStates.setHorizontalAlignment(SwingConstants.LEFT);
+		optionsPanel.add(chckbxHideContourDifferenceStates);
+		
+		JCheckBox chckbxHideNodeOffsetValues = new JCheckBox("Hide Node Offset Values");
+		chckbxHideNodeOffsetValues.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				Options.hideNodeOffsetValues = chckbxHideNodeOffsetValues.isSelected();
+				refresh();
+			}
+		});
+		optionsPanel.add(chckbxHideNodeOffsetValues);
+		
+		JCheckBox chckbxHideThreads = new JCheckBox("Hide Threads");
+		chckbxHideThreads.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				Options.hideThreads = chckbxHideThreads.isSelected();
+				refresh();
+			}
+		});
+		optionsPanel.add(chckbxHideThreads);
+		
+		JCheckBox chckbxHideMyAss = new JCheckBox("hide my ass");
+		optionsPanel.add(chckbxHideMyAss);
+		optionsTab.add(optionsScrollPane);
 		
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, sidePanel, -2, SpringLayout.NORTH, legendPanel);
 		sl_contentPane.putConstraint(SpringLayout.WEST, legendPanel, 2, SpringLayout.WEST, sidePanel);
@@ -393,8 +463,16 @@ public class MainFrame extends JFrame {
 				botPanel.add(btnPlay);
 
 		slider = new JSlider();
+		slider.addMouseMotionListener(new MouseMotionAdapter() {
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				states.setCurrentStateIndex(slider.getValue());
+				refresh();
+			}
+		});
 		slider.setBackground(SystemColor.controlLtHighlight);
 		slider.setValue(0);
+		slider.setMinimum(0);
 		botPanel.add(slider);
 
 		JButton btnLoadFile = new JButton("Load File");

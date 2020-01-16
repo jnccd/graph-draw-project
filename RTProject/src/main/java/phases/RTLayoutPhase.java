@@ -73,12 +73,13 @@ public class RTLayoutPhase implements Phase {
 			Pair<List<ElkNode>, List<ElkNode>> contour = getContourUsingSubtreeLayering(leftChild, rightChild);
 			List<ElkNode> leftContour = contour.getFirst(), rightContour = contour.getSecond();
 			
+			if (!Options.hideContourStates)
+				states.addState(new GraphState("Phase 1, Postorder: Set offsets of childs of " + n.getIdentifier(),
+						Graph.fromElk(layoutGraph), n, Help.concat(leftContour, rightContour)));
+			
 			for (int i = 0; i < leftContour.size(); i++) {
 				Integer leftSubtreeLayerRightmostTotalX = Help.xOffsetRT(leftContour.get(i), n);
 				Integer rightSubtreeLayerLeftmostTotalX = Help.xOffsetRT(rightContour.get(i), n);
-				
-				if (n.getIdentifier().contentEquals("n1"))
-					getClass();
 				
 				if (leftSubtreeLayerRightmostTotalX + minSep > rightSubtreeLayerLeftmostTotalX - minSep)
 					dv = leftSubtreeLayerRightmostTotalX - rightSubtreeLayerLeftmostTotalX + 2 + minSep * 2;
@@ -88,12 +89,13 @@ public class RTLayoutPhase implements Phase {
 				if (dv / 2 > Help.getProp(rightChild).xOffset)
 					Help.getProp(rightChild).xOffset = dv / 2;
 				
-				states.addState(new GraphState("Phase 1, Postorder: Set offsets of childs of " + n.getIdentifier() + 
-						" | Check difference of " + leftContour.get(i).getIdentifier() + 
-						" and " + rightContour.get(i).getIdentifier(),
-						Graph.fromElk(layoutGraph), n, Help.concat(leftContour, rightContour), 
-						leftContour.get(i), rightContour.get(i), 
-						leftSubtreeLayerRightmostTotalX, rightSubtreeLayerLeftmostTotalX));
+				if (!Options.hideContourDifferenceStates)
+					states.addState(new GraphState("Phase 1, Postorder: Set offsets of childs of " + n.getIdentifier() + 
+							" | Check difference of " + leftContour.get(i).getIdentifier() + 
+							" and " + rightContour.get(i).getIdentifier(),
+							Graph.fromElk(layoutGraph), n, Help.concat(leftContour, rightContour), 
+							leftContour.get(i), rightContour.get(i), 
+							leftSubtreeLayerRightmostTotalX, rightSubtreeLayerLeftmostTotalX));
 			} 
 		} else
 			states.addState(new GraphState("Phase 1, Postorder: Visit " + n.getIdentifier(),
@@ -133,6 +135,10 @@ public class RTLayoutPhase implements Phase {
 		} 
 		
 		return re;
+	}
+	List<ElkNode> GetSubtreeLayer(ElkNode n, int layer) {
+		return Help.getSubtree(n).stream().
+				filter(x -> Help.rootDistance(x, n) == layer).collect(Collectors.toList());
 	}
 
 	int phase2(ElkNode r) {
