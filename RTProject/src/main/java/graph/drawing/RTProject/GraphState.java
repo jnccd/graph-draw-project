@@ -67,6 +67,10 @@ public class GraphState {
 	public String getTitle() {
 		return title;
 	}
+	
+	public String getMarkedNodeName() {
+		return markedNode.getIdentifier();
+	}
 
 	public void draw(Graphics g, Component target, MainFrame frame) {
 		if (graph.nodes.size() == 0)
