@@ -154,7 +154,7 @@ public class RTLayoutPhase implements Phase {
 		
 		int offset = Help.getProp(r).xOffset;
 		r.setX(offset + rootOffset);
-		r.setY(Help.rootDistance(r, root) * (r.getHeight() + nodeNodeSpacing) + padding.top);
+		r.setY(Help.rootDistance(r, root));
 
 		states.addState(new GraphState("Phase 3, Preorder: Apply offset to " + r.getIdentifier(), 
 						Graph.fromElk(layoutGraph), r));
