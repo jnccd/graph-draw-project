@@ -19,6 +19,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.util.ArrayList;
 
@@ -26,6 +27,8 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.JSlider;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.Component;
@@ -200,7 +203,10 @@ public class MainFrame extends JFrame {
 		} catch (Exception e) {
 
 		}
-
+		
+		// Set the icon / Swing doesn't seem to like .ico files for some reason
+		setIconImage(new ImageIcon(".\\icon.png").getImage());
+		
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowOpened(WindowEvent e) {
@@ -285,11 +291,6 @@ public class MainFrame extends JFrame {
 		editorPane.setBackground(SystemColor.text);
 		editorPane.addKeyListener(new KeyAdapter() {
 			@Override
-			public void keyTyped(KeyEvent e) {
-
-			}
-
-			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == 83 && e.isControlDown()) {
 					String path = "";
@@ -336,7 +337,7 @@ public class MainFrame extends JFrame {
 		sl_optionsTab.putConstraint(SpringLayout.EAST, optionsScrollPane, -15, SpringLayout.EAST, optionsTab);
 		optionsTab.setLayout(sl_optionsTab);
 
-		JLabel lblPlayAnimationFrame = new JLabel("Play Animation Frame Interval");
+		JLabel lblPlayAnimationFrame = new JLabel("Play Animation Interval");
 		optionsPanel.add(lblPlayAnimationFrame);
 
 		JSlider animationIntervalSlider = new JSlider();
