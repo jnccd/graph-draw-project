@@ -302,22 +302,7 @@ public class MainFrame extends JFrame {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == 83 && e.isControlDown()) {
-					String path = "";
-					try {
-						GraphLoader.saveTextfile(currentFilePath, editorPane.getText());
-						path = currentFilePath;
-					} catch (IOException e1) {
-						try {
-							new File(tmpPath).createNewFile();
-							GraphLoader.saveTextfile(tmpPath, editorPane.getText());
-							path = tmpPath;
-						} catch (IOException e2) {
-
-						}
-					}
-
-					GraphLoader.load(path, frame, drawPanel);
-					refresh();
+					saveEditor();
 				}
 			}
 		});
@@ -326,10 +311,23 @@ public class MainFrame extends JFrame {
 		JScrollPane editorScrollPane = new JScrollPane(editorPane);
 		sl_editorTab.putConstraint(SpringLayout.NORTH, editorScrollPane, 5, SpringLayout.NORTH, editorTab);
 		sl_editorTab.putConstraint(SpringLayout.WEST, editorScrollPane, 5, SpringLayout.WEST, editorTab);
-		sl_editorTab.putConstraint(SpringLayout.SOUTH, editorScrollPane, -5, SpringLayout.SOUTH, editorTab);
 		sl_editorTab.putConstraint(SpringLayout.EAST, editorScrollPane, -5, SpringLayout.EAST, editorTab);
 		editorScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		editorTab.add(editorScrollPane);
+		
+		JButton btnSave = new JButton("Save");
+		btnSave.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				saveEditor();
+			}
+		});
+		sl_editorTab.putConstraint(SpringLayout.NORTH, btnSave, -30, SpringLayout.SOUTH, editorTab);
+		sl_editorTab.putConstraint(SpringLayout.WEST, btnSave, 0, SpringLayout.WEST, editorTab);
+		sl_editorTab.putConstraint(SpringLayout.EAST, btnSave, 0, SpringLayout.EAST, editorTab);
+		sl_editorTab.putConstraint(SpringLayout.SOUTH, editorScrollPane, 0, SpringLayout.NORTH, btnSave);
+		sl_editorTab.putConstraint(SpringLayout.SOUTH, btnSave, 0, SpringLayout.SOUTH, editorTab);
+		editorTab.add(btnSave);
 
 		JPanel optionsTab = new JPanel();
 		tabbedPane.addTab("Options", null, optionsTab, null);
@@ -427,7 +425,6 @@ public class MainFrame extends JFrame {
 		botPanel.setLayout(new BoxLayout(botPanel, BoxLayout.X_AXIS));
 
 		JButton btnRight = new JButton(">");
-		btnRight.setBackground(SystemColor.controlLtHighlight);
 		btnRight.setFont(new Font("Noto Sans", Font.PLAIN, 25));
 		btnRight.addMouseListener(new MouseAdapter() {
 			@Override
@@ -438,7 +435,6 @@ public class MainFrame extends JFrame {
 		});
 
 		JButton btnLeft = new JButton("<");
-		btnLeft.setBackground(SystemColor.controlLtHighlight);
 		btnLeft.setFont(new Font("Noto Sans", Font.PLAIN, 25));
 		btnLeft.addMouseListener(new MouseAdapter() {
 			@Override
@@ -457,7 +453,6 @@ public class MainFrame extends JFrame {
 		botPanel.add(sliderPadding1);
 
 		btnPlay = new JButton("►");
-		btnPlay.setBackground(SystemColor.controlLtHighlight);
 		btnPlay.setFont(new Font("SansSerif", Font.BOLD, 18));
 		btnPlay.addMouseListener(new MouseAdapter() {
 			@Override
@@ -481,13 +476,11 @@ public class MainFrame extends JFrame {
 				refresh();
 			}
 		});
-		slider.setBackground(SystemColor.controlLtHighlight);
 		slider.setValue(0);
 		slider.setMinimum(0);
 		botPanel.add(slider);
 
 		JButton btnLoadFile = new JButton("Load File");
-		btnLoadFile.setBackground(SystemColor.controlLtHighlight);
 		btnLoadFile.setFont(new Font("Noto Sans", Font.BOLD, 18));
 		btnLoadFile.addMouseListener(new MouseAdapter() {
 			@Override
@@ -518,6 +511,25 @@ public class MainFrame extends JFrame {
 		botPanel.add(sliderPadding2);
 		btnLoadFile.setHorizontalAlignment(SwingConstants.RIGHT);
 		botPanel.add(btnLoadFile);
+	}
+	
+	void saveEditor() {
+		String path = "";
+		try {
+			GraphLoader.saveTextfile(currentFilePath, editorPane.getText());
+			path = currentFilePath;
+		} catch (Exception e1) {
+			try {
+				new File(tmpPath).createNewFile();
+				GraphLoader.saveTextfile(tmpPath, editorPane.getText());
+				path = tmpPath;
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
+
+		GraphLoader.load(path, frame, drawPanel);
+		refresh();
 	}
 
 	public JEditorPane getEditorPane() {
