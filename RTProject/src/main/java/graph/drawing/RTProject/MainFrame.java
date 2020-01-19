@@ -118,10 +118,15 @@ public class MainFrame extends JFrame {
 			curY += 5 + 50;
 			Node contour = new Node(10, curY + 10, 40, 40, "Example", "0.0", new ArrayList<helper.Edge>(),
 					new ArrayList<helper.Edge>(), null);
+			curY += 5 + 50;
 
 			GraphState.drawNode(g, legendPanel, frame, normal, (int) normal.x, (int) normal.y, false, false);
 			GraphState.drawNode(g, legendPanel, frame, marked, (int) marked.x, (int) marked.y, false, true);
 			GraphState.drawNode(g, legendPanel, frame, contour, (int) contour.x, (int) contour.y, true, false);
+			
+			g.setColor(Color.BLACK);
+			GraphState.drawLine(g, 10, curY + 15, 50, curY + 15);
+			GraphState.drawDashedLine(g, 10, curY + 3 + 15 + 15, 50, curY + 3 + 15 + 15);
 
 			g.setColor(Color.BLACK);
 			g.setFont(new Font(frame.getStateLabel().getFont().getName(), Font.PLAIN, (int) (12)));
@@ -131,6 +136,9 @@ public class MainFrame extends JFrame {
 					(int) marked.y + (int) marked.h / 2 + g.getFontMetrics().getAscent() / 2);
 			g.drawString("Contour Graph Node", (int) contour.x + (int) contour.w + 10,
 					(int) contour.y + (int) contour.h / 2 + g.getFontMetrics().getAscent() / 2);
+			
+			g.drawString("Edge", 60, curY + 16 + g.getFontMetrics().getAscent() / 2);
+			g.drawString("Reingold Tilford Thread", 60, curY + 3 + 15 + 16 + g.getFontMetrics().getAscent() / 2);
 		}
 	};
 
@@ -243,6 +251,7 @@ public class MainFrame extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		SpringLayout sl_contentPane = new SpringLayout();
+		sl_contentPane.putConstraint(SpringLayout.NORTH, legendPanel, -245, SpringLayout.SOUTH, contentPane);
 
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, drawPanel, -30, SpringLayout.SOUTH, contentPane);
 		contentPane.setLayout(sl_contentPane);
@@ -408,7 +417,6 @@ public class MainFrame extends JFrame {
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, sidePanel, -2, SpringLayout.NORTH, legendPanel);
 		sl_contentPane.putConstraint(SpringLayout.WEST, legendPanel, 2, SpringLayout.WEST, sidePanel);
 		sl_contentPane.putConstraint(SpringLayout.EAST, legendPanel, -2, SpringLayout.EAST, sidePanel);
-		sl_contentPane.putConstraint(SpringLayout.NORTH, legendPanel, -200, SpringLayout.SOUTH, contentPane);
 		sl_sidePanel.putConstraint(SpringLayout.NORTH, legendPanel, 0, SpringLayout.NORTH, sidePanel);
 		sl_sidePanel.putConstraint(SpringLayout.WEST, legendPanel, 0, SpringLayout.WEST, sidePanel);
 		sl_sidePanel.putConstraint(SpringLayout.EAST, legendPanel, 0, SpringLayout.EAST, sidePanel);

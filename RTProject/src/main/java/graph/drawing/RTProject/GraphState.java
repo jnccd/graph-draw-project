@@ -223,20 +223,24 @@ public class GraphState {
 		g.setColor(c);
 		if (dashed)
 			drawDashedLine(g, srcX, srcY, tarX, tarY);
-		else {
-			Graphics2D g2d = (Graphics2D) g.create();
-
-			g2d.setStroke(new BasicStroke(3));
-			g2d.drawLine(srcX, srcY, tarX, tarY);
-
-			g2d.dispose();
-		}
+		else 
+			drawLine(g, srcX, srcY, tarX, tarY);
 	}
 
 	public static void drawDashedLine(Graphics g, int srcX, int srcY, int tarX, int tarY) {
 		Graphics2D g2d = (Graphics2D) g.create();
 
 		Stroke dashed = new BasicStroke(3, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 9 }, 0);
+		g2d.setStroke(dashed);
+		g2d.drawLine(srcX, srcY, tarX, tarY);
+
+		g2d.dispose();
+	}
+	
+	public static void drawLine(Graphics g, int srcX, int srcY, int tarX, int tarY) {
+		Graphics2D g2d = (Graphics2D) g.create();
+
+		Stroke dashed = new BasicStroke(3);
 		g2d.setStroke(dashed);
 		g2d.drawLine(srcX, srcY, tarX, tarY);
 
