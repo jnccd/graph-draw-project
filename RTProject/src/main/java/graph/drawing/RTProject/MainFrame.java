@@ -306,12 +306,12 @@ public class MainFrame extends JFrame {
 					try {
 						GraphLoader.saveTextfile(currentFilePath, editorPane.getText());
 						path = currentFilePath;
-					} catch (IOException e1) {
+					} catch (Exception e1) {
 						try {
 							new File(tmpPath).createNewFile();
 							GraphLoader.saveTextfile(tmpPath, editorPane.getText());
 							path = tmpPath;
-						} catch (IOException e2) {
+						} catch (Exception e2) {
 
 						}
 					}
