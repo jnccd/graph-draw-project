@@ -2,6 +2,11 @@ package graph.drawing.RTProject;
 
 import java.util.ArrayList;
 
+/**
+ * This class manages a list of GraphStates and the index of the currently displayed one.
+ * @author dobiko
+ *
+ */
 public class GraphStatesManager {
 	private int statesIndex = 0;
 	private ArrayList<GraphState> states = new ArrayList<GraphState>();
