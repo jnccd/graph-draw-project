@@ -7,6 +7,11 @@ import java.util.stream.Collectors;
 import org.eclipse.elk.graph.ElkEdge;
 import org.eclipse.elk.graph.ElkNode;
 
+/**
+ * This class is used to clone an Elk Graph using the fromElk() method so a GraphState can get a copy of the graph.
+ * @author dobiko
+ *
+ */
 public class Graph {
     public List<Node> nodes = new ArrayList<Node>();
     public List<Edge> edges = new ArrayList<Edge>();

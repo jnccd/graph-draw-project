@@ -121,15 +121,13 @@ The fourth pane contains a legend for the graph drawing in the first pane. If th
 
 ## The Software behind the UI
 
-The code of this project is split into 4 packages:
+The code of this project is split into 3 packages:
 * graph.drawing.RTProject
   + Contains classes that are specific to this project
 * helper
   + Contains classes that support other calculations, most of the classes in this package have been imported from the last assignment
 * phases
-  + Contains some layout phase classes from the last assignemnts
-* properties
-  + Contains classes that are instanced as properties for Elk classes. This isn't nessecary but shortens the code because accessing the property class instances is shorter.
+  + Contains some layout phase classes from the last assignemnts, most notably a modified version of the RT layout phase that 
 
 ### graph.drawing.RTProject
 
@@ -147,6 +145,7 @@ This class manages a list of GraphStates and the index of the currently displaye
 
 This class holds all the information nessecary to visualize a state in the RT algorithm. The left and right arrow attributes may be confusing, they contain all the nessecary information to draw the line that symbolises the check of the contour difference.  
 The class also contains the draw method which draws this state to a target component.
+I filtered the numerous constructors and the arguments for the draw methods to keep the diagram readable.
 
 #### GraphLoader
 
@@ -158,3 +157,42 @@ This class contains final and non final options for the program. The non final o
 
 ### helper
 
+#### Edge
+
+This class mirrors an ElkEdge.
+
+#### Graph
+
+This class is used to clone an Elk Graph using the fromElk() method so a GraphState can get a copy of the graph.
+
+#### Help
+
+This class contains a lot of helpful michellenious methods.
+
+#### Node
+
+This class mirrors an ElkNode and additionally also contains a RT thread pointer.
+
+#### NodeProperty
+
+An instance of this class is saved for every ElkNode and contains needed additional information for the BinaryCheckPhase and the RTLayoutPhase.
+
+### phases
+
+#### BinaryTreeCheckPhase
+
+This is a Phase that throws an Exception if the apply method is called on a graph that isn't a binary tree. This Phase is applied before the other Phases in GraphLoader.load().
+
+#### InorderLayoutPhase
+
+This is a Phase that layouts a graph using the inorder algorithm.
+
+#### Phase 
+
+This is the superclass for all phase classes in this package. It defines an apply method that gets a reference to an ElkNode that contains a graph and a ProgressMonitor.
+
+#### RTLayoutPhase
+
+This is a layout phase that layouts the graph using a RT implementation. However this phase is modified to additionally create GraphState instances of the current progress and add them to the GraphStatesManager.
+
+### ?
