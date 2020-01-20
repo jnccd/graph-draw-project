@@ -17,6 +17,11 @@ import graph.drawing.RTProject.Options;
 import helper.Graph;
 import helper.Help;
 
+/**
+ * This is a layout phase that layouts the graph using a RT implementation. However this phase is modified to additionally create GraphState instances of the current progress and add them to the GraphStatesManager.
+ * @author dobiko
+ *
+ */
 public class RTLayoutPhase implements Phase {
 	int minSep = 1;
 	GraphStatesManager states;

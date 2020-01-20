@@ -11,6 +11,11 @@ import org.eclipse.emf.common.util.EList;
 import graph.drawing.RTProject.Options;
 import helper.Help;
 
+/**
+ * This is a Phase that layouts a graph using the inorder algorithm.
+ * @author dobiko
+ *
+ */
 public class InorderLayoutPhase implements Phase {
     List<ElkNode> inorderVisiting = new ArrayList<ElkNode>();
 

@@ -13,6 +13,11 @@ import org.eclipse.emf.common.util.EList;
 
 import helper.Help;
 
+/**
+ * This is a Phase that throws an Exception if the apply method is called on a graph that isn't a binary tree. This Phase is applied before the other Phases in GraphLoader.load().
+ * @author dobiko
+ *
+ */
 public class BinaryTreeCheckPhase implements Phase {
 
 	@Override

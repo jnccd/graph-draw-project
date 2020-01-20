@@ -4,6 +4,11 @@ import java.util.List;
 
 import org.eclipse.elk.graph.ElkNode;
 
+/**
+ * This class mirrors an ElkNode and additionally also contains a RT thread pointer.
+ * @author dobiko
+ *
+ */
 public class Node {
 	public double x, y, w, h;
 	public String name, note;

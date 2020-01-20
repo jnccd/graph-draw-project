@@ -10,10 +10,11 @@ import org.eclipse.elk.graph.ElkNode;
 import org.eclipse.elk.graph.properties.Property;
 import org.eclipse.emf.common.util.EList;
 
-import properties.EdgeProperty;
-import properties.GraphProperty;
-import properties.NodeProperty;
-
+/**
+ * This class contains a lot of helpful michellenious methods.
+ * @author dobiko
+ *
+ */
 public class Help {
 	public static <T> List<T> concat(List<T> as, List<T> bs) {
 		List<T> rs = new ArrayList<T>();
@@ -98,23 +99,5 @@ public class Help {
         
         e.setProperty(prop, new NodeProperty());
         return e.getProperty(prop);
-    }
-    public static EdgeProperty getProp(ElkEdge e) {
-        Property<EdgeProperty> prop = new Property<EdgeProperty>("prop");
-        
-        if (e.hasProperty(prop))
-            return e.getProperty(prop);
-        
-        e.setProperty(prop, new EdgeProperty());
-        return e.getProperty(prop);
-    }
-    public static GraphProperty getGraphProp(ElkNode n) {
-        Property<GraphProperty> prop = new Property<GraphProperty>("graph-prop");
-        
-        if (n.hasProperty(prop))
-            return n.getProperty(prop);
-        
-        n.setProperty(prop, new GraphProperty());
-        return n.getProperty(prop);
     }
 }
