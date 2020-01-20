@@ -121,3 +121,40 @@ The fourth pane contains a legend for the graph drawing in the first pane. If th
 
 ## The Software behind the UI
 
+The code of this project is split into 4 packages:
+* graph.drawing.RTProject
+  + Contains classes that are specific to this project
+* helper
+  + Contains classes that support other calculations, most of the classes in this package have been imported from the last assignment
+* phases
+  + Contains some layout phase classes from the last assignemnts
+* properties
+  + Contains classes that are instanced as properties for Elk classes. This isn't nessecary but shortens the code because accessing the property class instances is shorter.
+
+### graph.drawing.RTProject
+
+![OwO thewes missing some something D:](Documentation-Resources/RTProject_diagram.jpg "Hey, im a popup :P")
+
+#### MainFrame
+
+This class was with the exception of some events generated using the WindowBuilder Plugin and its attributes are the GUI elements shown in the last chapter.
+
+#### GraphStatesManager
+
+This class manages a list of GraphStates and the index of the currently displayed one.
+
+#### GraphState
+
+This class holds all the information nessecary to visualize a state in the RT algorithm. The left and right arrow attributes may be confusing, they contain all the nessecary information to draw the line that symbolises the check of the contour difference.  
+The class also contains the draw method which draws this state to a target component.
+
+#### GraphLoader
+
+This class contains the nessecary methods to read, parse, check and update the GraphStates in the GraphStatesManager.
+
+#### Options
+
+This class contains final and non final options for the program. The non final ones can be changed in the options tab in the GUI.
+
+### helper
+

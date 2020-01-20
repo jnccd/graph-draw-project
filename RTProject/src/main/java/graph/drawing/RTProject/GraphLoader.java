@@ -25,6 +25,11 @@ import phases.InorderLayoutPhase;
 import phases.Phase;
 import phases.RTLayoutPhase;
 
+/**
+ * This class contains the nessecary methods to read, parse, check and update the GraphStates in the GraphStatesManager.
+ * @author dobiko
+ *
+ */
 public class GraphLoader {
 	static ElkNode curGraph = null;
 	static String fileContent;

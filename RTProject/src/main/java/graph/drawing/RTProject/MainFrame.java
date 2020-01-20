@@ -68,6 +68,11 @@ import java.awt.event.MouseMotionAdapter;
 import javax.swing.JCheckBox;
 import java.awt.GridLayout;
 
+/**
+ * This class was with the exception of some events generated using the WindowBuilder Plugin and its attributes are the GUI elements shown in the last chapter.
+ * @author dobiko
+ *
+ */
 public class MainFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private final MainFrame frame = this;

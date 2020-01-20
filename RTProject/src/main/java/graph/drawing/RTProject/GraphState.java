@@ -22,6 +22,12 @@ import helper.Graph;
 import helper.Help;
 import helper.Node;
 
+/**
+ * This class holds all the information nessecary to visualize a state in the RT algorithm. The left and right arrow attributes may be confusing, they contain all the nessecary information to draw the line that symbolises the check of the contour difference.  
+The class also contains the draw method which draws this state to a target component.
+ * @author dobiko
+ *
+ */
 public class GraphState {
 	private String title;
 	private Graph graph;
