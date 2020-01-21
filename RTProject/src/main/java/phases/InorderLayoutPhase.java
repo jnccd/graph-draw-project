@@ -34,15 +34,6 @@ public class InorderLayoutPhase implements Phase {
         }
     }
     
-    int rootDistance(ElkNode n, ElkNode root) {
-        int re = 0;
-        while (n != root) {
-            n = Help.getParents(n).get(0);
-            re++;
-        }
-        return re;
-    }
-    
     void inorder(ElkNode n) {
         List<ElkNode> childs = Help.getChilds(n);
         if (childs.size() > 0) {

@@ -149,18 +149,18 @@ public class GraphState {
 		if (leftArrowNode != null && rightArrowNode != null) {
 			g.drawLine(
 					(int) (leftArrowNode.getX() * gridSize + (int) pad.left + leftArrowNode.getWidth()
-							+ Options.SPACING_NODE_NODE / 4),
+							+ 6),
 					(int) (leftArrowNode.getY() * gridSize + (int) pad.top + leftArrowNode.getHeight() / 2),
-					(int) (rightArrowNode.getX() * gridSize + (int) pad.left - Options.SPACING_NODE_NODE / 4),
+					(int) (rightArrowNode.getX() * gridSize + (int) pad.left - 6),
 					(int) (rightArrowNode.getY() * gridSize + (int) pad.top + rightArrowNode.getHeight() / 2));
 			if (gridSize > 50) {
 				g.setFont(new Font(frame.getStateLabel().getFont().getName(), Font.PLAIN, (int) (gridSize * 0.3)));
 				g.drawString(Integer.toString(leftArrowNumber),
 						(int) (leftArrowNode.getX() * gridSize + (int) pad.left + leftArrowNode.getWidth()
-								+ Options.SPACING_NODE_NODE / 2),
+								+ 12),
 						(int) (leftArrowNode.getY() * gridSize + (int) pad.top + leftArrowNode.getHeight() / 2 - 5));
 				g.drawString(Integer.toString(rightArrowNumber),
-						(int) (rightArrowNode.getX() * gridSize + (int) pad.left + 10 - Options.SPACING_NODE_NODE - 
+						(int) (rightArrowNode.getX() * gridSize + (int) pad.left - 10 - 
 								g.getFontMetrics().stringWidth(Integer.toString(rightArrowNumber))),
 						(int) (leftArrowNode.getY() * gridSize + (int) pad.top + leftArrowNode.getHeight() / 2 - 5));
 			}
@@ -186,7 +186,7 @@ public class GraphState {
 		else
 			g.setColor(Color.BLACK);
 
-		// Draw text
+		// Draw text, only draw the note if there is enough space
 		if (n.h > 30 && !Options.hideNodeOffsetValues) {
 			g.setFont(new Font(frame.getStateLabel().getFont().getName(), Font.PLAIN, (int) (n.h * 0.4)));
 

@@ -1,5 +1,9 @@
 # Documentation
 
+## Preamble
+
+I moved the graph input format subsection from the technical section to the user guide because the user needs to know what kinds of graphs they can load.
+
 ## User Guide
 
 ### Startup
@@ -137,11 +141,11 @@ The code of this project is split into 3 packages:
 
 ### graph.drawing.RTProject
 
-![OwO thewes missing some something D:](Documentation-Resources/RTProject_diagram.jpg "Hey, im a popup :P")
+![OwO thewes missing some something D:](Documentation-Resources/RTProject.png "Hey, im a popup :P")
 
 #### MainFrame
 
-This class was with the exception of some events generated using the WindowBuilder Plugin and its attributes are the GUI elements shown in the last chapter.
+This class was with the exception of the code inside some events generated using the WindowBuilder Plugin and its attributes are the GUI elements shown in the last chapter.
 
 #### GraphStatesManager
 
@@ -162,6 +166,8 @@ This class contains the nessecary methods to read, parse, check and update the G
 This class contains final and non final options for the program. The non final ones can be changed in the options tab in the GUI.
 
 ### helper
+
+![OwO thewes missing some something D:](Documentation-Resources/helper.png "Hey, im a popup :P")
 
 #### Graph
 
@@ -185,6 +191,8 @@ An instance of this class is saved for every ElkNode and contains needed additio
 
 ### phases
 
+![OwO thewes missing some something D:](Documentation-Resources/phases.png "Hey, im a popup :P")
+
 #### Phase 
 
 This is the superclass for all phase classes in this package. It defines an apply method that gets a reference to an ElkNode that contains a graph and a ProgressMonitor.
@@ -202,4 +210,6 @@ This is a Phase that layouts a graph using the inorder algorithm.
 This is a layout phase that layouts the graph using a RT implementation. However this phase is modified to additionally create GraphState instances of the current progress and add them to the GraphStatesManager.
 
 ## Visualization
+
+### Phase 1
 
