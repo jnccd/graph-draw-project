@@ -213,3 +213,11 @@ This is a layout phase that layouts the graph using a RT implementation. However
 
 ### Phase 1
 
+![OwO thewes missing some something D:](Documentation-Resources/vis_phase1.png "Hey, im a popup :P")
+
+In the first phase of the RT algorithm we step through the graph in postorder, check contours and set the offset values for each node except the root.
+
+Firstly to make clear in what order we stepping through the graph currently and what phase we are in this information is always displayed in the stateLabel before the `:`.
+
+To show what node we are looking at in the current step the node is marked in an orange color. Due to the fact that this color is a warning color that should make it easy to see that this node is important in the current step.
+
