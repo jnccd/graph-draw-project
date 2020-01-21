@@ -91,8 +91,8 @@ public class GraphLoader {
 		return monitor;
 	}
 
-	private static ElkNode parseText(String fileContent) {
-		String[] lines = fileContent.split("\n");
+	private static ElkNode parseText(String textGraph) {
+		String[] lines = textGraph.split("\n");
 		List<String> nodeNames = Arrays.stream(lines)
 				.filter(x -> !x.contains("->") && x.trim().length() > 0 && !x.contains(":")).map(x -> {
 					if (x.startsWith("node "))

@@ -85,7 +85,6 @@ public class MainFrame extends JFrame {
 
 	private String currentFilePath;
 	private String lastPathPath = ".//lastPath.txt";
-	private String tmpPath = ".//tmp.graph";
 	private JPanel legendPanel = new JPanel() {
 		private static final long serialVersionUID = 1L;
 

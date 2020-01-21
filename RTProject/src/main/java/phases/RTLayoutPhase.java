@@ -27,7 +27,6 @@ public class RTLayoutPhase implements Phase {
 	GraphStatesManager states;
 	ElkNode root;
 	ElkNode layoutGraph;
-	List<List<ElkNode>> layers;
 
 	public RTLayoutPhase(GraphStatesManager states) {
 		this.states = states;
@@ -35,19 +34,10 @@ public class RTLayoutPhase implements Phase {
 
 	public void apply(ElkNode layoutGraph, IElkProgressMonitor monitor) throws Exception {
 		EList<ElkNode> nodes = layoutGraph.getChildren();
-		double nodeNodeSpacing = Options.SPACING_NODE_NODE;
 		ElkPadding padding = Options.PADDING;
 
 		root = nodes.stream().filter(x -> x.getIncomingEdges().size() == 0).findFirst().get();
 		this.layoutGraph = layoutGraph;
-
-		layers = new ArrayList<List<ElkNode>>();
-		int depth = Help.depth(root);
-		for (int i = 0; i < depth; i++)
-			layers.add(new ArrayList<ElkNode>());
-
-		for (ElkNode n : nodes)
-			layers.get(Help.rootDistance(n, root)).add(n);
 
 		phase1(root);
 		states.addState(new GraphState("Phase 1: Done!", Graph.fromElk(layoutGraph)));
@@ -55,7 +45,7 @@ public class RTLayoutPhase implements Phase {
 		root.setX(-phase2(root));
 		states.addState(new GraphState("Phase 2: Done!", Graph.fromElk(layoutGraph)));
 
-		phase3(root, root.getX(), 0, nodeNodeSpacing, padding);
+		phase3(root, root.getX(), 0);
 		states.addState(new GraphState("Phase 3: Done!", Graph.fromElk(layoutGraph)));
 	}
 
@@ -143,7 +133,7 @@ public class RTLayoutPhase implements Phase {
 		return re;
 	}
 
-	List<ElkNode> GetSubtreeLayer(ElkNode n, int layer) {
+	List<ElkNode> getSubtreeLayer(ElkNode n, int layer) {
 		return Help.getSubtree(n).stream().filter(x -> Help.rootDistance(x, n) == layer).collect(Collectors.toList());
 	}
 
@@ -151,8 +141,8 @@ public class RTLayoutPhase implements Phase {
 		// Add threads
 		int dR = Help.depth(rightChild);
 		int dL = Help.depth(leftChild);
-		List<ElkNode> lL = GetSubtreeLayer(leftChild, dL - 1);
-		List<ElkNode> lR = GetSubtreeLayer(rightChild, dR - 1);
+		List<ElkNode> lL = getSubtreeLayer(leftChild, dL - 1);
+		List<ElkNode> lR = getSubtreeLayer(rightChild, dR - 1);
 		if (dL > dR) {
 			int maxL = lL.stream().map(x -> Help.xOffsetRT(x, leftChild)).max(Integer::compare).get();
 			int maxR = lR.stream().map(x -> Help.xOffsetRT(x, rightChild)).max(Integer::compare).get();
@@ -181,7 +171,7 @@ public class RTLayoutPhase implements Phase {
 		return re;
 	}
 
-	void phase3(ElkNode r, double rootOffset, int depth, double nodeNodeSpacing, ElkPadding padding) {
+	void phase3(ElkNode r, double rootOffset, int depth) {
 		List<ElkNode> childs = Help.getChilds(r);
 
 		int offset = Help.getProp(r).xOffset;
@@ -193,6 +183,6 @@ public class RTLayoutPhase implements Phase {
 
 		for (ElkNode c : childs)
 			if (c != null)
-				phase3(c, r.getX(), depth + 1, nodeNodeSpacing, padding);
+				phase3(c, r.getX(), depth + 1);
 	}
 }
