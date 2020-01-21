@@ -107,9 +107,9 @@ public class GraphState {
 		// Set the gridSize so that the entire tree + padding fits on the screen
 		int gridSize = (int) Math.min(
 				(target.getWidth() - pad.getHorizontal()) * 0.9
-						/ (graph.nodes.stream().map(x -> x.x).max(Double::compare).get() + 1),
+						/ (graph.nodes.stream().map(x -> x.x).max(Double::compare).get()),
 				(target.getHeight() - pad.getVertical()) * 0.9
-						/ (graph.nodes.stream().map(x -> x.y).max(Double::compare).get() + 1));
+						/ (graph.nodes.stream().map(x -> x.y).max(Double::compare).get()));
 
 		// Fix graph - make all coords positive, set size depending on new gridSize
 		int minX = graph.nodes.stream().map(x -> x.x).min(Double::compare).get().intValue(),
@@ -160,6 +160,18 @@ public class GraphState {
 			if (gridSize > 50) {
 				g.setFont(new Font(frame.getStateLabel().getFont().getName(), Font.PLAIN, (int) (gridSize * 0.3)));
 				
+				// Clear background
+				int size = 10;
+				g.setColor(target.getBackground());
+				g.fillRect( (int) (leftArrowNode.getX() * gridSize + (int) pad.left + leftArrowNode.getWidth() + 18) - size,
+							(int) (leftArrowNode.getY() * gridSize + (int) pad.top + leftArrowNode.getHeight() / 2) + 1, 
+							g.getFontMetrics().charWidth('4') + size * 2, g.getFontMetrics().getHeight() + size / 2);
+				g.fillRect( (int) (rightArrowNode.getX() * gridSize + (int) pad.left - g.getFontMetrics().charWidth('4') - 10) - size,
+							(int) (rightArrowNode.getY() * gridSize + (int) pad.top + rightArrowNode.getHeight() / 2) + 1, 
+							g.getFontMetrics().charWidth('4') + size * 2, g.getFontMetrics().getHeight() + size / 2);
+				g.setColor(Color.BLACK);
+				
+				// Draw dv string
 				Node markedN = graph.nodes.stream().filter(x -> x.name.contentEquals(markedNode.getIdentifier())).findFirst().get();;
 				g.drawString(Integer.toString(dv), 
 						(int) (markedN.x * gridSize + (int) pad.left + 
@@ -167,14 +179,17 @@ public class GraphState {
 						(int) (markedN.y * gridSize + (int) pad.top + 
 								(int) (markedN.h) + g.getFontMetrics().getHeight() * 0.7));
 				
+				// Draw differences string
 				g.drawString(Integer.toString(leftArrowNumber),
 						(int) (leftArrowNode.getX() * gridSize + (int) pad.left + leftArrowNode.getWidth()
 								+ 12),
-						(int) (leftArrowNode.getY() * gridSize + (int) pad.top + leftArrowNode.getHeight() / 2 - 5));
+						(int) (leftArrowNode.getY() * gridSize + (int) pad.top + 
+								g.getFontMetrics().getHeight() + leftArrowNode.getHeight() / 2 - 5));
 				g.drawString(Integer.toString(rightArrowNumber),
 						(int) (rightArrowNode.getX() * gridSize + (int) pad.left - 10 - 
 								g.getFontMetrics().stringWidth(Integer.toString(rightArrowNumber))),
-						(int) (leftArrowNode.getY() * gridSize + (int) pad.top + leftArrowNode.getHeight() / 2 - 5));
+						(int) (leftArrowNode.getY() * gridSize + (int) pad.top + 
+								g.getFontMetrics().getHeight() + leftArrowNode.getHeight() / 2 - 5));
 			}
 		}
 	}
