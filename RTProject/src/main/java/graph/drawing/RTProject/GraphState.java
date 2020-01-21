@@ -8,7 +8,9 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.swing.text.StyleConstants.FontConstants;
 
@@ -84,6 +86,13 @@ public class GraphState {
 		else
 			return "";
 	}
+	
+	public List<String> getContourNodeNames() {
+		if (contourNodes != null)
+			return contourNodes.stream().map(x -> x.getIdentifier()).collect(Collectors.toList());
+		else
+			return new ArrayList<String>();
+	}
 
 	public void draw(Graphics g, Component target, MainFrame frame) {
 		if (graph.nodes.size() == 0)
@@ -151,7 +160,8 @@ public class GraphState {
 								+ Options.SPACING_NODE_NODE / 2),
 						(int) (leftArrowNode.getY() * gridSize + (int) pad.top + leftArrowNode.getHeight() / 2 - 5));
 				g.drawString(Integer.toString(rightArrowNumber),
-						(int) (rightArrowNode.getX() * gridSize + (int) pad.left - Options.SPACING_NODE_NODE),
+						(int) (rightArrowNode.getX() * gridSize + (int) pad.left + 10 - Options.SPACING_NODE_NODE - 
+								g.getFontMetrics().stringWidth(Integer.toString(rightArrowNumber))),
 						(int) (leftArrowNode.getY() * gridSize + (int) pad.top + leftArrowNode.getHeight() / 2 - 5));
 			}
 		}
@@ -162,6 +172,7 @@ public class GraphState {
 		g.setColor(Color.BLACK);
 		g.drawRect(x, y, (int) n.w, (int) n.h);
 
+		// Set colour
 		if (isMarked)
 			g.setColor(Color.ORANGE);
 		else if (isContour)
@@ -187,7 +198,7 @@ public class GraphState {
 				note = note.substring(0, note.length() - 2);
 
 			g.drawString(name, (int) (x + (n.w - g.getFontMetrics().stringWidth(name)) / 2),
-					y + g.getFontMetrics().getAscent() - (int) (n.h * 0.1));
+					y + g.getFontMetrics().getAscent() - (int) (n.h * 0.08));
 			g.drawString(note, (int) (x + (n.w - g.getFontMetrics().stringWidth(note)) / 2),
 					y + g.getFontMetrics().getHeight() * 3 / 2 + (int) (n.h * 0.1));
 		} else {

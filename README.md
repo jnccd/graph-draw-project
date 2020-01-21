@@ -100,7 +100,7 @@ To the right there is the load button that we already used to load this graph.
 
 This pane contains tabs, the default shown tab is the editor tab which contains a text editor that shows the source code of the currently loaded graph. Hitting `CTRL + S` while the tab is focused or the `Save` button will save the changes you made in that editor to the loaded text file and reload it. Don't move or delete a text file that is currently loaded.
 
-Also noteworthy is a simple syntax highlighter that highlights the currently marked node.
+Also noteworthy is a simple syntax highlighter that highlights the currently marked node and contour.
 
 ![OwO thewes missing some something D:](Documentation-Resources/syntax_high.png "Hey, im a popup :P")
 
@@ -113,13 +113,19 @@ The options menu currently contains an animation interval slider and 4 level of 
 The first one hides all animations states that show how the contour was calculated, if activated this also activates the second option.  
 The second option hides all states that show the distance check on each contour layer.  
 The third option hides the xOffset values that the algorithm saves for each node. They are usually displayd below the nodes name.  
-The fourth option hides threads which are usually displayed as dashed lines.
+The fourth option hides threads which are displayed as dashed lines.
 
 #### Pane 4
 
 The fourth pane contains a legend for the graph drawing in the first pane. If this UI element does it's job it should be self explanatory. 
 
 ## The Software behind the UI
+
+### Dependencies
+
+The project is written using Java 1.8 and Maven. I imported and used the Maven packages `org.eclipse.elk.graph`, `org.eclipse.elk.alg.common` and `material-ui-swing`. The latter one contains a Java Swing Look n Feel that was inspired by Googles material design.
+
+### Program Architecture
 
 The code of this project is split into 3 packages:
 * graph.drawing.RTProject
@@ -157,27 +163,31 @@ This class contains final and non final options for the program. The non final o
 
 ### helper
 
-#### Edge
-
-This class mirrors an ElkEdge.
-
 #### Graph
 
 This class is used to clone an Elk Graph using the fromElk() method so a GraphState can get a copy of the graph.
 
-#### Help
-
-This class contains a lot of helpful michellenious methods.
-
 #### Node
 
 This class mirrors an ElkNode and additionally also contains a RT thread pointer.
+
+#### Edge
+
+This class mirrors an ElkEdge.
+
+#### Help
+
+This class contains a lot of helpful michellenious methods.
 
 #### NodeProperty
 
 An instance of this class is saved for every ElkNode and contains needed additional information for the BinaryCheckPhase and the RTLayoutPhase.
 
 ### phases
+
+#### Phase 
+
+This is the superclass for all phase classes in this package. It defines an apply method that gets a reference to an ElkNode that contains a graph and a ProgressMonitor.
 
 #### BinaryTreeCheckPhase
 
@@ -187,12 +197,9 @@ This is a Phase that throws an Exception if the apply method is called on a grap
 
 This is a Phase that layouts a graph using the inorder algorithm.
 
-#### Phase 
-
-This is the superclass for all phase classes in this package. It defines an apply method that gets a reference to an ElkNode that contains a graph and a ProgressMonitor.
-
 #### RTLayoutPhase
 
 This is a layout phase that layouts the graph using a RT implementation. However this phase is modified to additionally create GraphState instances of the current progress and add them to the GraphStatesManager.
 
-### ?
+## Visualization
+

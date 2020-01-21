@@ -26,7 +26,7 @@ import phases.Phase;
 import phases.RTLayoutPhase;
 
 /**
- * This class contains the nessecary methods to read, parse, check and update the GraphStates in the GraphStatesManager.
+ * This class contains the necessary methods to read, parse, check and update the GraphStates in the GraphStatesManager.
  * @author dobiko
  *
  */
@@ -37,12 +37,24 @@ public class GraphLoader {
 	public static ElkNode getGraph() {
 		return curGraph;
 	}
-
-	public static void load(String path, MainFrame frame, JPanel target) {
-		try {
-			curGraph = parseTextFile(path, frame);
-		} catch (Exception e) {
+	
+	public static void loadFile(String path, MainFrame frame, JPanel target) {
+		fileContent = readTextfile(path);
+		if (fileContent.equals("")) {
+			JOptionPane.showMessageDialog(frame, "I can't read that file :/");
 			return;
+		}
+		
+		frame.getEditorPane().setText(fileContent);
+		
+		load(fileContent, frame, target);
+	}
+
+	public static boolean load(String graph, MainFrame frame, JPanel target) {
+		try {
+			curGraph = parseText(graph);
+		} catch (Exception e) {
+			return false;
 		}
 
 		// test if graph is binary tree
@@ -50,7 +62,7 @@ public class GraphLoader {
 			new BinaryTreeCheckPhase().apply(curGraph, new BasicProgressMonitor());
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, e.getMessage());
-			return;
+			return false;
 		}
 
 		frame.states.clearStates();
@@ -65,6 +77,7 @@ public class GraphLoader {
 		frame.states.addState(new GraphState("Initial State", Graph.fromElk(curGraph)));
 
 		applyPhase(curGraph, new RTLayoutPhase(frame.states));
+		return true;
 	}
 
 	private static BasicProgressMonitor applyPhase(ElkNode graph, Phase p) {
@@ -78,15 +91,7 @@ public class GraphLoader {
 		return monitor;
 	}
 
-	private static ElkNode parseTextFile(String path, MainFrame frame) throws IOException {
-		fileContent = readTextfile(path);
-		if (fileContent.equals("")) {
-			JOptionPane.showMessageDialog(frame, "I can't read that file :/");
-			return null;
-		}
-		
-		frame.getEditorPane().setText(fileContent);
-
+	private static ElkNode parseText(String fileContent) {
 		String[] lines = fileContent.split("\n");
 		List<String> nodeNames = Arrays.stream(lines)
 				.filter(x -> !x.contains("->") && x.trim().length() > 0 && !x.contains(":")).map(x -> {
@@ -138,22 +143,29 @@ public class GraphLoader {
 		return graph;
 	}
 
-	public static String readTextfile(String path) throws IOException {
+	public static String readTextfile(String path) {
 		String content = "";
 
-		content = new String(Files.readAllBytes(Paths.get(path)));
+		try {
+			content = new String(Files.readAllBytes(Paths.get(path)));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 		return content;
 	}
 	
-	public static boolean saveTextfile(String path, String content) throws IOException {
-		FileWriter f = new FileWriter(path);
+	public static boolean saveTextfile(String path, String content) {
+		FileWriter f = null;
 		try {
+			f = new FileWriter(path);
 			f.write(content);
 		} catch (Exception e) {
 			return false;
 		} finally {
-			f.close();
+			try {
+				f.close();
+			} catch (Exception e) { }
 		}
 		return true;
 	}
