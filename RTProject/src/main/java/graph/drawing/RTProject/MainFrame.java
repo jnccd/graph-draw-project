@@ -19,9 +19,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
-import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JLabel;
 import java.awt.Font;
@@ -36,40 +35,25 @@ import java.awt.Dimension;
 
 import javax.swing.Box;
 import java.awt.SystemColor;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.EtchedBorder;
-import javax.swing.border.LineBorder;
 import java.awt.Color;
-import java.awt.BorderLayout;
-import javax.swing.border.MatteBorder;
-import javax.swing.border.SoftBevelBorder;
-import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.Highlighter;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyleContext;
-
 import helper.Node;
 import mdlaf.MaterialLookAndFeel;
 
-import javax.swing.JTextArea;
-import javax.swing.JTextPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JEditorPane;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import javax.swing.JScrollPane;
-import javax.swing.JScrollBar;
 import javax.swing.ScrollPaneConstants;
 import java.awt.event.MouseMotionAdapter;
 import javax.swing.JCheckBox;
-import java.awt.GridLayout;
 
 /**
- * This class was with the exception of some events generated using the WindowBuilder Plugin and its attributes are the GUI elements shown in the last chapter.
+ * This class was with the exception of some events generated using the WindowBuilder Plugin and 
+ * its attributes are the GUI elements shown in the last chapter.
  * @author dobiko
  *
  */
@@ -175,11 +159,11 @@ public class MainFrame extends JFrame {
 			slider.setMaximum(states.size() - 1);
 			slider.setValue(states.getCurrentStateIndex());
 
-			highlightMarkednodeInEditor();
+			highlightEditorText();
 		}
 	}
 
-	void highlightMarkednodeInEditor() {
+	void highlightEditorText() {
 		// remove previous highlight
 		Highlighter hilite = editorPane.getHighlighter();
 		Highlighter.Highlight[] hilites = hilite.getHighlights();
@@ -189,7 +173,10 @@ public class MainFrame extends JFrame {
 		String markedNode = states.getCurrentState().getMarkedNodeName();
 		if (markedNode.contentEquals(""))
 			return;
-
+		
+		List<String> contourNodes = states.getCurrentState().getContourNodeNames();
+		
+		// Find node occurrences and mark them
 		String[] split = editorPane.getText().split("( )|(\n)");
 		for (int i = 0; i < split.length; i++) {
 			if (split[i].contentEquals(markedNode)) {
@@ -203,6 +190,22 @@ public class MainFrame extends JFrame {
 					editorPane.getHighlighter().addHighlight(index, index + markedNode.length(), highlightPainter);
 				} catch (BadLocationException e) {
 					e.printStackTrace();
+				}
+			}
+			
+			for (String s : contourNodes) {
+				if (split[i].contentEquals(s)) {
+					int index = 0;
+					for (int j = 0; j < i; j++)
+						index += split[j].length() + 1;
+
+					DefaultHighlighter.DefaultHighlightPainter highlightPainter = new DefaultHighlighter.DefaultHighlightPainter(
+							Color.LIGHT_GRAY);
+					try {
+						editorPane.getHighlighter().addHighlight(index, index + s.length(), highlightPainter);
+					} catch (BadLocationException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		}
@@ -381,7 +384,7 @@ public class MainFrame extends JFrame {
 				Options.hideContourStates = chckbxHideContourStates.isSelected();
 				if (Options.hideContourStates && !chckbxHideContourDifferenceStates.isSelected())
 					chckbxHideContourDifferenceStates.doClick();
-				GraphLoader.load(currentFilePath, frame, drawPanel);
+				GraphLoader.load(editorPane.getText(), frame, drawPanel);
 				refresh();
 			}
 		});
@@ -389,7 +392,7 @@ public class MainFrame extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				Options.hideContourDifferenceStates = chckbxHideContourDifferenceStates.isSelected();
-				GraphLoader.load(currentFilePath, frame, drawPanel);
+				GraphLoader.load(editorPane.getText(), frame, drawPanel);
 				refresh();
 			}
 		});
@@ -496,7 +499,7 @@ public class MainFrame extends JFrame {
 					File file = fc.getSelectedFile();
 					if (file.canRead()) {
 						currentFilePath = file.getAbsolutePath();
-						GraphLoader.load(currentFilePath, frame, drawPanel);
+						GraphLoader.loadFile(currentFilePath, frame, drawPanel);
 
 						File lastPath = new File(lastPathPath);
 						try {
@@ -519,21 +522,10 @@ public class MainFrame extends JFrame {
 	}
 	
 	void saveEditor() {
-		String path = "";
-		try {
+		// Save the changes to the text file if the graph can be successfully loaded
+		if (GraphLoader.load(editorPane.getText(), frame, drawPanel)) {
 			GraphLoader.saveTextfile(currentFilePath, editorPane.getText());
-			path = currentFilePath;
-		} catch (Exception e1) {
-			try {
-				new File(tmpPath).createNewFile();
-				GraphLoader.saveTextfile(tmpPath, editorPane.getText());
-				path = tmpPath;
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
 		}
-
-		GraphLoader.load(path, frame, drawPanel);
 		refresh();
 	}
 
