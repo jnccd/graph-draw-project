@@ -42,7 +42,7 @@ public class RTLayoutPhase implements Phase {
 		phase1(root);
 		states.addState(new GraphState("Phase 1: Done!", Graph.fromElk(layoutGraph)));
 
-		root.setX(-phase2(root));
+		root.setX(-phase2(root) + 1);
 		states.addState(new GraphState("Phase 2: Done!", Graph.fromElk(layoutGraph)));
 
 		phase3(root, root.getX(), 0);

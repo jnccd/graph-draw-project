@@ -211,6 +211,20 @@ This is a layout phase that layouts the graph using a RT implementation. However
 
 ## Visualization
 
+### GUI
+
+![OwO thewes missing some something D:](Documentation-Resources/gui.png "Hey, im a popup :P")
+
+ The left side of the GUI is designed similarly to a generic video player with the play plause button and the progress bar showing the progress through the video. However we also need buttons to step through the animation frame by frame. Similarly to sony vegas' gui I seperate the video player controls from the frame by frame buttons.
+
+The right side of the GUI contains additional information like the legend, similarly to YouTubes info panel that i enabled on certain videos. The information displayed here is always important so there is no option to hide it.
+
+Within the editorTab there is some padding around the editorPane because the text would otherwise start directly next to the background and no other text editor does that.  
+
+![OwO thewes missing some something D:](Documentation-Resources/options.png "Hey, im a popup :P")
+
+The level of detail options in the options menu ask if you want to hide something instead of the other way around. This is the case because those options should normally be enabled, therefore hiding the elements is the special case.
+
 ### Phase 1
 
 ![OwO thewes missing some something D:](Documentation-Resources/vis_phase1.png "Hey, im a popup :P")
@@ -221,3 +235,27 @@ Firstly to make clear in what order we stepping through the graph currently and 
 
 To show what node we are looking at in the current step the node is marked in an orange color. Due to the fact that this color is a warning color that should make it easy to see that this node is important in the current step.
 
+To emphasize nodes that belong to the contours that are currently checked, those nodes are drawn kind of negatively. The negative color of cyan is unfitting though so I used gray. That gray tone also fits well to the orange.
+
+The layer of the currently checked contour difference is displayed by a line between the two nodes. Below that line at each side the actual contour value is drawn.
+
+![OwO thewes missing some something D:](Documentation-Resources/vis_phase1_2.png "Hey, im a popup :P")
+
+During such a state the dv value of the algorithm is drawn below the marked node because it visualizes the horizontal difference between the two subtrees under it.
+
+Threads that are created during this phase are displayed as dashed lines similarly to how they were drawn in the paper from Reingold and Tilford that first proposed the RT algorithm.
+Unlike edges however that are drawn from and to the edges of the nodes rectangle that are the closest to each other, the threads are routed always from and to the lower sides of the rectangle.
+
+### Phase 2
+
+![OwO thewes missing some something D:](Documentation-Resources/vis_phase2.png "Hey, im a popup :P")
+
+This phase is a lot simpler than the first one. All we do is finding out the roots X position within the grid by stepping through its left children recursively.
+We mark the node we are currently visitig again and show the currently accumulated X position in the title.
+
+### Phase 3
+
+![OwO thewes missing some something D:](Documentation-Resources/vis_phase3.png "Hey, im a popup :P")
+
+In this phase we step through the graph in Preorder and apply the offsets we calculated earlier. 
+The node we are currently processing is marked again and the order is displayed in the title. 

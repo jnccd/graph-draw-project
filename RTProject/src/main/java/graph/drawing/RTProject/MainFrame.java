@@ -95,16 +95,15 @@ public class MainFrame extends JFrame {
 
 			g.setColor(Color.BLACK);
 			g.setFont(new Font(frame.getStateLabel().getFont().getName(), Font.PLAIN, (int) (20)));
-			g.drawString("Legend:", 10, 5 + g.getFontMetrics().getAscent());
 
-			int curY = 10 + g.getFontMetrics().getAscent();
-			Node normal = new Node(10, curY + 10, 40, 40, "Example", "0.0", new ArrayList<helper.Edge>(),
+			int curY = 0;
+			Node normal = new Node(10, curY + 10, 40, 40, "Example", "0", new ArrayList<helper.Edge>(),
 					new ArrayList<helper.Edge>(), null);
 			curY += 5 + 50;
-			Node marked = new Node(10, curY + 10, 40, 40, "Example", "0.0", new ArrayList<helper.Edge>(),
+			Node marked = new Node(10, curY + 10, 40, 40, "Example", "0", new ArrayList<helper.Edge>(),
 					new ArrayList<helper.Edge>(), null);
 			curY += 5 + 50;
-			Node contour = new Node(10, curY + 10, 40, 40, "Example", "0.0", new ArrayList<helper.Edge>(),
+			Node contour = new Node(10, curY + 10, 40, 40, "Example", "0", new ArrayList<helper.Edge>(),
 					new ArrayList<helper.Edge>(), null);
 			curY += 5 + 50;
 
@@ -258,7 +257,7 @@ public class MainFrame extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		SpringLayout sl_contentPane = new SpringLayout();
-		sl_contentPane.putConstraint(SpringLayout.NORTH, legendPanel, -245, SpringLayout.SOUTH, contentPane);
+		sl_contentPane.putConstraint(SpringLayout.NORTH, legendPanel, -215, SpringLayout.SOUTH, contentPane);
 
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, drawPanel, -30, SpringLayout.SOUTH, contentPane);
 		contentPane.setLayout(sl_contentPane);
@@ -476,6 +475,7 @@ public class MainFrame extends JFrame {
 		botPanel.add(btnPlay);
 
 		slider = new JSlider();
+		slider.setBackground(SystemColor.controlHighlight);
 		slider.addMouseMotionListener(new MouseMotionAdapter() {
 			@Override
 			public void mouseDragged(MouseEvent e) {
