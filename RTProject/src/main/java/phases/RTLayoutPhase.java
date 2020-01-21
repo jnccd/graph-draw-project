@@ -90,7 +90,7 @@ public class RTLayoutPhase implements Phase {
 									+ " | Check difference of " + leftContour.get(i).getIdentifier() + " and "
 									+ rightContour.get(i).getIdentifier(),
 							Graph.fromElk(layoutGraph), n, Help.concat(leftContour, rightContour), leftContour.get(i),
-							rightContour.get(i), leftSubtreeLayerRightmostTotalX, rightSubtreeLayerLeftmostTotalX));
+							rightContour.get(i), leftSubtreeLayerRightmostTotalX, rightSubtreeLayerLeftmostTotalX, dv));
 			}
 			
 			addThreads(rightChild, leftChild);

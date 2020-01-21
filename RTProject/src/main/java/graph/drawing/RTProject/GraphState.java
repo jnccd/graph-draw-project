@@ -25,8 +25,10 @@ import helper.Help;
 import helper.Node;
 
 /**
- * This class holds all the information nessecary to visualize a state in the RT algorithm. The left and right arrow attributes may be confusing, they contain all the nessecary information to draw the line that symbolises the check of the contour difference.  
-The class also contains the draw method which draws this state to a target component.
+ * This class holds all the information nessecary to visualise a state in the RT algorithm. 
+ * The left and right arrow attributes may be confusing, they contain all the nessecary 
+ * information to draw the line that symbolises the check of the contour difference.  
+ * The class also contains the draw method which draws this state to a target component.
  * @author dobiko
  *
  */
@@ -38,6 +40,7 @@ public class GraphState {
 
 	private Node leftArrowNode, rightArrowNode;
 	private int leftArrowNumber, rightArrowNumber;
+	private int dv;
 
 	public GraphState(String title, Graph g) {
 		super();
@@ -61,7 +64,7 @@ public class GraphState {
 	}
 
 	public GraphState(String title, Graph graph, ElkNode markedNode, List<ElkNode> contourNodes, ElkNode leftArrowNode,
-			ElkNode rightArrowNode, int leftArrowNumber, int rightArrowNumber) {
+			ElkNode rightArrowNode, int leftArrowNumber, int rightArrowNumber, int dv) {
 		super();
 		this.title = title;
 		this.graph = graph;
@@ -69,6 +72,7 @@ public class GraphState {
 		this.contourNodes = contourNodes;
 		this.leftArrowNumber = leftArrowNumber;
 		this.rightArrowNumber = rightArrowNumber;
+		this.dv = dv;
 
 		this.leftArrowNode = graph.nodes.stream().filter(x -> x.name == leftArrowNode.getIdentifier()).findFirst()
 				.get();
@@ -109,7 +113,7 @@ public class GraphState {
 
 		// Fix graph - make all coords positive, set size depending on new gridSize
 		int minX = graph.nodes.stream().map(x -> x.x).min(Double::compare).get().intValue(),
-				minY = graph.nodes.stream().map(x -> x.y).min(Double::compare).get().intValue();
+			minY = graph.nodes.stream().map(x -> x.y).min(Double::compare).get().intValue();
 		for (Node n : graph.nodes) {
 			n.w = gridSize * 0.9;
 			n.h = gridSize * 0.9;
@@ -155,6 +159,14 @@ public class GraphState {
 					(int) (rightArrowNode.getY() * gridSize + (int) pad.top + rightArrowNode.getHeight() / 2));
 			if (gridSize > 50) {
 				g.setFont(new Font(frame.getStateLabel().getFont().getName(), Font.PLAIN, (int) (gridSize * 0.3)));
+				
+				Node markedN = graph.nodes.stream().filter(x -> x.name.contentEquals(markedNode.getIdentifier())).findFirst().get();;
+				g.drawString(Integer.toString(dv), 
+						(int) (markedN.x * gridSize + (int) pad.left + 
+								(markedN.w - g.getFontMetrics().stringWidth(Integer.toString(dv))) / 2),
+						(int) (markedN.y * gridSize + (int) pad.top + 
+								(int) (markedN.h) + g.getFontMetrics().getHeight() * 0.7));
+				
 				g.drawString(Integer.toString(leftArrowNumber),
 						(int) (leftArrowNode.getX() * gridSize + (int) pad.left + leftArrowNode.getWidth()
 								+ 12),
