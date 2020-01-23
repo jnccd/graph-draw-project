@@ -254,9 +254,9 @@ public class MainFrame extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		SpringLayout sl_contentPane = new SpringLayout();
+		
+				sl_contentPane.putConstraint(SpringLayout.SOUTH, drawPanel, -40, SpringLayout.SOUTH, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.NORTH, legendPanel, -215, SpringLayout.SOUTH, contentPane);
-
-		sl_contentPane.putConstraint(SpringLayout.SOUTH, drawPanel, -30, SpringLayout.SOUTH, contentPane);
 		contentPane.setLayout(sl_contentPane);
 
 		stateLabel = new JLabel("No Graph Loaded");
@@ -279,14 +279,14 @@ public class MainFrame extends JFrame {
 		sl_contentPane.putConstraint(SpringLayout.EAST, drawPanel, -5, SpringLayout.WEST, sidePanel);
 		sl_contentPane.putConstraint(SpringLayout.EAST, sidePanel, 0, SpringLayout.EAST, contentPane);
 		contentPane.add(sidePanel);
-
+		
 		JLayeredPane botPanel = new JLayeredPane();
+		sl_contentPane.putConstraint(SpringLayout.NORTH, botPanel, 10, SpringLayout.SOUTH, drawPanel);
+		sl_contentPane.putConstraint(SpringLayout.WEST, botPanel, 5, SpringLayout.WEST, contentPane);
+		sl_contentPane.putConstraint(SpringLayout.SOUTH, botPanel, -5, SpringLayout.SOUTH, contentPane);
+		sl_contentPane.putConstraint(SpringLayout.EAST, botPanel, -10, SpringLayout.WEST, sidePanel);
 		botPanel.setForeground(Color.WHITE);
 		botPanel.setBackground(Color.WHITE);
-		sl_contentPane.putConstraint(SpringLayout.NORTH, botPanel, 5, SpringLayout.SOUTH, drawPanel);
-		sl_contentPane.putConstraint(SpringLayout.WEST, botPanel, 0, SpringLayout.WEST, contentPane);
-		sl_contentPane.putConstraint(SpringLayout.SOUTH, botPanel, 0, SpringLayout.SOUTH, contentPane);
-		sl_contentPane.putConstraint(SpringLayout.EAST, botPanel, -5, SpringLayout.WEST, sidePanel);
 		SpringLayout sl_sidePanel = new SpringLayout();
 		sidePanel.setLayout(sl_sidePanel);
 
@@ -320,17 +320,17 @@ public class MainFrame extends JFrame {
 		editorTab.add(editorScrollPane);
 		
 		JButton btnSave = new JButton("Save");
+		sl_editorTab.putConstraint(SpringLayout.NORTH, btnSave, -35, SpringLayout.SOUTH, editorTab);
+		sl_editorTab.putConstraint(SpringLayout.WEST, btnSave, 5, SpringLayout.WEST, editorTab);
+		sl_editorTab.putConstraint(SpringLayout.SOUTH, btnSave, -5, SpringLayout.SOUTH, editorTab);
+		sl_editorTab.putConstraint(SpringLayout.EAST, btnSave, -5, SpringLayout.EAST, editorTab);
 		btnSave.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				saveEditor();
 			}
 		});
-		sl_editorTab.putConstraint(SpringLayout.NORTH, btnSave, -30, SpringLayout.SOUTH, editorTab);
-		sl_editorTab.putConstraint(SpringLayout.WEST, btnSave, 0, SpringLayout.WEST, editorTab);
-		sl_editorTab.putConstraint(SpringLayout.EAST, btnSave, 0, SpringLayout.EAST, editorTab);
 		sl_editorTab.putConstraint(SpringLayout.SOUTH, editorScrollPane, 0, SpringLayout.NORTH, btnSave);
-		sl_editorTab.putConstraint(SpringLayout.SOUTH, btnSave, 0, SpringLayout.SOUTH, editorTab);
 		editorTab.add(btnSave);
 
 		JPanel optionsTab = new JPanel();
@@ -424,10 +424,7 @@ public class MainFrame extends JFrame {
 		sl_sidePanel.putConstraint(SpringLayout.EAST, legendPanel, 0, SpringLayout.EAST, sidePanel);
 		contentPane.add(legendPanel);
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, legendPanel, 0, SpringLayout.SOUTH, contentPane);
-
-		contentPane.add(botPanel);
-		botPanel.setLayout(new BoxLayout(botPanel, BoxLayout.X_AXIS));
-
+		
 		JButton btnRight = new JButton(">");
 		btnRight.setFont(new Font("Noto Sans", Font.PLAIN, 25));
 		btnRight.addMouseListener(new MouseAdapter() {
@@ -516,6 +513,16 @@ public class MainFrame extends JFrame {
 		botPanel.add(sliderPadding2);
 		btnLoadFile.setHorizontalAlignment(SwingConstants.RIGHT);
 		botPanel.add(btnLoadFile);
+		
+		contentPane.add(botPanel);
+		botPanel.setLayout(new BoxLayout(botPanel, BoxLayout.X_AXIS));
+		
+		JPanel backPanel = new JPanel();
+		sl_contentPane.putConstraint(SpringLayout.NORTH, backPanel, 5, SpringLayout.SOUTH, drawPanel);
+		sl_contentPane.putConstraint(SpringLayout.WEST, backPanel, 0, SpringLayout.WEST, contentPane);
+		sl_contentPane.putConstraint(SpringLayout.SOUTH, backPanel, 0, SpringLayout.SOUTH, contentPane);
+		sl_contentPane.putConstraint(SpringLayout.EAST, backPanel, -5, SpringLayout.WEST, sidePanel);
+		contentPane.add(backPanel);
 	}
 	
 	void saveEditor() {
