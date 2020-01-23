@@ -4,6 +4,8 @@
 
 I moved the graph input format subsection from the technical section to the user guide because the user needs to know what kinds of graphs they can load.
 
+Class diagrams in this Documentation will not include most generated methods in an efford to keep the diagrams in a readable size.
+
 ## User Guide
 
 ### Startup
