@@ -3,7 +3,6 @@ package graph.drawing.RTProject;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -12,25 +11,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.swing.text.StyleConstants.FontConstants;
-
 import org.eclipse.elk.core.math.ElkPadding;
-import org.eclipse.elk.graph.ElkConnectableShape;
-import org.eclipse.elk.graph.ElkEdge;
 import org.eclipse.elk.graph.ElkNode;
 
 import helper.Edge;
 import helper.Graph;
-import helper.Help;
 import helper.Node;
 
 /**
- * This class holds all the information nessecary to visualise a state in the RT algorithm. 
- * The left and right arrow attributes may be confusing, they contain all the nessecary 
- * information to draw the line that symbolises the check of the contour difference.  
+ * This class holds all the information necessary to visualize a state in the RT algorithm. 
+ * The left and right arrow attributes may be confusing, they contain all the necessary 
+ * information to draw the line that symbolizes the check of the contour difference.  
  * The class also contains the draw method which draws this state to a target component.
  * @author dobiko
- *
  */
 public class GraphState {
 	private String title;
@@ -98,7 +91,7 @@ public class GraphState {
 			return new ArrayList<String>();
 	}
 
-	public void draw(Graphics g, Component target, MainFrame frame) {
+	public void draw(Graphics g, Component target, String fontName) {
 		if (graph.nodes.size() == 0)
 			return;
 
@@ -128,7 +121,7 @@ public class GraphState {
 			Node src = e.sources.get(0);
 			Node tar = e.targets.get(0);
 
-			drawEdge(g, target, frame, src, tar, gridSize, pad, Color.BLACK, false, false);
+			drawEdge(g, src, tar, gridSize, pad, Color.BLACK, false, false);
 		}
 
 		// Draw the nodes in the correct colours
@@ -141,10 +134,10 @@ public class GraphState {
 				if (n.thread != null) {
 					Node tar = graph.nodes.stream().filter(x -> x.name.contentEquals(n.thread.getIdentifier()))
 							.findFirst().get();
-					drawEdge(g, target, frame, n, tar, gridSize, pad, Color.BLACK, true, true);
+					drawEdge(g, n, tar, gridSize, pad, Color.BLACK, true, true);
 				}
 
-			drawNode(g, target, frame, n, (int) n.x * gridSize + (int) pad.left, (int) n.y * gridSize + (int) pad.top,
+			drawNode(g, fontName, n, (int) n.x * gridSize + (int) pad.left, (int) n.y * gridSize + (int) pad.top,
 					isContour, markedNode != null && n.name.contentEquals(markedNode.getIdentifier()));
 		}
 
@@ -158,7 +151,7 @@ public class GraphState {
 					(int) (rightArrowNode.getX() * gridSize + (int) pad.left - 6),
 					(int) (rightArrowNode.getY() * gridSize + (int) pad.top + rightArrowNode.getHeight() / 2));
 			if (gridSize > 50) {
-				g.setFont(new Font(frame.getStateLabel().getFont().getName(), Font.PLAIN, (int) (gridSize * 0.3)));
+				g.setFont(new Font(fontName, Font.PLAIN, (int) (gridSize * 0.3)));
 				
 				// Clear background
 				int size = 10;
@@ -194,12 +187,12 @@ public class GraphState {
 		}
 	}
 
-	public static void drawNode(Graphics g, Component target, MainFrame frame, Node n, int x, int y, boolean isContour,
+	public static void drawNode(Graphics g, String fontName, Node n, int x, int y, boolean isContour,
 			boolean isMarked) {
 		g.setColor(Color.BLACK);
 		g.drawRect(x, y, (int) n.w, (int) n.h);
 
-		// Set colour
+		// Set color
 		if (isMarked)
 			g.setColor(Color.ORANGE);
 		else if (isContour)
@@ -215,7 +208,7 @@ public class GraphState {
 
 		// Draw text, only draw the note if there is enough space
 		if (n.h > 30 && !Options.hideNodeOffsetValues) {
-			g.setFont(new Font(frame.getStateLabel().getFont().getName(), Font.PLAIN, (int) (n.h * 0.4)));
+			g.setFont(new Font(fontName, Font.PLAIN, (int) (n.h * 0.4))); // frame.getStateLabel().getFont().getName()
 
 			String name = new String(n.name);
 			String note = new String(n.note);
@@ -229,7 +222,7 @@ public class GraphState {
 			g.drawString(note, (int) (x + (n.w - g.getFontMetrics().stringWidth(note)) / 2),
 					y + g.getFontMetrics().getHeight() * 3 / 2 + (int) (n.h * 0.1));
 		} else {
-			g.setFont(new Font(frame.getStateLabel().getFont().getName(), Font.PLAIN, (int) (n.h * 0.9)));
+			g.setFont(new Font(fontName, Font.PLAIN, (int) (n.h * 0.9)));
 
 			String name = new String(n.name);
 			while (g.getFontMetrics().stringWidth(name) > n.w)
@@ -240,7 +233,7 @@ public class GraphState {
 		}
 	}
 
-	public static void drawEdge(Graphics g, Component target, MainFrame frame, Node src, Node tar, int gridSize,
+	public static void drawEdge(Graphics g, Node src, Node tar, int gridSize,
 			ElkPadding pad, Color c, boolean alwaysBottom, boolean dashed) {
 		int srcX, srcY, tarX, tarY;
 		if (src.x < tar.x) {

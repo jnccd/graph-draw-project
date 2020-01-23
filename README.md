@@ -108,7 +108,7 @@ Also noteworthy is a simple syntax highlighter that highlights the currently mar
 
 ![OwO thewes missing some something D:](Documentation-Resources/syntax_high.png "Hey, im a popup :P")
 
-##### The Options Menu
+##### The Options Menu 
 
 ![OwO thewes missing some something D:](Documentation-Resources/options.png "Hey, im a popup :P")
 
@@ -127,7 +127,7 @@ The fourth pane contains a legend for the graph drawing in the first pane. If th
 
 ### Dependencies
 
-The project is written using Java 1.8 and Maven. I imported and used the Maven packages `org.eclipse.elk.graph`, `org.eclipse.elk.alg.common` and `material-ui-swing`. The latter one contains a Java Swing Look n Feel that was inspired by Googles material design.
+The project is written using Java 1.8 and Maven. I imported and used the Maven packages `org.eclipse.elk.graph`, `org.eclipse.elk.alg.common` and `material-ui-swing`. The latter one contains a Java Swing Look and Feel that was inspired by Googles material design.
 
 ### Program Architecture
 
@@ -239,12 +239,15 @@ To emphasize nodes that belong to the contours that are currently checked, those
 
 The layer of the currently checked contour difference is displayed by a line between the two nodes. Below that line at each side the actual contour value is drawn.
 
+Due to the fact that the contour number and the threads might overlap the background of the contour number is cleared.
+Overlaps between thread lines and contour difference lines aren't so confusing because they are drawn in different colors.
+
+When the difference line is drawn the dv value of the algorithm is drawn below the marked node to visualize that it's the horizontal difference between the two subtrees under it.
+
 ![OwO thewes missing some something D:](Documentation-Resources/vis_phase1_2.png "Hey, im a popup :P")
 
-During such a state the dv value of the algorithm is drawn below the marked node because it visualizes the horizontal difference between the two subtrees under it.
-
 Threads that are created during this phase are displayed as dashed lines similarly to how they were drawn in the paper from Reingold and Tilford that first proposed the RT algorithm.
-Unlike edges however that are drawn from and to the edges of the nodes rectangle that are the closest to each other, the threads are routed always from and to the lower sides of the rectangle.
+Unlike edges however that are drawn from and to the edges of the nodes rectangle that are the closest to each other, the threads are routed always from and to the lower sides of the rectangle to prevent overlaps.
 
 ### Phase 2
 
