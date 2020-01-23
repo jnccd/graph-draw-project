@@ -112,7 +112,7 @@ public class MainFrame extends JFrame {
 			GraphState.drawNode(g, legendPanel, frame, contour, (int) contour.x, (int) contour.y, true, false);
 			
 			g.setColor(Color.BLACK);
-			GraphState.drawLine(g, 10, curY + 15, 50, curY + 15);
+			GraphState.drawLine(g, Color.BLACK, 3, 10, curY + 15, 50, curY + 15);
 			GraphState.drawDashedLine(g, 10, curY + 3 + 15 + 15, 50, curY + 3 + 15 + 15);
 
 			g.setColor(Color.BLACK);
@@ -169,9 +169,6 @@ public class MainFrame extends JFrame {
 			hilite.removeHighlight(hilites[i]);
 
 		String markedNode = states.getCurrentState().getMarkedNodeName();
-		if (markedNode.contentEquals(""))
-			return;
-		
 		List<String> contourNodes = states.getCurrentState().getContourNodeNames();
 		
 		// Find node occurrences and mark them
@@ -284,7 +281,8 @@ public class MainFrame extends JFrame {
 		contentPane.add(sidePanel);
 
 		JLayeredPane botPanel = new JLayeredPane();
-		botPanel.setBackground(SystemColor.scrollbar);
+		botPanel.setForeground(Color.WHITE);
+		botPanel.setBackground(Color.WHITE);
 		sl_contentPane.putConstraint(SpringLayout.NORTH, botPanel, 5, SpringLayout.SOUTH, drawPanel);
 		sl_contentPane.putConstraint(SpringLayout.WEST, botPanel, 0, SpringLayout.WEST, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, botPanel, 0, SpringLayout.SOUTH, contentPane);
@@ -455,7 +453,6 @@ public class MainFrame extends JFrame {
 		botPanel.add(btnRight);
 
 		Component sliderPadding1 = Box.createHorizontalStrut(20);
-		sliderPadding1.setBackground(SystemColor.controlHighlight);
 		botPanel.add(sliderPadding1);
 
 		btnPlay = new JButton("►");
@@ -515,6 +512,7 @@ public class MainFrame extends JFrame {
 		});
 
 		Component sliderPadding2 = Box.createHorizontalStrut(20);
+		sliderPadding2.setBackground(Color.WHITE);
 		botPanel.add(sliderPadding2);
 		btnLoadFile.setHorizontalAlignment(SwingConstants.RIGHT);
 		botPanel.add(btnLoadFile);

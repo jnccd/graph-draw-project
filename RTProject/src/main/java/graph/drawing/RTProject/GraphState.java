@@ -107,9 +107,9 @@ public class GraphState {
 		// Set the gridSize so that the entire tree + padding fits on the screen
 		int gridSize = (int) Math.min(
 				(target.getWidth() - pad.getHorizontal()) * 0.9
-						/ (graph.nodes.stream().map(x -> x.x).max(Double::compare).get()),
+						/ (graph.nodes.stream().map(x -> x.x).max(Double::compare).get() + 1),
 				(target.getHeight() - pad.getVertical()) * 0.9
-						/ (graph.nodes.stream().map(x -> x.y).max(Double::compare).get()));
+						/ (graph.nodes.stream().map(x -> x.y).max(Double::compare).get() + 1));
 
 		// Fix graph - make all coords positive, set size depending on new gridSize
 		int minX = graph.nodes.stream().map(x -> x.x).min(Double::compare).get().intValue(),
@@ -151,7 +151,7 @@ public class GraphState {
 		// Draw the contour difference arrows
 		g.setColor(Color.BLACK);
 		if (leftArrowNode != null && rightArrowNode != null) {
-			g.drawLine(
+			drawLine(g, Color.ORANGE, 3,
 					(int) (leftArrowNode.getX() * gridSize + (int) pad.left + leftArrowNode.getWidth()
 							+ 6),
 					(int) (leftArrowNode.getY() * gridSize + (int) pad.top + leftArrowNode.getHeight() / 2),
@@ -164,10 +164,10 @@ public class GraphState {
 				int size = 10;
 				g.setColor(target.getBackground());
 				g.fillRect( (int) (leftArrowNode.getX() * gridSize + (int) pad.left + leftArrowNode.getWidth() + 18) - size,
-							(int) (leftArrowNode.getY() * gridSize + (int) pad.top + leftArrowNode.getHeight() / 2) + 1, 
+							(int) (leftArrowNode.getY() * gridSize + (int) pad.top + leftArrowNode.getHeight() / 2) + 2, 
 							g.getFontMetrics().charWidth('4') + size * 2, g.getFontMetrics().getHeight() + size / 2);
 				g.fillRect( (int) (rightArrowNode.getX() * gridSize + (int) pad.left - g.getFontMetrics().charWidth('4') - 10) - size,
-							(int) (rightArrowNode.getY() * gridSize + (int) pad.top + rightArrowNode.getHeight() / 2) + 1, 
+							(int) (rightArrowNode.getY() * gridSize + (int) pad.top + rightArrowNode.getHeight() / 2) + 2, 
 							g.getFontMetrics().charWidth('4') + size * 2, g.getFontMetrics().getHeight() + size / 2);
 				g.setColor(Color.BLACK);
 				
@@ -268,7 +268,7 @@ public class GraphState {
 		if (dashed)
 			drawDashedLine(g, srcX, srcY, tarX, tarY);
 		else 
-			drawLine(g, srcX, srcY, tarX, tarY);
+			drawLine(g, c, 3, srcX, srcY, tarX, tarY);
 	}
 
 	public static void drawDashedLine(Graphics g, int srcX, int srcY, int tarX, int tarY) {
@@ -281,10 +281,11 @@ public class GraphState {
 		g2d.dispose();
 	}
 	
-	public static void drawLine(Graphics g, int srcX, int srcY, int tarX, int tarY) {
+	public static void drawLine(Graphics g, Color c, int width, int srcX, int srcY, int tarX, int tarY) {
 		Graphics2D g2d = (Graphics2D) g.create();
 
-		Stroke dashed = new BasicStroke(3);
+		g2d.setColor(c);
+		Stroke dashed = new BasicStroke(width);
 		g2d.setStroke(dashed);
 		g2d.drawLine(srcX, srcY, tarX, tarY);
 
