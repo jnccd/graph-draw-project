@@ -52,10 +52,9 @@ import java.awt.event.MouseMotionAdapter;
 import javax.swing.JCheckBox;
 
 /**
- * This class was with the exception of some events generated using the WindowBuilder Plugin and 
- * its attributes are the GUI elements shown in the last chapter.
+ * This class contains the definitions for the GUI.
+ * The constructor was generated using WindowBuilder
  * @author dobiko
- *
  */
 public class MainFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -68,67 +67,17 @@ public class MainFrame extends JFrame {
 	private JFileChooser fc = new JFileChooser();
 
 	public GraphStatesManager states = new GraphStatesManager();
-	private JPanel drawPanel = new JPanel() {
-		private static final long serialVersionUID = 1L;
-
-		@Override
-		public void paint(Graphics g) {
-			g.setColor(drawPanel.getBackground());
-			g.fillRect(0, 0, drawPanel.getWidth(), drawPanel.getHeight());
-			if (states.size() != 0)
-				states.getCurrentState().draw(g, drawPanel, frame);
-		}
-	};
-
+	
 	private long counter = 0;
 	private boolean playing = false;
 
 	private String currentFilePath;
 	private String lastPathPath = ".//lastPath.txt";
-	private JPanel legendPanel = new JPanel() {
-		private static final long serialVersionUID = 1L;
-
-		@Override
-		public void paint(Graphics g) {
-			g.setColor(drawPanel.getBackground());
-			g.fillRect(0, 0, drawPanel.getWidth(), drawPanel.getHeight());
-
-			g.setColor(Color.BLACK);
-			g.setFont(new Font(frame.getStateLabel().getFont().getName(), Font.PLAIN, (int) (20)));
-
-			int curY = 0;
-			Node normal = new Node(10, curY + 10, 40, 40, "Example", "0", new ArrayList<helper.Edge>(),
-					new ArrayList<helper.Edge>(), null);
-			curY += 5 + 50;
-			Node marked = new Node(10, curY + 10, 40, 40, "Example", "0", new ArrayList<helper.Edge>(),
-					new ArrayList<helper.Edge>(), null);
-			curY += 5 + 50;
-			Node contour = new Node(10, curY + 10, 40, 40, "Example", "0", new ArrayList<helper.Edge>(),
-					new ArrayList<helper.Edge>(), null);
-			curY += 5 + 50;
-
-			GraphState.drawNode(g, legendPanel, frame, normal, (int) normal.x, (int) normal.y, false, false);
-			GraphState.drawNode(g, legendPanel, frame, marked, (int) marked.x, (int) marked.y, false, true);
-			GraphState.drawNode(g, legendPanel, frame, contour, (int) contour.x, (int) contour.y, true, false);
-			
-			g.setColor(Color.BLACK);
-			GraphState.drawLine(g, Color.BLACK, 3, 10, curY + 15, 50, curY + 15);
-			GraphState.drawDashedLine(g, 10, curY + 3 + 15 + 15, 50, curY + 3 + 15 + 15);
-
-			g.setColor(Color.BLACK);
-			g.setFont(new Font(frame.getStateLabel().getFont().getName(), Font.PLAIN, (int) (12)));
-			g.drawString("Normal Graph Node", (int) normal.x + (int) normal.w + 10,
-					(int) normal.y + (int) normal.h / 2 + g.getFontMetrics().getAscent() / 2);
-			g.drawString("Marked Graph Node", (int) marked.x + (int) marked.w + 10,
-					(int) marked.y + (int) marked.h / 2 + g.getFontMetrics().getAscent() / 2);
-			g.drawString("Contour Graph Node", (int) contour.x + (int) contour.w + 10,
-					(int) contour.y + (int) contour.h / 2 + g.getFontMetrics().getAscent() / 2);
-			
-			g.drawString("Edge", 60, curY + 16 + g.getFontMetrics().getAscent() / 2);
-			g.drawString("Reingold Tilford Thread", 60, curY + 3 + 15 + 16 + g.getFontMetrics().getAscent() / 2);
-		}
-	};
-
+	
+	/**
+	 * This is the main entrypoint of the application.
+	 * @param args Program arguments
+	 */
 	public static void main(String[] args) {
 		try {
 			UIManager.setLookAndFeel(new MaterialLookAndFeel());
@@ -147,7 +96,26 @@ public class MainFrame extends JFrame {
 			}
 		});
 	}
+	
+	public JEditorPane getEditorPane() {
+		return editorPane;
+	}
 
+	public JLabel getStateLabel() {
+		return stateLabel;
+	}
+	
+	void saveEditor() {
+		// Save the changes to the text file iff the graph can be successfully loaded
+		if (GraphLoader.load(editorPane.getText(), states)) {
+			GraphLoader.saveTextfile(currentFilePath, editorPane.getText());
+		}
+		refresh();
+	}
+
+	/**
+	 * Redraw and recalculate crucial GUI elements
+	 */
 	void refresh() {
 		drawPanel.repaint();
 		legendPanel.repaint();
@@ -160,7 +128,72 @@ public class MainFrame extends JFrame {
 			highlightEditorText();
 		}
 	}
+	
+	private JPanel drawPanel = new JPanel() {
+		private static final long serialVersionUID = 1L;
 
+		@Override
+		/**
+		 * Draw the current state to the drawPanel
+		 */
+		public void paint(Graphics g) {
+			g.setColor(drawPanel.getBackground());
+			g.fillRect(0, 0, drawPanel.getWidth(), drawPanel.getHeight());
+			if (states.size() != 0)
+				states.getCurrentState().draw(g, drawPanel, frame.getStateLabel().getFont().getName());
+		}
+	};
+	
+	private JPanel legendPanel = new JPanel() {
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		/**
+		 * Draw the legendPanel
+		 */
+		public void paint(Graphics g) {
+			g.setColor(drawPanel.getBackground());
+			g.fillRect(0, 0, drawPanel.getWidth(), drawPanel.getHeight());
+
+			g.setColor(Color.BLACK);
+			g.setFont(new Font(frame.getStateLabel().getFont().getName(), Font.PLAIN, (int) (20)));
+
+			int curY = 0;
+			Node normal = new Node(10, curY + 10, 40, 40, "Example", "0", new ArrayList<helper.Edge>(),
+					new ArrayList<helper.Edge>(), null);
+			curY += 5 + 50;
+			Node marked = new Node(10, curY + 10, 40, 40, "Example", "0", new ArrayList<helper.Edge>(),
+					new ArrayList<helper.Edge>(), null);
+			curY += 5 + 50;
+			Node contour = new Node(10, curY + 10, 40, 40, "Example", "0", new ArrayList<helper.Edge>(),
+					new ArrayList<helper.Edge>(), null);
+			curY += 5 + 50;
+
+			GraphState.drawNode(g, getStateLabel().getFont().getName(), normal, (int) normal.x, (int) normal.y, false, false);
+			GraphState.drawNode(g, getStateLabel().getFont().getName(), marked, (int) marked.x, (int) marked.y, false, true);
+			GraphState.drawNode(g, getStateLabel().getFont().getName(), contour, (int) contour.x, (int) contour.y, true, false);
+			
+			g.setColor(Color.BLACK);
+			GraphState.drawLine(g, Color.BLACK, 3, 10, curY + 15, 50, curY + 15);
+			GraphState.drawDashedLine(g, 10, curY + 3 + 15 + 15, 50, curY + 3 + 15 + 15);
+
+			g.setColor(Color.BLACK);
+			g.setFont(new Font(frame.getStateLabel().getFont().getName(), Font.PLAIN, (int) (12)));
+			g.drawString("Normal Graph Node", (int) normal.x + (int) normal.w + 10,
+					(int) normal.y + (int) normal.h / 2 + g.getFontMetrics().getAscent() / 2);
+			g.drawString("Marked Graph Node", (int) marked.x + (int) marked.w + 10,
+					(int) marked.y + (int) marked.h / 2 + g.getFontMetrics().getAscent() / 2);
+			g.drawString("Contour Graph Node", (int) contour.x + (int) contour.w + 10,
+					(int) contour.y + (int) contour.h / 2 + g.getFontMetrics().getAscent() / 2);
+			
+			g.drawString("Edge", 60, curY + 16 + g.getFontMetrics().getAscent() / 2);
+			g.drawString("Reingold Tilford Thread", 60, curY + 3 + 15 + 16 + g.getFontMetrics().getAscent() / 2);
+		}
+	};
+	
+	/**
+	 * Do the editor text highlighting
+	 */
 	void highlightEditorText() {
 		// remove previous highlight
 		Highlighter hilite = editorPane.getHighlighter();
@@ -205,15 +238,15 @@ public class MainFrame extends JFrame {
 			}
 		}
 	}
-
-	// This code was mostly generated using WindowBuilder, the only exceptions are
-	// the events
+	
+	/**
+	 * This constructor was mostly generated using WindowBuilder, the only exceptions are the events
+	 */
 	public MainFrame() {
+		// Load the last path of the file chooser
 		try {
 			fc.setSelectedFile(new File(GraphLoader.readTextfile(lastPathPath)));
-		} catch (Exception e) {
-
-		}
+		} catch (Exception e) { }
 		
 		// Set the icon / Swing doesn't seem to like .ico files for some reason
 		setIconImage(new ImageIcon(".\\icon.png").getImage());
@@ -221,7 +254,8 @@ public class MainFrame extends JFrame {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowOpened(WindowEvent e) {
-				new Thread(() -> { // Clock thread
+				new Thread(() -> { 
+					// Clock thread
 					while (true) {
 						counter++;
 						try {
@@ -380,7 +414,7 @@ public class MainFrame extends JFrame {
 				Options.hideContourStates = chckbxHideContourStates.isSelected();
 				if (Options.hideContourStates && !chckbxHideContourDifferenceStates.isSelected())
 					chckbxHideContourDifferenceStates.doClick();
-				GraphLoader.load(editorPane.getText(), frame, drawPanel);
+				GraphLoader.load(editorPane.getText(), states);
 				refresh();
 			}
 		});
@@ -388,7 +422,7 @@ public class MainFrame extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				Options.hideContourDifferenceStates = chckbxHideContourDifferenceStates.isSelected();
-				GraphLoader.load(editorPane.getText(), frame, drawPanel);
+				GraphLoader.load(editorPane.getText(), states);
 				refresh();
 			}
 		});
@@ -492,7 +526,7 @@ public class MainFrame extends JFrame {
 					File file = fc.getSelectedFile();
 					if (file.canRead()) {
 						currentFilePath = file.getAbsolutePath();
-						GraphLoader.loadFile(currentFilePath, frame, drawPanel);
+						GraphLoader.loadFile(currentFilePath, frame);
 
 						File lastPath = new File(lastPathPath);
 						try {
@@ -523,25 +557,5 @@ public class MainFrame extends JFrame {
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, backPanel, 0, SpringLayout.SOUTH, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.EAST, backPanel, -5, SpringLayout.WEST, sidePanel);
 		contentPane.add(backPanel);
-	}
-	
-	void saveEditor() {
-		// Save the changes to the text file if the graph can be successfully loaded
-		if (GraphLoader.load(editorPane.getText(), frame, drawPanel)) {
-			GraphLoader.saveTextfile(currentFilePath, editorPane.getText());
-		}
-		refresh();
-	}
-
-	public JEditorPane getEditorPane() {
-		return editorPane;
-	}
-
-	public JLabel getStateLabel() {
-		return stateLabel;
-	}
-
-	public JPanel getLegendPanel() {
-		return legendPanel;
 	}
 }

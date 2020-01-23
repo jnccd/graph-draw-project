@@ -1,7 +1,6 @@
 package phases;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import org.eclipse.elk.core.util.IElkProgressMonitor;
@@ -14,9 +13,10 @@ import org.eclipse.emf.common.util.EList;
 import helper.Help;
 
 /**
- * This is a Phase that throws an Exception if the apply method is called on a graph that isn't a binary tree. This Phase is applied before the other Phases in GraphLoader.load().
+ * This is a Phase that throws an Exception if the apply method is called on a 
+ * graph that isn't a binary tree. This Phase is applied before the other Phases 
+ * in GraphLoader.load().
  * @author dobiko
- *
  */
 public class BinaryTreeCheckPhase implements Phase {
 
@@ -26,16 +26,20 @@ public class BinaryTreeCheckPhase implements Phase {
 
 		if (hasCycle(layoutGraph))
 			throw new Exception("Nobody told me I had to layout cyclic graphs D:");
+		
 		for (ElkNode n : nodes)
-			if (Help.getChilds(n).size() > 2)
+			if (Help.getChildren(n).size() > 2)
 				throw new Exception(
-						"Node " + n.getIdentifier() + " has more than 2 child nodes which is pretty unbinary!");
+						"Node " + n.getIdentifier() + " has more than two child nodes which is pretty unbinary!");
+		
 		ArrayList<ElkNode> groots = (ArrayList<ElkNode>) nodes.stream().filter(x -> x.getIncomingEdges().size() == 0)
 				.collect(Collectors.toList());
-		if (groots.size() != 1)
+		if (groots.size() > 1)
 			throw new Exception(
 					"Here it's I am gRoot and not we are gRoot! (A binary tree only has one root but this one has "
 							+ groots.stream().map(x -> x.getIdentifier()).reduce((x, y) -> x + ", " + y) + ")");
+		else if (groots.size() == 0)
+			throw new Exception("I can't layout a graph without Nodes!");
 	}
 
 	boolean hasCycle(ElkNode layoutGraph) {

@@ -3,17 +3,13 @@ package graph.drawing.RTProject;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.OpenOption;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-
 import org.eclipse.elk.core.util.BasicProgressMonitor;
 import org.eclipse.elk.graph.ElkEdge;
 import org.eclipse.elk.graph.ElkNode;
@@ -26,7 +22,8 @@ import phases.Phase;
 import phases.RTLayoutPhase;
 
 /**
- * This class contains the necessary methods to read, parse, check and update the GraphStates in the GraphStatesManager.
+ * This class contains the necessary methods to read, parse, check and update the GraphStates 
+ * in the GraphStatesManager which are the frames of the animation.
  * @author dobiko
  *
  */
@@ -38,19 +35,25 @@ public class GraphLoader {
 		return curGraph;
 	}
 	
-	public static void loadFile(String path, MainFrame frame, JPanel target) {
+	public static void loadFile(String path, MainFrame frame) {
 		fileContent = readTextfile(path);
 		if (fileContent.equals("")) {
-			JOptionPane.showMessageDialog(frame, "I can't read that file :/");
+			JOptionPane.showMessageDialog(null, "I can't read that file :/");
 			return;
 		}
 		
 		frame.getEditorPane().setText(fileContent);
 		
-		load(fileContent, frame, target);
+		load(fileContent, frame.states);
 	}
-
-	public static boolean load(String graph, MainFrame frame, JPanel target) {
+	
+	/**
+	 * This method parses the textual graph and adds the animation frames to the GraphStatesManager
+	 * @param graph A binary tree in a hopefully valid String format
+	 * @param states A pointer to the states manager the animation should be loaded to
+	 * @return true if the graph was loaded successfully 
+	 */
+	public static boolean load(String graph, GraphStatesManager states) {
 		try {
 			curGraph = parseText(graph);
 		} catch (Exception e) {
@@ -65,18 +68,13 @@ public class GraphLoader {
 			return false;
 		}
 
-		frame.states.clearStates();
-
-		// Add graph sizes
-		curGraph.setWidth(target.getWidth());
-		curGraph.setHeight(target.getHeight());
+		states.clearStates();
 		
-		// Layouting
 		applyPhase(curGraph, new InorderLayoutPhase());
 
-		frame.states.addState(new GraphState("Initial State", Graph.fromElk(curGraph)));
+		states.addState(new GraphState("Initial State", Graph.fromElk(curGraph)));
 
-		applyPhase(curGraph, new RTLayoutPhase(frame.states));
+		applyPhase(curGraph, new RTLayoutPhase(states));
 		return true;
 	}
 

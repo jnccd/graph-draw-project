@@ -3,18 +3,15 @@ package phases;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.elk.core.math.ElkPadding;
 import org.eclipse.elk.core.util.IElkProgressMonitor;
 import org.eclipse.elk.graph.ElkNode;
 import org.eclipse.emf.common.util.EList;
 
-import graph.drawing.RTProject.Options;
 import helper.Help;
 
 /**
  * This is a Phase that layouts a graph using the inorder algorithm.
  * @author dobiko
- *
  */
 public class InorderLayoutPhase implements Phase {
     List<ElkNode> inorderVisiting = new ArrayList<ElkNode>();
@@ -35,7 +32,7 @@ public class InorderLayoutPhase implements Phase {
     }
     
     void inorder(ElkNode n) {
-        List<ElkNode> childs = Help.getChilds(n);
+        List<ElkNode> childs = Help.getChildren(n);
         if (childs.size() > 0) {
             ElkNode leftChild = childs.get(0);
             inorder(leftChild);

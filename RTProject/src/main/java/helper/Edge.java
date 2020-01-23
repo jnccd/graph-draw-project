@@ -7,7 +7,6 @@ import org.eclipse.elk.graph.ElkEdge;
 /**
  * This class mirrors an ElkEdge.
  * @author dobiko
- *
  */
 public class Edge {
     public Edge(List<Node> sources, List<Node> targets, ElkEdge parent) {

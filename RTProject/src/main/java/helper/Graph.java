@@ -10,24 +10,17 @@ import org.eclipse.elk.graph.ElkNode;
 /**
  * This class is used to clone an Elk Graph using the fromElk() method so a GraphState can get a copy of the graph.
  * @author dobiko
- *
  */
 public class Graph {
     public List<Node> nodes = new ArrayList<Node>();
     public List<Edge> edges = new ArrayList<Edge>();
     
-    public void removeNode(Node n) {
-        nodes.remove(n);
-        for (int i = 0; i < edges.size(); i++) {
-            edges.get(i).sources.remove(n);
-            if (edges.get(i).sources.size() == 0) {
-                for (Node n2 : nodes)
-                    n2.incoming.remove(edges.get(i));
-                edges.remove(i);
-            }
-        }
-    }
-    
+    /**
+     * Creates a graph that is identical to the Elk graph, effectively cloning it
+     * This is necessary because ElkNode sadly doesn't implement Cloneable
+     * @param graph
+     * @return a graph that is identical to the Elk graph
+     */
     public static Graph fromElk(ElkNode graph) {
         Graph g = new Graph();
         
