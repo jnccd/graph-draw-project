@@ -64,7 +64,8 @@ public class GraphLoader {
 		try {
 			new BinaryTreeCheckPhase().apply(curGraph, new BasicProgressMonitor());
 		} catch (Exception e) {
-			JOptionPane.showMessageDialog(null, e.getMessage());
+			if (e.getMessage() != null && !e.getMessage().contentEquals(""))
+				JOptionPane.showMessageDialog(null, e.getMessage());
 			return false;
 		}
 
