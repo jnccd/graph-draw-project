@@ -105,10 +105,18 @@ public class MainFrame extends JFrame {
 		return stateLabel;
 	}
 	
+	void enableControlElements() {
+		btnLeft.setEnabled(true);
+		btnRight.setEnabled(true);
+		btnPlay.setEnabled(true);
+		slider.setEnabled(true);
+	}
+	
 	void saveEditor() {
 		// Save the changes to the text file iff the graph can be successfully loaded
 		if (GraphLoader.load(editorPane.getText(), states)) {
 			GraphLoader.saveTextfile(currentFilePath, editorPane.getText());
+			enableControlElements();
 		}
 		refresh();
 	}
@@ -175,7 +183,8 @@ public class MainFrame extends JFrame {
 			
 			g.setColor(Color.BLACK);
 			GraphState.drawLine(g, Color.BLACK, 3, 10, curY + 15, 50, curY + 15);
-			GraphState.drawDashedLine(g, 10, curY + 3 + 15 + 15, 50, curY + 3 + 15 + 15);
+			if (!Options.hideThreads)
+				GraphState.drawDashedLine(g, 10, curY + 3 + 15 + 15, 50, curY + 3 + 15 + 15);
 
 			g.setColor(Color.BLACK);
 			g.setFont(new Font(frame.getStateLabel().getFont().getName(), Font.PLAIN, (int) (12)));
@@ -190,6 +199,8 @@ public class MainFrame extends JFrame {
 			g.drawString("Reingold Tilford Thread", 60, curY + 3 + 15 + 16 + g.getFontMetrics().getAscent() / 2);
 		}
 	};
+	private JButton btnLeft;
+	private JButton btnRight;
 	
 	/**
 	 * Do the editor text highlighting
@@ -282,7 +293,7 @@ public class MainFrame extends JFrame {
 		});
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 725, 512);
-		setMinimumSize(new Dimension(700, 500));
+		setMinimumSize(new Dimension(700, 555));
 		contentPane = new JPanel();
 		contentPane.setBackground(SystemColor.controlHighlight);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -357,7 +368,7 @@ public class MainFrame extends JFrame {
 		sl_editorTab.putConstraint(SpringLayout.NORTH, btnSave, -35, SpringLayout.SOUTH, editorTab);
 		sl_editorTab.putConstraint(SpringLayout.WEST, btnSave, 5, SpringLayout.WEST, editorTab);
 		sl_editorTab.putConstraint(SpringLayout.SOUTH, btnSave, -5, SpringLayout.SOUTH, editorTab);
-		sl_editorTab.putConstraint(SpringLayout.EAST, btnSave, -5, SpringLayout.EAST, editorTab);
+		sl_editorTab.putConstraint(SpringLayout.EAST, btnSave, 75, SpringLayout.WEST, editorTab);
 		btnSave.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -366,6 +377,33 @@ public class MainFrame extends JFrame {
 		});
 		sl_editorTab.putConstraint(SpringLayout.SOUTH, editorScrollPane, 0, SpringLayout.NORTH, btnSave);
 		editorTab.add(btnSave);
+		
+		JButton btnSaveNew = new JButton("Save as new File");
+		btnSaveNew.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (GraphLoader.load(editorPane.getText(), states)) {
+					enableControlElements();
+					String fileName = JOptionPane.showInputDialog(frame, "How should the new file be named?");
+					
+					String newFilePath = fc.getSelectedFile().getParent() + File.separatorChar + fileName;
+					File newFile = new File(newFilePath);
+					try {
+						newFile.createNewFile();
+					} catch (IOException e1) {
+						JOptionPane.showMessageDialog(null, e1.getMessage());
+						return;
+					}
+					GraphLoader.saveTextfile(newFile.getAbsolutePath(), editorPane.getText());
+					refresh();
+				}
+			}
+		});
+		sl_editorTab.putConstraint(SpringLayout.NORTH, btnSaveNew, 0, SpringLayout.NORTH, btnSave);
+		sl_editorTab.putConstraint(SpringLayout.WEST, btnSaveNew, 0, SpringLayout.EAST, btnSave);
+		sl_editorTab.putConstraint(SpringLayout.SOUTH, btnSaveNew, 0, SpringLayout.SOUTH, btnSave);
+		sl_editorTab.putConstraint(SpringLayout.EAST, btnSaveNew, -5, SpringLayout.EAST, editorTab);
+		editorTab.add(btnSaveNew);
 
 		JPanel optionsTab = new JPanel();
 		tabbedPane.addTab("Options", null, optionsTab, null);
@@ -419,13 +457,7 @@ public class MainFrame extends JFrame {
 			public void mouseClicked(MouseEvent e) {
 				Options.hideContourStates = !chckbxHideContourStates.isSelected();
 				
-				if (!chckbxHideContourStates.isSelected() && chckbxHideContourDifferenceStates.isSelected()) {
-					chckbxHideContourDifferenceStates.doClick();
-					chckbxHideContourDifferenceStates.setEnabled(false);
-				}
-				if (chckbxHideContourStates.isSelected()) {
-					chckbxHideContourDifferenceStates.setEnabled(true);
-				}
+				chckbxHideContourDifferenceStates.setEnabled(chckbxHideContourStates.isSelected());
 				
 				GraphLoader.load(editorPane.getText(), states);
 				refresh();
@@ -462,6 +494,19 @@ public class MainFrame extends JFrame {
 				refresh();
 			}
 		});
+		
+		JCheckBox chckbxChckbxshowoffsetvaluesonly = new JCheckBox("Show Offset Values Only");
+		chckbxChckbxshowoffsetvaluesonly.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				Options.showOffsetOnly = chckbxChckbxshowoffsetvaluesonly.isSelected();
+				
+				chckbxHideNodeOffsetValues.setEnabled(!Options.showOffsetOnly);
+				
+				refresh();
+			}
+		});
+		optionsPanel.add(chckbxChckbxshowoffsetvaluesonly);
 		optionsPanel.add(chckbxHideThreads);
 		optionsTab.add(optionsScrollPane);
 
@@ -474,7 +519,8 @@ public class MainFrame extends JFrame {
 		contentPane.add(legendPanel);
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, legendPanel, 0, SpringLayout.SOUTH, contentPane);
 		
-		JButton btnRight = new JButton(">");
+		btnRight = new JButton(">");
+		btnRight.setEnabled(false);
 		btnRight.setFont(new Font("Noto Sans", Font.PLAIN, 25));
 		btnRight.addMouseListener(new MouseAdapter() {
 			@Override
@@ -484,7 +530,8 @@ public class MainFrame extends JFrame {
 			}
 		});
 
-		JButton btnLeft = new JButton("<");
+		btnLeft = new JButton("<");
+		btnLeft.setEnabled(false);
 		btnLeft.setFont(new Font("Noto Sans", Font.PLAIN, 25));
 		btnLeft.addMouseListener(new MouseAdapter() {
 			@Override
@@ -502,22 +549,26 @@ public class MainFrame extends JFrame {
 		botPanel.add(sliderPadding1);
 
 		btnPlay = new JButton("►");
+		btnPlay.setEnabled(false);
 		btnPlay.setFont(new Font("SansSerif", Font.BOLD, 18));
 		btnPlay.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				counter = 0;
-				playing = !playing;
+				if (btnPlay.isEnabled()) {
+					counter = 0;
+					playing = !playing;
 
-				if (playing)
-					btnPlay.setText("❚❚");
-				else
-					btnPlay.setText("►");
+					if (playing)
+						btnPlay.setText("❚❚");
+					else
+						btnPlay.setText("►");
+				}
 			}
 		});
 		botPanel.add(btnPlay);
 
 		slider = new JSlider();
+		slider.setEnabled(false);
 		slider.setBackground(SystemColor.controlHighlight);
 		slider.addMouseMotionListener(new MouseMotionAdapter() {
 			@Override
@@ -542,14 +593,16 @@ public class MainFrame extends JFrame {
 					if (file.canRead()) {
 						currentFilePath = file.getAbsolutePath();
 						GraphLoader.loadFile(currentFilePath, frame);
+						
+						enableControlElements();
 
 						File lastPath = new File(lastPathPath);
 						try {
-							if (lastPath.createNewFile())
-								GraphLoader.saveTextfile(lastPath.getAbsolutePath(), currentFilePath);
+							lastPath.createNewFile();
 						} catch (IOException e1) {
 							e1.printStackTrace();
 						}
+						GraphLoader.saveTextfile(lastPath.getAbsolutePath(), currentFilePath);
 					} else
 						JOptionPane.showMessageDialog(frame, "I can't read that file :/");
 					refresh();
