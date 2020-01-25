@@ -116,10 +116,18 @@ Also noteworthy is a simple syntax highlighter that highlights the currently mar
 
 The options menu currently contains an animation interval slider and 4 level of detail options.  
 
-The first one hides all animations states that show how the contour was calculated, if activated this also activates the second option.  
-The second option hides all states that show the distance check on each contour layer.  
-The third option hides the xOffset values that the algorithm saves for each node. They are usually displayd below the nodes name.  
-The fourth option hides threads which are displayed as dashed lines.
+The first one shows all animations states that show how the contour was calculated.
+The second option shows all states that show the distance check on each contour layer.  
+The third option shows the xOffset values that the algorithm saves for each node. They are usually displayd below the nodes name. 
+The fourth only shows the offset value for each node.
+The fifth option hides threads which are displayed as dashed lines.
+
+Some of these options disable other options. Disabling `Show Node Offset Value` and enabling `Show Offset Values Only` doesn't make any sense.
+Therefore some options disable others.
+
+![OwO thewes missing some something D:](Documentation-Resources/options_dis.png "Hey, im a popup :P")
+
+The legend also shows changes in the options.
 
 #### Pane 4
 
@@ -223,11 +231,11 @@ The right side of the GUI contains additional information like the legend, simil
 
 Within the editorTab there is some padding around the editorPane because the text would otherwise start directly next to the background and no other text editor does that.  
 
-![OwO thewes missing some something D:](Documentation-Resources/options.png "Hey, im a popup :P")
-
 ### Filtering
 
 ![OwO thewes missing some something D:](Documentation-Resources/filtering.png "Hey, im a popup :P")
+
+If there is not enough space for the Node name and its offset value to be drawn the program will draw the node name only to keep it readable.
 
 ### Initial Phase
 

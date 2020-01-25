@@ -100,7 +100,7 @@ public class GraphState {
 		// Set the gridSize so that the entire tree + padding fits on the screen
 		int gridSize = (int) Math.min(
 				(target.getWidth() - pad.getHorizontal()) * 0.9
-						/ (graph.nodes.stream().map(x -> x.x).max(Double::compare).get()),
+						/ (graph.nodes.stream().map(x -> x.x).max(Double::compare).get() + 1),
 				(target.getHeight() - pad.getVertical()) * 0.9
 						/ (graph.nodes.stream().map(x -> x.y).max(Double::compare).get() + 1));
 
@@ -207,7 +207,16 @@ public class GraphState {
 			g.setColor(Color.BLACK);
 
 		// Draw text, only draw the note if there is enough space
-		if (n.h > 30 && !Options.hideNodeOffsetValues) {
+		if (Options.showOffsetOnly) {
+			g.setFont(new Font(fontName, Font.PLAIN, (int) (n.h * 0.8)));
+
+			String note = new String(n.note);
+			while (g.getFontMetrics().stringWidth(note) > n.w)
+				note = note.substring(0, note.length() - 2);
+
+			g.drawString(note, (int) (x + (n.w - g.getFontMetrics().stringWidth(note)) / 2),
+					(int) (y + g.getFontMetrics().getAscent() * 1.1 - 5));
+		} else if (n.h > 30 && !Options.hideNodeOffsetValues) {
 			g.setFont(new Font(fontName, Font.PLAIN, (int) (n.h * 0.4))); // frame.getStateLabel().getFont().getName()
 
 			String name = new String(n.name);
@@ -222,7 +231,7 @@ public class GraphState {
 			g.drawString(note, (int) (x + (n.w - g.getFontMetrics().stringWidth(note)) / 2),
 					y + g.getFontMetrics().getHeight() * 3 / 2 + (int) (n.h * 0.1));
 		} else {
-			g.setFont(new Font(fontName, Font.PLAIN, (int) (n.h * 0.9)));
+			g.setFont(new Font(fontName, Font.PLAIN, (int) (n.h * 0.8)));
 
 			String name = new String(n.name);
 			while (g.getFontMetrics().stringWidth(name) > n.w && name.length() > 2)
