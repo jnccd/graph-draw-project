@@ -217,7 +217,7 @@ This is a layout phase that layouts the graph using a RT implementation. However
 
 ![OwO thewes missing some something D:](Documentation-Resources/gui.png "Hey, im a popup :P")
 
- The left side of the GUI is designed similarly to a generic video player with the play plause button and the progress bar showing the progress through the video. However we also need buttons to step through the animation frame by frame. Similarly to sony vegas' gui I seperate the video player controls from the frame by frame buttons.
+The left side of the GUI is designed similarly to a generic video player with the play plause button and the progress bar showing the progress through the video. However we also need buttons to step through the animation frame by frame. Similarly to sony vegas' gui I seperate the video player controls from the frame by frame buttons.
 
 The right side of the GUI contains additional information like the legend, similarly to YouTubes info panel that i enabled on certain videos. The information displayed here is always important so there is no option to hide it.
 
@@ -225,7 +225,13 @@ Within the editorTab there is some padding around the editorPane because the tex
 
 ![OwO thewes missing some something D:](Documentation-Resources/options.png "Hey, im a popup :P")
 
-The level of detail options in the options menu ask if you want to hide something instead of the other way around. This is the case because those options should normally be enabled, therefore hiding the elements is the special case.
+### Filtering
+
+![OwO thewes missing some something D:](Documentation-Resources/filtering.png "Hey, im a popup :P")
+
+### Initial Phase
+
+In the initial state the graph is layouted using the inorder algorithm because it tends to layout graphs too widely which gives us enough space to visualize the stages of the RT algorithm.
 
 ### Phase 1
 

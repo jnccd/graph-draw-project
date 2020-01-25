@@ -168,12 +168,12 @@ public class RTLayoutPhase implements Phase {
 		int re = 0;
 		while (Help.getChildren(r).size() > 0) {
 			states.addState(
-					new GraphState("Phase 2, get total X position of the root: " + re, Graph.fromElk(layoutGraph), r));
+					new GraphState("Phase 2, get total X position of the root: " + (-re + 1), Graph.fromElk(layoutGraph), r));
 
 			re += Help.getProp(r).xOffset;
 			r = Help.getChildren(r).get(0);
 		}
-		states.addState(new GraphState("Phase 2, total X position of the root: " + re, Graph.fromElk(layoutGraph), r));
+		states.addState(new GraphState("Phase 2, total X position of the root: " + (-re + 1), Graph.fromElk(layoutGraph), r));
 		return re;
 	}
 

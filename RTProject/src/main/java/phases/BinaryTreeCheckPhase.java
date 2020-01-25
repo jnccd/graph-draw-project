@@ -37,9 +37,9 @@ public class BinaryTreeCheckPhase implements Phase {
 		if (groots.size() > 1)
 			throw new Exception(
 					"Here it's I am gRoot and not we are gRoot! (A binary tree only has one root but this one has "
-							+ groots.stream().map(x -> x.getIdentifier()).reduce((x, y) -> x + ", " + y) + ")");
+							+ groots.stream().map(x -> x.getIdentifier()).reduce((x, y) -> x + ", " + y).get() + ")");
 		else if (groots.size() == 0)
-			throw new Exception("I can't layout a graph without Nodes!");
+			throw new Exception();
 	}
 
 	boolean hasCycle(ElkNode layoutGraph) {

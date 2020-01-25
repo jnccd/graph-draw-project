@@ -386,6 +386,7 @@ public class MainFrame extends JFrame {
 		optionsPanel.add(lblPlayAnimationFrame);
 
 		JSlider animationIntervalSlider = new JSlider();
+		animationIntervalSlider.setBorder(null);
 		optionsPanel.add(animationIntervalSlider);
 		animationIntervalSlider.setPreferredSize(new Dimension(50, 50));
 		animationIntervalSlider.setMaximum(180);
@@ -402,18 +403,30 @@ public class MainFrame extends JFrame {
 		});
 		animationIntervalSlider.setValue(60);
 		animationIntervalSlider.setMinimum(5);
+		
+		Component verticalStrut = Box.createVerticalStrut(20);
+		optionsPanel.add(verticalStrut);
 
-		JCheckBox chckbxHideContourStates = new JCheckBox("Hide Contour States");
+		JCheckBox chckbxHideContourStates = new JCheckBox("Show Contour States");
+		chckbxHideContourStates.setSelected(true);
 		chckbxHideContourStates.setHorizontalAlignment(SwingConstants.LEFT);
 		optionsPanel.add(chckbxHideContourStates);
 
-		JCheckBox chckbxHideContourDifferenceStates = new JCheckBox("Hide Contour Differences");
+		JCheckBox chckbxHideContourDifferenceStates = new JCheckBox("Show Contour Differences");
+		chckbxHideContourDifferenceStates.setSelected(true);
 		chckbxHideContourStates.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				Options.hideContourStates = chckbxHideContourStates.isSelected();
-				if (Options.hideContourStates && !chckbxHideContourDifferenceStates.isSelected())
+				Options.hideContourStates = !chckbxHideContourStates.isSelected();
+				
+				if (!chckbxHideContourStates.isSelected() && chckbxHideContourDifferenceStates.isSelected()) {
 					chckbxHideContourDifferenceStates.doClick();
+					chckbxHideContourDifferenceStates.setEnabled(false);
+				}
+				if (chckbxHideContourStates.isSelected()) {
+					chckbxHideContourDifferenceStates.setEnabled(true);
+				}
+				
 				GraphLoader.load(editorPane.getText(), states);
 				refresh();
 			}
@@ -421,7 +434,7 @@ public class MainFrame extends JFrame {
 		chckbxHideContourDifferenceStates.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				Options.hideContourDifferenceStates = chckbxHideContourDifferenceStates.isSelected();
+				Options.hideContourDifferenceStates = !chckbxHideContourDifferenceStates.isSelected();
 				GraphLoader.load(editorPane.getText(), states);
 				refresh();
 			}
@@ -429,21 +442,23 @@ public class MainFrame extends JFrame {
 		chckbxHideContourDifferenceStates.setHorizontalAlignment(SwingConstants.LEFT);
 		optionsPanel.add(chckbxHideContourDifferenceStates);
 
-		JCheckBox chckbxHideNodeOffsetValues = new JCheckBox("Hide Node Offset Values");
+		JCheckBox chckbxHideNodeOffsetValues = new JCheckBox("Show Node Offset Values");
+		chckbxHideNodeOffsetValues.setSelected(true);
 		chckbxHideNodeOffsetValues.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				Options.hideNodeOffsetValues = chckbxHideNodeOffsetValues.isSelected();
+				Options.hideNodeOffsetValues = !chckbxHideNodeOffsetValues.isSelected();
 				refresh();
 			}
 		});
 		optionsPanel.add(chckbxHideNodeOffsetValues);
 
-		JCheckBox chckbxHideThreads = new JCheckBox("Hide Threads");
+		JCheckBox chckbxHideThreads = new JCheckBox("Show Threads");
+		chckbxHideThreads.setSelected(true);
 		chckbxHideThreads.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				Options.hideThreads = chckbxHideThreads.isSelected();
+				Options.hideThreads = !chckbxHideThreads.isSelected();
 				refresh();
 			}
 		});

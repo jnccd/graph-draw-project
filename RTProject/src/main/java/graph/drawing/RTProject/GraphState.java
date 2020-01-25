@@ -100,7 +100,7 @@ public class GraphState {
 		// Set the gridSize so that the entire tree + padding fits on the screen
 		int gridSize = (int) Math.min(
 				(target.getWidth() - pad.getHorizontal()) * 0.9
-						/ (graph.nodes.stream().map(x -> x.x).max(Double::compare).get() + 1),
+						/ (graph.nodes.stream().map(x -> x.x).max(Double::compare).get()),
 				(target.getHeight() - pad.getVertical()) * 0.9
 						/ (graph.nodes.stream().map(x -> x.y).max(Double::compare).get() + 1));
 
@@ -212,7 +212,7 @@ public class GraphState {
 
 			String name = new String(n.name);
 			String note = new String(n.note);
-			while (g.getFontMetrics().stringWidth(name) > n.w)
+			while (g.getFontMetrics().stringWidth(name) > n.w && name.length() > 2)
 				name = name.substring(0, name.length() - 2);
 			while (g.getFontMetrics().stringWidth(note) > n.w)
 				note = note.substring(0, note.length() - 2);
@@ -225,7 +225,7 @@ public class GraphState {
 			g.setFont(new Font(fontName, Font.PLAIN, (int) (n.h * 0.9)));
 
 			String name = new String(n.name);
-			while (g.getFontMetrics().stringWidth(name) > n.w)
+			while (g.getFontMetrics().stringWidth(name) > n.w && name.length() > 2)
 				name = name.substring(0, name.length() - 2);
 
 			g.drawString(name, (int) (x + (n.w - g.getFontMetrics().stringWidth(name)) / 2),
