@@ -14,7 +14,7 @@ After starting the application for the first time you should see this window. If
 ![OwO thewes missing some something D:](Documentation-Resources/startup.png "Hey, im a popup :P")
 
 The first thing you want to do is to press the ``Load File`` button, this will load up the standart java swing file selector. With that you should select a text file that contains a valid graph. Do not worry though the program will remember the last file you selected so you won't have to go though all of your folder twice.  
-Alternatively you can also type a valid graph into the editor and hit ``CTRL + S`` or ``Save``.
+Alternatively you can also type a valid graph into the editor and hit ``CTRL + S``, ``Save`` or ``Save as new File``. The first two will write the graph into a temporary file while the latter lets you choose a filename and 
 
 ### Valid File Formats
 
@@ -114,10 +114,11 @@ Also noteworthy is a simple syntax highlighter that highlights the currently mar
 
 ![OwO thewes missing some something D:](Documentation-Resources/options.png "Hey, im a popup :P")
 
-The options menu currently contains an animation interval slider and 4 level of detail options.  
+The options menu currently contains 5 level of detail options and an animation interval slider. 
+They are grouped by seperators. The first two options hide animation states, the three in the middle are drawing options and the last one is for animation options.
 
-The first one shows all animations states that show how the contour was calculated.
-The second option shows all states that show the distance check on each contour layer.  
+The first option shows or hides all states that show the contour. 
+The second option shows all states that show the distance check on each contour layer.
 The third option shows the xOffset values that the algorithm saves for each node. They are usually displayd below the nodes name. 
 The fourth only shows the offset value for each node.
 The fifth option hides threads which are displayed as dashed lines.
@@ -127,7 +128,7 @@ Therefore some options disable others.
 
 ![OwO thewes missing some something D:](Documentation-Resources/options_dis.png "Hey, im a popup :P")
 
-The legend also shows changes in the options.
+The legend also immediately shows changes in the options.
 
 #### Pane 4
 

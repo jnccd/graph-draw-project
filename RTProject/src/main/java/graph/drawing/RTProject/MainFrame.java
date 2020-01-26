@@ -265,10 +265,11 @@ public class MainFrame extends JFrame {
 	 */
 	public MainFrame() {
 		// Load the last path of the file chooser
-		try {
-			fc.setSelectedFile(new File(GraphLoader.readTextfile(lastPathPath)));
-		} catch (Exception e) {
-		}
+		String path = GraphLoader.readTextfile(lastPathPath);
+		if (!path.contentEquals(""))
+			fc.setSelectedFile(new File(path));
+		else
+			fc.setCurrentDirectory(new File("."));
 
 		// Set the icon / Swing doesn't seem to like .ico files for some reason
 		setIconImage(new ImageIcon(".\\icon.png").getImage());
@@ -397,7 +398,7 @@ public class MainFrame extends JFrame {
 					enableControlElements();
 					String fileName = JOptionPane.showInputDialog(frame, "How should the new file be named?");
 
-					String newFilePath = fc.getSelectedFile().getParent() + File.separatorChar + fileName;
+					String newFilePath = fc.getCurrentDirectory().getAbsolutePath() + File.separatorChar + fileName;
 					File newFile = new File(newFilePath);
 					try {
 						newFile.createNewFile();

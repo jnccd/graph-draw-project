@@ -147,9 +147,7 @@ public class GraphLoader {
 
 		try {
 			content = new String(Files.readAllBytes(Paths.get(path)));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		} catch (IOException e) { }
 
 		return content;
 	}
