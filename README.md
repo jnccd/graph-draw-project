@@ -14,7 +14,8 @@ After starting the application for the first time you should see this window. If
 ![OwO thewes missing some something D:](Documentation-Resources/startup.png "Hey, im a popup :P")
 
 The first thing you want to do is to press the ``Load File`` button, this will load up the standart java swing file selector. With that you should select a text file that contains a valid graph. Do not worry though the program will remember the last file you selected so you won't have to go though all of your folder twice.  
-Alternatively you can also type a valid graph into the editor and hit ``CTRL + S``, ``Save`` or ``Save as new File``. The first two will write the graph into a temporary file while the latter lets you choose a filename and 
+Alternatively you can also type a valid graph into the editor and hit ``CTRL + S``, ``Save`` or ``Save as new File``.  
+The first two will write the graph into a temporary file while the latter lets you choose a filename and saves the file to the current directory or the direcory you last loaded a file from.
 
 ### Valid File Formats
 
@@ -104,7 +105,8 @@ To the right there is the load button that we already used to load this graph.
 
 ##### The Editor
 
-This pane contains tabs, the default shown tab is the editor tab which contains a text editor that shows the source code of the currently loaded graph. Hitting `CTRL + S` while the tab is focused or the `Save` button will save the changes you made in that editor to the loaded text file and reload it. Don't move or delete a text file that is currently loaded.
+This pane contains tabs, the default shown tab is the editor tab which contains a text editor that shows the source code of the currently loaded graph. Hitting `CTRL + S` while the tab is focused or the `Save` button will save the changes you made in that editor to the loaded text file and reload it.  
+Don't move or delete a text file that is currently loaded.
 
 Also noteworthy is a simple syntax highlighter that highlights the currently marked node and contour.
 
@@ -138,7 +140,7 @@ The fourth pane contains a legend for the graph drawing in the first pane. If th
 
 ### Dependencies
 
-The project is written using Java 1.8 and Maven. I imported and used the Maven packages `org.eclipse.elk.graph`, `org.eclipse.elk.alg.common` and `material-ui-swing`. The latter one contains a Java Swing Look and Feel that was inspired by Googles material design.
+The project is written using JavaSE-1.8 and Maven. I imported and used the Maven packages `org.eclipse.elk.graph`, `org.eclipse.elk.alg.common` and `material-ui-swing`. The latter one contains a Java Swing Look and Feel that was inspired by Googles material design.
 
 ### Program Architecture
 
