@@ -19,7 +19,9 @@ The first two will write the graph into a temporary file while the latter lets y
 
 ### Valid File Formats
 
-A text file containing a valid graph only contains lines from a .elkt graph that do not contain { } blocks or simplified elkt edge definitions.
+A text file containing a valid graph only contains lines from  
+a .elkt graph that do not contain { } blocks or  
+simplified elkt edge definitions.
 ```
 n1 -> n2
 n1 -> n3
@@ -97,8 +99,8 @@ The first pane is the drawPane, surprisingly the graph is drawn here. More inter
 #### Pane 2
 
 The second pane contains 3 groups of UI elements that are seperated by empty spaces.  
-To the very left we got arrow buttons that allow us to step though the animation states frame by frame in each direction. They act like a ring buffer so trying to move backwards on the initial frame will result in landing in the last frame.  
-In the middle there are a play/pause button and a slider that is misused as a progress bar for the animation. It works very similar to YouTube video bar.  
+To the very left we got arrow buttons that allow us to step though the animation states frame by frame in each direction. They act like a ring buffer so trying to move backwards on the initial frame will move you to the last state.  
+In the middle there are a play/pause button and a slider that is misused as a progress bar for the animation. It works very similar to a YouTube video bar.  
 To the right there is the load button that we already used to load this graph.
 
 #### Pane 3
@@ -121,7 +123,7 @@ They are grouped by seperators. The first two options hide animation states, the
 
 The first option shows or hides all states that show the contour. 
 The second option shows all states that show the distance check on each contour layer.
-The third option shows the xOffset values that the algorithm saves for each node. They are usually displayd below the nodes name. 
+The third option shows the xOffset values that the algorithm saves for each node. They are displayd below the nodes name. 
 The fourth only shows the offset value for each node.
 The fifth option hides threads which are displayed as dashed lines.
 
@@ -140,7 +142,7 @@ The fourth pane contains a legend for the graph drawing in the first pane. If th
 
 ### Dependencies
 
-The project is written using JavaSE-1.8 and Maven. I imported and used the Maven packages `org.eclipse.elk.graph`, `org.eclipse.elk.alg.common` and `material-ui-swing`. The latter one contains a Java Swing Look and Feel that was inspired by Googles material design.
+The project is written using JavaSE-1.8 and Maven. I imported and used the Maven packages `org.eclipse.elk.graph`, `org.eclipse.elk.alg.common` and `material-ui-swing`. The latter one contains a Java Swing Look and Feel that was inspired by Googles Material Design.
 
 ### Program Architecture
 
@@ -158,7 +160,8 @@ The code of this project is split into 3 packages:
 
 #### MainFrame
 
-This class was with the exception of the code inside some events generated using the WindowBuilder Plugin and its attributes are the GUI elements shown in the last chapter.
+This class was with the exception of the code inside some events mostly generated using the WindowBuilder Plugin and its attributes are the GUI elements shown in the previous chapter.
+This class also contains the entry point for this application.
 
 #### GraphStatesManager
 
@@ -168,7 +171,7 @@ This class manages a list of GraphStates and the index of the currently displaye
 
 This class holds all the information nessecary to visualize a state in the RT algorithm. The left and right arrow attributes may be confusing, they contain all the nessecary information to draw the line that symbolises the check of the contour difference.  
 The class also contains the draw method which draws this state to a target component.
-I filtered the numerous constructors and the arguments for the draw methods to keep the diagram readable.
+I left the numerous constructors and some draw methods out in this diagram.
 
 #### GraphLoader
 
@@ -196,11 +199,11 @@ This class mirrors an ElkEdge.
 
 #### Help
 
-This class contains a lot of helpful michellenious methods.
+This class contains a lot of helpful michellenious methods that are grouped in the code by comments.
 
 #### NodeProperty
 
-An instance of this class is saved for every ElkNode and contains needed additional information for the BinaryCheckPhase and the RTLayoutPhase.
+An instance of this class is saved for almost every ElkNode and contains needed additional information for the BinaryCheckPhase and the RTLayoutPhase.
 
 ### phases
 
@@ -216,7 +219,7 @@ This is a Phase that throws an Exception if the apply method is called on a grap
 
 #### InorderLayoutPhase
 
-This is a Phase that layouts a graph using the inorder algorithm.
+This is a Phase that layouts a graph using the inorder algorithm. It is used to create the initial state of the graph.
 
 #### RTLayoutPhase
 
@@ -228,11 +231,11 @@ This is a layout phase that layouts the graph using a RT implementation. However
 
 ![OwO thewes missing some something D:](Documentation-Resources/gui.png "Hey, im a popup :P")
 
-The left side of the GUI is designed similarly to a generic video player with the play plause button and the progress bar showing the progress through the video. However we also need buttons to step through the animation frame by frame. Similarly to sony vegas' gui I seperate the video player controls from the frame by frame buttons.
+The left side of the GUI is designed similarly to a generic video player with the play plause button and the progress bar showing the progress through the video. However we also need buttons to step through the animation frame by frame. Similarly to Sony Vegas' GUI I seperate the video player controls from the frame by frame buttons.
 
-The right side of the GUI contains additional information like the legend, similarly to YouTubes info panel that i enabled on certain videos. The information displayed here is always important so there is no option to hide it.
+The right side of the GUI contains additional information like the legend, similarly to YouTubes info panel that are enabled on certain videos. 
 
-Within the editorTab there is some padding around the editorPane because the text would otherwise start directly next to the background and no other text editor does that.  
+Within the editorTab there is some padding around the editorPane because the text would otherwise start directly next to the background.  
 
 ### Filtering
 
@@ -254,12 +257,12 @@ Firstly to make clear in what order we stepping through the graph currently and 
 
 To show what node we are looking at in the current step the node is marked in an orange color. Due to the fact that this color is a warning color that should make it easy to see that this node is important in the current step.
 
-To emphasize nodes that belong to the contours that are currently checked, those nodes are drawn kind of negatively. The negative color of cyan is unfitting though so I used gray. That gray tone also fits well to the orange.
+To emphasize nodes that belong to the contours that are currently checked, those nodes are drawn in a kind of negative. The negative color of cyan is unfitting though so I used gray. That gray tone also fits well with the orange tone of the marked node.
 
 The layer of the currently checked contour difference is displayed by a line between the two nodes. Below that line at each side the actual contour value is drawn.
 
 Due to the fact that the contour number and the threads might overlap the background of the contour number is cleared.
-Overlaps between thread lines and contour difference lines aren't so confusing because they are drawn in different colors.
+Overlaps between thread lines and contour difference lines shouldn't be so confusing because they are drawn in different colors.
 
 When the difference line is drawn the dv value of the algorithm is drawn below the marked node to visualize that it's the horizontal difference between the two subtrees under it.
 
@@ -272,12 +275,12 @@ Unlike edges however that are drawn from and to the edges of the nodes rectangle
 
 ![OwO thewes missing some something D:](Documentation-Resources/vis_phase2.png "Hey, im a popup :P")
 
-This phase is a lot simpler than the first one. All we do is finding out the roots X position within the grid by stepping through its left children recursively.
+This phase is a lot simpler than the first one. All we do is finding the roots X position within the grid by stepping through its left children recursively.
 We mark the node we are currently visitig again and show the currently accumulated X position in the title.
 
 ### Phase 3
 
 ![OwO thewes missing some something D:](Documentation-Resources/vis_phase3.png "Hey, im a popup :P")
 
-In this phase we step through the graph in Preorder and apply the offsets we calculated earlier. 
+In this phase we step through the graph in Preorder and set the nodes X positions based on the offsets we calculated earlier. 
 The node we are currently processing is marked again and the order is displayed in the title. 
