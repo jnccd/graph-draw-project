@@ -14,7 +14,8 @@ After starting the application for the first time you should see this window. If
 ![OwO thewes missing some something D:](Documentation-Resources/startup.png "Hey, im a popup :P")
 
 The first thing you want to do is to press the ``Load File`` button, this will load up the standart java swing file selector. With that you should select a text file that contains a valid graph. Do not worry though the program will remember the last file you selected so you won't have to go though all of your folder twice.  
-Alternatively you can also type a valid graph into the editor and hit ``CTRL + S`` or ``Save``.
+Alternatively you can also type a valid graph into the editor and hit ``CTRL + S``, ``Save`` or ``Save as new File``.  
+The first two will write the graph into a temporary file while the latter lets you choose a filename and saves the file to the current directory or the direcory you last loaded a file from.
 
 ### Valid File Formats
 
@@ -104,7 +105,8 @@ To the right there is the load button that we already used to load this graph.
 
 ##### The Editor
 
-This pane contains tabs, the default shown tab is the editor tab which contains a text editor that shows the source code of the currently loaded graph. Hitting `CTRL + S` while the tab is focused or the `Save` button will save the changes you made in that editor to the loaded text file and reload it. Don't move or delete a text file that is currently loaded.
+This pane contains tabs, the default shown tab is the editor tab which contains a text editor that shows the source code of the currently loaded graph. Hitting `CTRL + S` while the tab is focused or the `Save` button will save the changes you made in that editor to the loaded text file and reload it.  
+Don't move or delete a text file that is currently loaded.
 
 Also noteworthy is a simple syntax highlighter that highlights the currently marked node and contour.
 
@@ -114,12 +116,21 @@ Also noteworthy is a simple syntax highlighter that highlights the currently mar
 
 ![OwO thewes missing some something D:](Documentation-Resources/options.png "Hey, im a popup :P")
 
-The options menu currently contains an animation interval slider and 4 level of detail options.  
+The options menu currently contains 5 level of detail options and an animation interval slider. 
+They are grouped by seperators. The first two options hide animation states, the three in the middle are drawing options and the last one is for animation options.
 
-The first one hides all animations states that show how the contour was calculated, if activated this also activates the second option.  
-The second option hides all states that show the distance check on each contour layer.  
-The third option hides the xOffset values that the algorithm saves for each node. They are usually displayd below the nodes name.  
-The fourth option hides threads which are displayed as dashed lines.
+The first option shows or hides all states that show the contour. 
+The second option shows all states that show the distance check on each contour layer.
+The third option shows the xOffset values that the algorithm saves for each node. They are usually displayd below the nodes name. 
+The fourth only shows the offset value for each node.
+The fifth option hides threads which are displayed as dashed lines.
+
+Some of these options disable other options. Disabling `Show Node Offset Value` and enabling `Show Offset Values Only` doesn't make any sense.
+Therefore some options disable others.
+
+![OwO thewes missing some something D:](Documentation-Resources/options_dis.png "Hey, im a popup :P")
+
+The legend also immediately shows changes in the options.
 
 #### Pane 4
 
@@ -129,7 +140,7 @@ The fourth pane contains a legend for the graph drawing in the first pane. If th
 
 ### Dependencies
 
-The project is written using Java 1.8 and Maven. I imported and used the Maven packages `org.eclipse.elk.graph`, `org.eclipse.elk.alg.common` and `material-ui-swing`. The latter one contains a Java Swing Look and Feel that was inspired by Googles material design.
+The project is written using JavaSE-1.8 and Maven. I imported and used the Maven packages `org.eclipse.elk.graph`, `org.eclipse.elk.alg.common` and `material-ui-swing`. The latter one contains a Java Swing Look and Feel that was inspired by Googles material design.
 
 ### Program Architecture
 
@@ -217,15 +228,21 @@ This is a layout phase that layouts the graph using a RT implementation. However
 
 ![OwO thewes missing some something D:](Documentation-Resources/gui.png "Hey, im a popup :P")
 
- The left side of the GUI is designed similarly to a generic video player with the play plause button and the progress bar showing the progress through the video. However we also need buttons to step through the animation frame by frame. Similarly to sony vegas' gui I seperate the video player controls from the frame by frame buttons.
+The left side of the GUI is designed similarly to a generic video player with the play plause button and the progress bar showing the progress through the video. However we also need buttons to step through the animation frame by frame. Similarly to sony vegas' gui I seperate the video player controls from the frame by frame buttons.
 
 The right side of the GUI contains additional information like the legend, similarly to YouTubes info panel that i enabled on certain videos. The information displayed here is always important so there is no option to hide it.
 
 Within the editorTab there is some padding around the editorPane because the text would otherwise start directly next to the background and no other text editor does that.  
 
-![OwO thewes missing some something D:](Documentation-Resources/options.png "Hey, im a popup :P")
+### Filtering
 
-The level of detail options in the options menu ask if you want to hide something instead of the other way around. This is the case because those options should normally be enabled, therefore hiding the elements is the special case.
+![OwO thewes missing some something D:](Documentation-Resources/filtering.png "Hey, im a popup :P")
+
+If there is not enough space for the Node name and its offset value to be drawn the program will draw the node name only to keep it readable.
+
+### Initial Phase
+
+In the initial state the graph is layouted using the inorder algorithm because it tends to layout graphs too widely which gives us enough space to visualize the stages of the RT algorithm.
 
 ### Phase 1
 

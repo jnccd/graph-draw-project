@@ -15,4 +15,5 @@ public class Options {
 	public static boolean hideContourDifferenceStates = false;
 	public static boolean hideNodeOffsetValues = false;
 	public static boolean hideThreads = false;
+	public static boolean showOffsetOnly = false;
 }

@@ -19,10 +19,12 @@ import helper.Graph;
 import helper.Node;
 
 /**
- * This class holds all the information necessary to visualize a state in the RT algorithm. 
- * The left and right arrow attributes may be confusing, they contain all the necessary 
- * information to draw the line that symbolizes the check of the contour difference.  
- * The class also contains the draw method which draws this state to a target component.
+ * This class holds all the information necessary to visualize a state in the RT
+ * algorithm. The left and right arrow attributes may be confusing, they contain
+ * all the necessary information to draw the line that symbolizes the check of
+ * the contour difference. The class also contains the draw method which draws
+ * this state to a target component.
+ * 
  * @author dobiko
  */
 public class GraphState {
@@ -83,7 +85,7 @@ public class GraphState {
 		else
 			return "";
 	}
-	
+
 	public List<String> getContourNodeNames() {
 		if (contourNodes != null)
 			return contourNodes.stream().map(x -> x.getIdentifier()).collect(Collectors.toList());
@@ -98,11 +100,11 @@ public class GraphState {
 		ElkPadding pad = Options.PADDING;
 
 		// Set the gridSize so that the entire tree + padding fits on the screen
-		int gridSize = (int) Math.min(
-				(target.getWidth() - pad.getHorizontal()) * 0.9
-						/ (graph.nodes.stream().map(x -> x.x).max(Double::compare).get() + 1),
-				(target.getHeight() - pad.getVertical()) * 0.9
-						/ (graph.nodes.stream().map(x -> x.y).max(Double::compare).get() + 1));
+		int xSize = (int) ((target.getWidth() - pad.getHorizontal())
+				/ (graph.nodes.stream().map(x -> x.x).max(Double::compare).get() + 1));
+		int ySize = (int) ((target.getHeight() - pad.getVertical())
+				/ (graph.nodes.stream().map(x -> x.y).max(Double::compare).get() + 1));
+		int gridSize = (int) Math.min(xSize, ySize);
 
 		// Fix graph - make all coords positive, set size depending on new gridSize
 		int minX = graph.nodes.stream().map(x -> x.x).min(Double::compare).get().intValue(),
@@ -124,7 +126,7 @@ public class GraphState {
 			drawEdge(g, src, tar, gridSize, pad, Color.BLACK, false, false);
 		}
 
-		// Draw the nodes in the correct colours
+		// Draw the nodes in the correct colors
 		for (Node n : graph.nodes) {
 			boolean isContour = contourNodes != null
 					&& contourNodes.stream().filter(x -> x.getIdentifier().contentEquals(n.name)).findAny().isPresent();
@@ -145,44 +147,47 @@ public class GraphState {
 		g.setColor(Color.BLACK);
 		if (leftArrowNode != null && rightArrowNode != null) {
 			drawLine(g, Color.ORANGE, 3,
-					(int) (leftArrowNode.getX() * gridSize + (int) pad.left + leftArrowNode.getWidth()
-							+ 6),
+					(int) (leftArrowNode.getX() * gridSize + (int) pad.left + leftArrowNode.getWidth() + 6),
 					(int) (leftArrowNode.getY() * gridSize + (int) pad.top + leftArrowNode.getHeight() / 2),
 					(int) (rightArrowNode.getX() * gridSize + (int) pad.left - 6),
 					(int) (rightArrowNode.getY() * gridSize + (int) pad.top + rightArrowNode.getHeight() / 2));
 			if (gridSize > 50) {
 				g.setFont(new Font(fontName, Font.PLAIN, (int) (gridSize * 0.3)));
-				
+
 				// Clear background
 				int size = 10;
 				g.setColor(target.getBackground());
-				g.fillRect( (int) (leftArrowNode.getX() * gridSize + (int) pad.left + leftArrowNode.getWidth() + 18) - size,
-							(int) (leftArrowNode.getY() * gridSize + (int) pad.top + leftArrowNode.getHeight() / 2) + 2, 
-							g.getFontMetrics().charWidth('4') + size * 2, g.getFontMetrics().getHeight() + size / 2);
-				g.fillRect( (int) (rightArrowNode.getX() * gridSize + (int) pad.left - g.getFontMetrics().charWidth('4') - 10) - size,
-							(int) (rightArrowNode.getY() * gridSize + (int) pad.top + rightArrowNode.getHeight() / 2) + 2, 
-							g.getFontMetrics().charWidth('4') + size * 2, g.getFontMetrics().getHeight() + size / 2);
+				g.fillRect(
+						(int) (leftArrowNode.getX() * gridSize + (int) pad.left + leftArrowNode.getWidth() + 18) - size,
+						(int) (leftArrowNode.getY() * gridSize + (int) pad.top + leftArrowNode.getHeight() / 2) + 2,
+						g.getFontMetrics().charWidth('4') + size * 2, g.getFontMetrics().getHeight() + size / 2);
+				g.fillRect(
+						(int) (rightArrowNode.getX() * gridSize + (int) pad.left - g.getFontMetrics().charWidth('4')
+								- 10) - size,
+						(int) (rightArrowNode.getY() * gridSize + (int) pad.top + rightArrowNode.getHeight() / 2) + 2,
+						g.getFontMetrics().charWidth('4') + size * 2, g.getFontMetrics().getHeight() + size / 2);
 				g.setColor(Color.BLACK);
-				
+
 				// Draw dv string
-				Node markedN = graph.nodes.stream().filter(x -> x.name.contentEquals(markedNode.getIdentifier())).findFirst().get();;
-				g.drawString(Integer.toString(dv), 
-						(int) (markedN.x * gridSize + (int) pad.left + 
-								(markedN.w - g.getFontMetrics().stringWidth(Integer.toString(dv))) / 2),
-						(int) (markedN.y * gridSize + (int) pad.top + 
-								(int) (markedN.h) + g.getFontMetrics().getHeight() * 0.7));
-				
+				Node markedN = graph.nodes.stream().filter(x -> x.name.contentEquals(markedNode.getIdentifier()))
+						.findFirst().get();
+				;
+				g.drawString(Integer.toString(dv),
+						(int) (markedN.x * gridSize + (int) pad.left
+								+ (markedN.w - g.getFontMetrics().stringWidth(Integer.toString(dv))) / 2),
+						(int) (markedN.y * gridSize + (int) pad.top + (int) (markedN.h)
+								+ g.getFontMetrics().getHeight() * 0.7));
+
 				// Draw differences string
 				g.drawString(Integer.toString(leftArrowNumber),
-						(int) (leftArrowNode.getX() * gridSize + (int) pad.left + leftArrowNode.getWidth()
-								+ 12),
-						(int) (leftArrowNode.getY() * gridSize + (int) pad.top + 
-								g.getFontMetrics().getHeight() + leftArrowNode.getHeight() / 2 - 5));
+						(int) (leftArrowNode.getX() * gridSize + (int) pad.left + leftArrowNode.getWidth() + 12),
+						(int) (leftArrowNode.getY() * gridSize + (int) pad.top + g.getFontMetrics().getHeight()
+								+ leftArrowNode.getHeight() / 2 - 5));
 				g.drawString(Integer.toString(rightArrowNumber),
-						(int) (rightArrowNode.getX() * gridSize + (int) pad.left - 10 - 
-								g.getFontMetrics().stringWidth(Integer.toString(rightArrowNumber))),
-						(int) (leftArrowNode.getY() * gridSize + (int) pad.top + 
-								g.getFontMetrics().getHeight() + leftArrowNode.getHeight() / 2 - 5));
+						(int) (rightArrowNode.getX() * gridSize + (int) pad.left - 10
+								- g.getFontMetrics().stringWidth(Integer.toString(rightArrowNumber))),
+						(int) (leftArrowNode.getY() * gridSize + (int) pad.top + g.getFontMetrics().getHeight()
+								+ leftArrowNode.getHeight() / 2 - 5));
 			}
 		}
 	}
@@ -207,12 +212,21 @@ public class GraphState {
 			g.setColor(Color.BLACK);
 
 		// Draw text, only draw the note if there is enough space
-		if (n.h > 30 && !Options.hideNodeOffsetValues) {
-			g.setFont(new Font(fontName, Font.PLAIN, (int) (n.h * 0.4))); // frame.getStateLabel().getFont().getName()
+		if (Options.showOffsetOnly) { // Only draw note
+			g.setFont(new Font(fontName, Font.PLAIN, (int) (n.h * 0.8)));
+
+			String note = new String(n.note);
+			while (g.getFontMetrics().stringWidth(note) > n.w)
+				note = note.substring(0, note.length() - 2);
+
+			g.drawString(note, (int) (x + (n.w - g.getFontMetrics().stringWidth(note)) / 2),
+					(int) (y + g.getFontMetrics().getAscent() * 1.1 - 5));
+		} else if (n.h > 30 && !Options.hideNodeOffsetValues) { // Draw note + name
+			g.setFont(new Font(fontName, Font.PLAIN, (int) (n.h * 0.4)));
 
 			String name = new String(n.name);
 			String note = new String(n.note);
-			while (g.getFontMetrics().stringWidth(name) > n.w)
+			while (g.getFontMetrics().stringWidth(name) > n.w && name.length() > 2)
 				name = name.substring(0, name.length() - 2);
 			while (g.getFontMetrics().stringWidth(note) > n.w)
 				note = note.substring(0, note.length() - 2);
@@ -221,11 +235,11 @@ public class GraphState {
 					y + g.getFontMetrics().getAscent() - (int) (n.h * 0.08));
 			g.drawString(note, (int) (x + (n.w - g.getFontMetrics().stringWidth(note)) / 2),
 					y + g.getFontMetrics().getHeight() * 3 / 2 + (int) (n.h * 0.1));
-		} else {
-			g.setFont(new Font(fontName, Font.PLAIN, (int) (n.h * 0.9)));
+		} else { // Only draw name
+			g.setFont(new Font(fontName, Font.PLAIN, (int) (n.h * 0.8)));
 
 			String name = new String(n.name);
-			while (g.getFontMetrics().stringWidth(name) > n.w)
+			while (g.getFontMetrics().stringWidth(name) > n.w && name.length() > 2)
 				name = name.substring(0, name.length() - 2);
 
 			g.drawString(name, (int) (x + (n.w - g.getFontMetrics().stringWidth(name)) / 2),
@@ -233,9 +247,10 @@ public class GraphState {
 		}
 	}
 
-	public static void drawEdge(Graphics g, Node src, Node tar, int gridSize,
-			ElkPadding pad, Color c, boolean alwaysBottom, boolean dashed) {
+	public static void drawEdge(Graphics g, Node src, Node tar, int gridSize, ElkPadding pad, Color c,
+			boolean alwaysBottom, boolean dashed) {
 		int srcX, srcY, tarX, tarY;
+		// Route from and to the closest edges from each rectangle in X
 		if (src.x < tar.x) {
 			srcX = (int) (src.x * gridSize + src.w) + (int) pad.left;
 			tarX = (int) tar.x * gridSize + (int) pad.left;
@@ -244,6 +259,8 @@ public class GraphState {
 			tarX = (int) (tar.x * gridSize + tar.w) + (int) pad.left;
 		}
 
+		// Route from and to the closest edges from each rectangle in Y, or always use
+		// the lower one
 		if (alwaysBottom) {
 			srcY = (int) (src.y * gridSize + src.h) + (int) pad.top;
 			tarY = (int) (tar.y * gridSize + tar.h) + (int) pad.top;
@@ -260,7 +277,7 @@ public class GraphState {
 		g.setColor(c);
 		if (dashed)
 			drawDashedLine(g, srcX, srcY, tarX, tarY);
-		else 
+		else
 			drawLine(g, c, 3, srcX, srcY, tarX, tarY);
 	}
 
@@ -273,7 +290,7 @@ public class GraphState {
 
 		g2d.dispose();
 	}
-	
+
 	public static void drawLine(Graphics g, Color c, int width, int srcX, int srcY, int tarX, int tarY) {
 		Graphics2D g2d = (Graphics2D) g.create();
 
