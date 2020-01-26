@@ -264,12 +264,13 @@ public class MainFrame extends JFrame {
 	 * exceptions are the events
 	 */
 	public MainFrame() {
-		// Load the last path of the file chooser
+		// Setup file chooser
 		String path = GraphLoader.readTextfile(lastPathPath);
 		if (!path.contentEquals(""))
 			fc.setSelectedFile(new File(path));
 		else
 			fc.setCurrentDirectory(new File("."));
+		fc.setDialogTitle("Choose a valid file to load");
 
 		// Set the icon / Swing doesn't seem to like .ico files for some reason
 		setIconImage(new ImageIcon(".\\icon.png").getImage());
@@ -398,16 +399,22 @@ public class MainFrame extends JFrame {
 					enableControlElements();
 					String fileName = JOptionPane.showInputDialog(frame, "How should the new file be named?");
 
-					String newFilePath = fc.getCurrentDirectory().getAbsolutePath() + File.separatorChar + fileName;
-					File newFile = new File(newFilePath);
-					try {
-						newFile.createNewFile();
-					} catch (IOException e1) {
-						JOptionPane.showMessageDialog(null, e1.getMessage());
-						return;
+					JFileChooser folderChooser = new JFileChooser();
+					folderChooser.setCurrentDirectory(new java.io.File("."));
+					folderChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+					folderChooser.setAcceptAllFileFilterUsed(false);
+					if (folderChooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
+						String newFilePath = folderChooser.getSelectedFile().getAbsolutePath() + File.separatorChar + fileName;
+						File newFile = new File(newFilePath);
+						try {
+							newFile.createNewFile();
+						} catch (IOException e1) {
+							JOptionPane.showMessageDialog(null, e1.getMessage());
+							return;
+						}
+						GraphLoader.saveTextfile(newFile.getAbsolutePath(), editorPane.getText());
+						refresh();
 					}
-					GraphLoader.saveTextfile(newFile.getAbsolutePath(), editorPane.getText());
-					refresh();
 				}
 			}
 		});
