@@ -87,7 +87,7 @@ public class RTLayoutPhase implements Phase {
 				Help.getProp(rightChild).xOffset = dv / 2;
 				
 				// Add the animation state if enabled
-				if (!Options.hideContourDifferenceStates)
+				if (!Options.hideContourDifferenceStates && !Options.hideContourStates)
 					states.addState(new GraphState(
 							"Phase 1, Postorder: Set offsets of childs of " + n.getIdentifier()
 									+ " | Check difference of " + leftContour.get(i).getIdentifier() + " and "
