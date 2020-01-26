@@ -50,10 +50,12 @@ import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import java.awt.event.MouseMotionAdapter;
 import javax.swing.JCheckBox;
+import javax.swing.JSeparator;
 
 /**
- * This class contains the definitions for the GUI.
- * The constructor was generated using WindowBuilder
+ * This class contains the definitions for the GUI. The constructor was
+ * generated using WindowBuilder
+ * 
  * @author dobiko
  */
 public class MainFrame extends JFrame {
@@ -67,15 +69,16 @@ public class MainFrame extends JFrame {
 	private JFileChooser fc = new JFileChooser();
 
 	public GraphStatesManager states = new GraphStatesManager();
-	
+
 	private long counter = 0;
 	private boolean playing = false;
 
 	private String currentFilePath;
 	private String lastPathPath = ".//lastPath.txt";
-	
+
 	/**
 	 * This is the main entrypoint of the application.
+	 * 
 	 * @param args Program arguments
 	 */
 	public static void main(String[] args) {
@@ -96,7 +99,7 @@ public class MainFrame extends JFrame {
 			}
 		});
 	}
-	
+
 	public JEditorPane getEditorPane() {
 		return editorPane;
 	}
@@ -104,14 +107,16 @@ public class MainFrame extends JFrame {
 	public JLabel getStateLabel() {
 		return stateLabel;
 	}
-	
+
 	void enableControlElements() {
 		btnLeft.setEnabled(true);
 		btnRight.setEnabled(true);
 		btnPlay.setEnabled(true);
 		slider.setEnabled(true);
+
+		slider.setBackground(SystemColor.controlHighlight);
 	}
-	
+
 	void saveEditor() {
 		// Save the changes to the text file iff the graph can be successfully loaded
 		if (GraphLoader.load(editorPane.getText(), states)) {
@@ -136,7 +141,7 @@ public class MainFrame extends JFrame {
 			highlightEditorText();
 		}
 	}
-	
+
 	private JPanel drawPanel = new JPanel() {
 		private static final long serialVersionUID = 1L;
 
@@ -151,7 +156,7 @@ public class MainFrame extends JFrame {
 				states.getCurrentState().draw(g, drawPanel, frame.getStateLabel().getFont().getName());
 		}
 	};
-	
+
 	private JPanel legendPanel = new JPanel() {
 		private static final long serialVersionUID = 1L;
 
@@ -177,10 +182,13 @@ public class MainFrame extends JFrame {
 					new ArrayList<helper.Edge>(), null);
 			curY += 5 + 50;
 
-			GraphState.drawNode(g, getStateLabel().getFont().getName(), normal, (int) normal.x, (int) normal.y, false, false);
-			GraphState.drawNode(g, getStateLabel().getFont().getName(), marked, (int) marked.x, (int) marked.y, false, true);
-			GraphState.drawNode(g, getStateLabel().getFont().getName(), contour, (int) contour.x, (int) contour.y, true, false);
-			
+			GraphState.drawNode(g, getStateLabel().getFont().getName(), normal, (int) normal.x, (int) normal.y, false,
+					false);
+			GraphState.drawNode(g, getStateLabel().getFont().getName(), marked, (int) marked.x, (int) marked.y, false,
+					true);
+			GraphState.drawNode(g, getStateLabel().getFont().getName(), contour, (int) contour.x, (int) contour.y, true,
+					false);
+
 			g.setColor(Color.BLACK);
 			GraphState.drawLine(g, Color.BLACK, 3, 10, curY + 15, 50, curY + 15);
 			if (!Options.hideThreads)
@@ -194,14 +202,15 @@ public class MainFrame extends JFrame {
 					(int) marked.y + (int) marked.h / 2 + g.getFontMetrics().getAscent() / 2);
 			g.drawString("Contour Graph Node", (int) contour.x + (int) contour.w + 10,
 					(int) contour.y + (int) contour.h / 2 + g.getFontMetrics().getAscent() / 2);
-			
+
 			g.drawString("Edge", 60, curY + 16 + g.getFontMetrics().getAscent() / 2);
 			g.drawString("Reingold Tilford Thread", 60, curY + 3 + 15 + 16 + g.getFontMetrics().getAscent() / 2);
 		}
 	};
 	private JButton btnLeft;
 	private JButton btnRight;
-	
+	private JLabel lblPlayAnimationFrame;
+
 	/**
 	 * Do the editor text highlighting
 	 */
@@ -214,7 +223,7 @@ public class MainFrame extends JFrame {
 
 		String markedNode = states.getCurrentState().getMarkedNodeName();
 		List<String> contourNodes = states.getCurrentState().getContourNodeNames();
-		
+
 		// Find node occurrences and mark them
 		String[] split = editorPane.getText().split("( )|(\n)");
 		for (int i = 0; i < split.length; i++) {
@@ -231,7 +240,7 @@ public class MainFrame extends JFrame {
 					e.printStackTrace();
 				}
 			}
-			
+
 			for (String s : contourNodes) {
 				if (split[i].contentEquals(s)) {
 					int index = 0;
@@ -249,23 +258,25 @@ public class MainFrame extends JFrame {
 			}
 		}
 	}
-	
+
 	/**
-	 * This constructor was mostly generated using WindowBuilder, the only exceptions are the events
+	 * This constructor was mostly generated using WindowBuilder, the only
+	 * exceptions are the events
 	 */
 	public MainFrame() {
 		// Load the last path of the file chooser
 		try {
 			fc.setSelectedFile(new File(GraphLoader.readTextfile(lastPathPath)));
-		} catch (Exception e) { }
-		
+		} catch (Exception e) {
+		}
+
 		// Set the icon / Swing doesn't seem to like .ico files for some reason
 		setIconImage(new ImageIcon(".\\icon.png").getImage());
-		
+
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowOpened(WindowEvent e) {
-				new Thread(() -> { 
+				new Thread(() -> {
 					// Clock thread
 					while (true) {
 						counter++;
@@ -299,8 +310,8 @@ public class MainFrame extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		SpringLayout sl_contentPane = new SpringLayout();
-		
-				sl_contentPane.putConstraint(SpringLayout.SOUTH, drawPanel, -40, SpringLayout.SOUTH, contentPane);
+
+		sl_contentPane.putConstraint(SpringLayout.SOUTH, drawPanel, -40, SpringLayout.SOUTH, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.NORTH, legendPanel, -215, SpringLayout.SOUTH, contentPane);
 		contentPane.setLayout(sl_contentPane);
 
@@ -324,7 +335,7 @@ public class MainFrame extends JFrame {
 		sl_contentPane.putConstraint(SpringLayout.EAST, drawPanel, -5, SpringLayout.WEST, sidePanel);
 		sl_contentPane.putConstraint(SpringLayout.EAST, sidePanel, 0, SpringLayout.EAST, contentPane);
 		contentPane.add(sidePanel);
-		
+
 		JLayeredPane botPanel = new JLayeredPane();
 		sl_contentPane.putConstraint(SpringLayout.NORTH, botPanel, 10, SpringLayout.SOUTH, drawPanel);
 		sl_contentPane.putConstraint(SpringLayout.WEST, botPanel, 5, SpringLayout.WEST, contentPane);
@@ -363,7 +374,7 @@ public class MainFrame extends JFrame {
 		sl_editorTab.putConstraint(SpringLayout.EAST, editorScrollPane, -5, SpringLayout.EAST, editorTab);
 		editorScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		editorTab.add(editorScrollPane);
-		
+
 		JButton btnSave = new JButton("Save");
 		sl_editorTab.putConstraint(SpringLayout.NORTH, btnSave, -35, SpringLayout.SOUTH, editorTab);
 		sl_editorTab.putConstraint(SpringLayout.WEST, btnSave, 5, SpringLayout.WEST, editorTab);
@@ -377,7 +388,7 @@ public class MainFrame extends JFrame {
 		});
 		sl_editorTab.putConstraint(SpringLayout.SOUTH, editorScrollPane, 0, SpringLayout.NORTH, btnSave);
 		editorTab.add(btnSave);
-		
+
 		JButton btnSaveNew = new JButton("Save as new File");
 		btnSaveNew.addMouseListener(new MouseAdapter() {
 			@Override
@@ -385,7 +396,7 @@ public class MainFrame extends JFrame {
 				if (GraphLoader.load(editorPane.getText(), states)) {
 					enableControlElements();
 					String fileName = JOptionPane.showInputDialog(frame, "How should the new file be named?");
-					
+
 					String newFilePath = fc.getSelectedFile().getParent() + File.separatorChar + fileName;
 					File newFile = new File(newFilePath);
 					try {
@@ -417,48 +428,25 @@ public class MainFrame extends JFrame {
 		sl_optionsTab.putConstraint(SpringLayout.NORTH, optionsScrollPane, 5, SpringLayout.NORTH, optionsTab);
 		sl_optionsTab.putConstraint(SpringLayout.WEST, optionsScrollPane, 5, SpringLayout.WEST, optionsTab);
 		sl_optionsTab.putConstraint(SpringLayout.SOUTH, optionsScrollPane, -5, SpringLayout.SOUTH, optionsTab);
-		sl_optionsTab.putConstraint(SpringLayout.EAST, optionsScrollPane, -15, SpringLayout.EAST, optionsTab);
+		sl_optionsTab.putConstraint(SpringLayout.EAST, optionsScrollPane, -5, SpringLayout.EAST, optionsTab);
 		optionsTab.setLayout(sl_optionsTab);
 
-		JLabel lblPlayAnimationFrame = new JLabel("Play Animation Interval");
-		optionsPanel.add(lblPlayAnimationFrame);
-
-		JSlider animationIntervalSlider = new JSlider();
-		animationIntervalSlider.setBorder(null);
-		optionsPanel.add(animationIntervalSlider);
-		animationIntervalSlider.setPreferredSize(new Dimension(50, 50));
-		animationIntervalSlider.setMaximum(180);
-		animationIntervalSlider.addMouseMotionListener(new MouseMotionAdapter() {
-			@Override
-			public void mouseMoved(MouseEvent e) {
-				Options.animationFrameInterval = animationIntervalSlider.getValue();
-			}
-
-			@Override
-			public void mouseDragged(MouseEvent e) {
-				Options.animationFrameInterval = animationIntervalSlider.getValue();
-			}
-		});
-		animationIntervalSlider.setValue(60);
-		animationIntervalSlider.setMinimum(5);
-		
-		Component verticalStrut = Box.createVerticalStrut(20);
-		optionsPanel.add(verticalStrut);
-
 		JCheckBox chckbxHideContourStates = new JCheckBox("Show Contour States");
+		chckbxHideContourStates.setAlignmentX(Component.CENTER_ALIGNMENT);
 		chckbxHideContourStates.setSelected(true);
 		chckbxHideContourStates.setHorizontalAlignment(SwingConstants.LEFT);
 		optionsPanel.add(chckbxHideContourStates);
 
 		JCheckBox chckbxHideContourDifferenceStates = new JCheckBox("Show Contour Differences");
+		chckbxHideContourDifferenceStates.setAlignmentX(Component.CENTER_ALIGNMENT);
 		chckbxHideContourDifferenceStates.setSelected(true);
 		chckbxHideContourStates.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				Options.hideContourStates = !chckbxHideContourStates.isSelected();
-				
+
 				chckbxHideContourDifferenceStates.setEnabled(chckbxHideContourStates.isSelected());
-				
+
 				GraphLoader.load(editorPane.getText(), states);
 				refresh();
 			}
@@ -475,6 +463,7 @@ public class MainFrame extends JFrame {
 		optionsPanel.add(chckbxHideContourDifferenceStates);
 
 		JCheckBox chckbxHideNodeOffsetValues = new JCheckBox("Show Node Offset Values");
+		chckbxHideNodeOffsetValues.setAlignmentX(Component.CENTER_ALIGNMENT);
 		chckbxHideNodeOffsetValues.setSelected(true);
 		chckbxHideNodeOffsetValues.addMouseListener(new MouseAdapter() {
 			@Override
@@ -483,9 +472,13 @@ public class MainFrame extends JFrame {
 				refresh();
 			}
 		});
+
+		JSeparator separator = new JSeparator();
+		optionsPanel.add(separator);
 		optionsPanel.add(chckbxHideNodeOffsetValues);
 
 		JCheckBox chckbxHideThreads = new JCheckBox("Show Threads");
+		chckbxHideThreads.setAlignmentX(Component.CENTER_ALIGNMENT);
 		chckbxHideThreads.setSelected(true);
 		chckbxHideThreads.addMouseListener(new MouseAdapter() {
 			@Override
@@ -494,20 +487,44 @@ public class MainFrame extends JFrame {
 				refresh();
 			}
 		});
-		
+
 		JCheckBox chckbxChckbxshowoffsetvaluesonly = new JCheckBox("Show Offset Values Only");
+		chckbxChckbxshowoffsetvaluesonly.setAlignmentX(Component.CENTER_ALIGNMENT);
 		chckbxChckbxshowoffsetvaluesonly.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				Options.showOffsetOnly = chckbxChckbxshowoffsetvaluesonly.isSelected();
-				
+
 				chckbxHideNodeOffsetValues.setEnabled(!Options.showOffsetOnly);
-				
+
 				refresh();
 			}
 		});
 		optionsPanel.add(chckbxChckbxshowoffsetvaluesonly);
 		optionsPanel.add(chckbxHideThreads);
+
+		JSeparator separator_1 = new JSeparator();
+		optionsPanel.add(separator_1);
+
+		lblPlayAnimationFrame = new JLabel("Play Animation Interval: " + (Options.animationFrameInterval * 16) + "ms");
+		lblPlayAnimationFrame.setAlignmentX(Component.CENTER_ALIGNMENT);
+		optionsPanel.add(lblPlayAnimationFrame);
+
+		JSlider animationIntervalSlider = new JSlider();
+		animationIntervalSlider.setBorder(null);
+		optionsPanel.add(animationIntervalSlider);
+		animationIntervalSlider.setPreferredSize(new Dimension(50, 50));
+		animationIntervalSlider.setMaximum(180);
+		animationIntervalSlider.addMouseMotionListener(new MouseMotionAdapter() {
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				Options.animationFrameInterval = animationIntervalSlider.getValue();
+				lblPlayAnimationFrame
+						.setText("Play Animation Interval: " + (Options.animationFrameInterval * 16) + "ms");
+			}
+		});
+		animationIntervalSlider.setValue(60);
+		animationIntervalSlider.setMinimum(5);
 		optionsTab.add(optionsScrollPane);
 
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, sidePanel, -2, SpringLayout.NORTH, legendPanel);
@@ -518,7 +535,7 @@ public class MainFrame extends JFrame {
 		sl_sidePanel.putConstraint(SpringLayout.EAST, legendPanel, 0, SpringLayout.EAST, sidePanel);
 		contentPane.add(legendPanel);
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, legendPanel, 0, SpringLayout.SOUTH, contentPane);
-		
+
 		btnRight = new JButton(">");
 		btnRight.setEnabled(false);
 		btnRight.setFont(new Font("Noto Sans", Font.PLAIN, 25));
@@ -569,7 +586,7 @@ public class MainFrame extends JFrame {
 
 		slider = new JSlider();
 		slider.setEnabled(false);
-		slider.setBackground(SystemColor.controlHighlight);
+		slider.setBackground(new Color(200, 200, 200));
 		slider.addMouseMotionListener(new MouseMotionAdapter() {
 			@Override
 			public void mouseDragged(MouseEvent e) {
@@ -593,7 +610,7 @@ public class MainFrame extends JFrame {
 					if (file.canRead()) {
 						currentFilePath = file.getAbsolutePath();
 						GraphLoader.loadFile(currentFilePath, frame);
-						
+
 						enableControlElements();
 
 						File lastPath = new File(lastPathPath);
@@ -615,10 +632,10 @@ public class MainFrame extends JFrame {
 		botPanel.add(sliderPadding2);
 		btnLoadFile.setHorizontalAlignment(SwingConstants.RIGHT);
 		botPanel.add(btnLoadFile);
-		
+
 		contentPane.add(botPanel);
 		botPanel.setLayout(new BoxLayout(botPanel, BoxLayout.X_AXIS));
-		
+
 		JPanel backPanel = new JPanel();
 		sl_contentPane.putConstraint(SpringLayout.NORTH, backPanel, 5, SpringLayout.SOUTH, drawPanel);
 		sl_contentPane.putConstraint(SpringLayout.WEST, backPanel, 0, SpringLayout.WEST, contentPane);

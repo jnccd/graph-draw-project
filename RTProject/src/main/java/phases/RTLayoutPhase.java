@@ -96,7 +96,8 @@ public class RTLayoutPhase implements Phase {
 							rightContour.get(i), leftSubtreeLayerRightmostTotalX, rightSubtreeLayerLeftmostTotalX, dv));
 			}
 			
-			addThreads(rightChild, leftChild);
+			if (n != root)
+				addThreads(rightChild, leftChild);
 		} else
 			states.addState(
 					new GraphState("Phase 1, Postorder: Visit " + n.getIdentifier(), Graph.fromElk(layoutGraph), n));
