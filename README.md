@@ -150,7 +150,7 @@ The code of this project is split into 3 packages:
 * helper
   + Contains classes that support other calculations, most of the classes in this package have been imported from the last assignment
 * phases
-  + Contains some layout phase classes from the last assignemnts, most notably a modified version of the RT layout phase that 
+  + Contains some layout phase classes from the last assignemnts, most notably a modified version of the RT layout phase.
 
 ### graph.drawing.RTProject
 
