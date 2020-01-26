@@ -13,9 +13,9 @@ Class diagrams in this Documentation will not include most generated methods in 
 After starting the application for the first time you should see this window. If you are running this program on Linux or Mac the title bar of the window might look different but that does not matter.
 ![OwO thewes missing some something D:](Documentation-Resources/startup.png "Hey, im a popup :P")
 
-The first thing you want to do is to press the ``Load File`` button, this will load up the standart java swing file selector. With that you should select a text file that contains a valid graph. Do not worry though the program will remember the last file you selected so you won't have to go though all of your folder twice.  
+The first thing you want to do is to press the ``Load File`` button, this will load up the standart java swing file selector. With that you should select a text file that contains a valid graph. Do not worry though the program will remember the last file you selected so you won't have to go through all of your folders again.  
 Alternatively you can also type a valid graph into the editor and hit ``CTRL + S``, ``Save`` or ``Save as new File``.  
-The first two will write the graph into a temporary file while the latter lets you choose a filename and saves the file to the current directory or the direcory you last loaded a file from.
+The first two will write the graph into a temporary file while the latter lets you choose a filename and a folder for the new file the graph data should be saved in.
 
 ### Valid File Formats
 
