@@ -35,6 +35,12 @@ public class GraphLoader {
 		return curGraph;
 	}
 	
+	/**
+	 * This method reads the file in the specified path and calls load()
+	 * It also writes the read text into the editor
+	 * @param path The path to the file
+	 * @param frame A pointer to the main Window
+	 */
 	public static void loadFile(String path, MainFrame frame) {
 		fileContent = readTextfile(path);
 		if (fileContent.equals("")) {
@@ -54,6 +60,7 @@ public class GraphLoader {
 	 * @return true if the graph was loaded successfully 
 	 */
 	public static boolean load(String graph, GraphStatesManager states) {
+		// Parse graph
 		try {
 			curGraph = parseText(graph);
 		} catch (Exception e) {
@@ -68,7 +75,8 @@ public class GraphLoader {
 				JOptionPane.showMessageDialog(null, e.getMessage());
 			return false;
 		}
-
+		
+		// Update states
 		states.clearStates();
 		
 		applyPhase(curGraph, new InorderLayoutPhase());
@@ -79,6 +87,12 @@ public class GraphLoader {
 		return true;
 	}
 
+	/**
+	 * This method tries to apply a Phase to an Elk Graph
+	 * @param graph The ElkNode that contains the Graph
+	 * @param p The Phase that should be applied
+	 * @return The progressMonitor that the phase may have written on
+	 */
 	private static BasicProgressMonitor applyPhase(ElkNode graph, Phase p) {
 		BasicProgressMonitor monitor = new BasicProgressMonitor();
 		try {
@@ -89,7 +103,12 @@ public class GraphLoader {
 		}
 		return monitor;
 	}
-
+	
+	/**
+	 * Parse a String to an Elk Graph
+	 * @param textGraph the valid String containing information for a Graph
+	 * @return An ElkNode containing the parsed Graph
+	 */
 	private static ElkNode parseText(String textGraph) {
 		String[] lines = textGraph.split("\n");
 		List<String> nodeNames = Arrays.stream(lines)
@@ -141,7 +160,13 @@ public class GraphLoader {
 
 		return graph;
 	}
-
+	
+	/**
+	 * Reads the text file in the specified path and returns it as a String,
+	 * if an Exception occurs an empty String is returned
+	 * @param path the specified path
+	 * @return The text files content
+	 */
 	public static String readTextfile(String path) {
 		String content = "";
 
@@ -152,6 +177,12 @@ public class GraphLoader {
 		return content;
 	}
 	
+	/**
+	 * Overrides the contents of a file with the content String
+	 * @param path The file to write into
+	 * @param content The data to write into the file
+	 * @return True, iff the operation was successful 
+	 */
 	public static boolean saveTextfile(String path, String content) {
 		FileWriter f = null;
 		try {

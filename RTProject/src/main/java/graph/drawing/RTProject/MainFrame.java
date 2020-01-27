@@ -77,7 +77,7 @@ public class MainFrame extends JFrame {
 	private String lastPathPath = ".//lastPath.txt";
 
 	/**
-	 * This is the main entrypoint of the application.
+	 * This is the main entry point of the application.
 	 * 
 	 * @param args Program arguments
 	 */
@@ -107,7 +107,10 @@ public class MainFrame extends JFrame {
 	public JLabel getStateLabel() {
 		return stateLabel;
 	}
-
+	
+	/**
+	 * Enable the control elements after a graph has been loaded
+	 */
 	void enableControlElements() {
 		btnLeft.setEnabled(true);
 		btnRight.setEnabled(true);
@@ -117,6 +120,9 @@ public class MainFrame extends JFrame {
 		slider.setBackground(SystemColor.controlHighlight);
 	}
 
+	/**
+	 * Save the text editor changes
+	 */
 	void saveEditor() {
 		// Save the changes to the text file iff the graph can be successfully loaded
 		if (GraphLoader.load(editorPane.getText(), states)) {
@@ -157,6 +163,9 @@ public class MainFrame extends JFrame {
 		}
 	};
 
+	/**
+	 * This panel contains a overridden paint() method that draws the legend on itself
+	 */
 	private JPanel legendPanel = new JPanel() {
 		private static final long serialVersionUID = 1L;
 
@@ -165,12 +174,15 @@ public class MainFrame extends JFrame {
 		 * Draw the legendPanel
 		 */
 		public void paint(Graphics g) {
+			// Clear the panel
 			g.setColor(drawPanel.getBackground());
 			g.fillRect(0, 0, drawPanel.getWidth(), drawPanel.getHeight());
-
+			
+			// Set the Font
 			g.setColor(Color.BLACK);
 			g.setFont(new Font(frame.getStateLabel().getFont().getName(), Font.PLAIN, (int) (20)));
-
+			
+			// Create 3 example nodes
 			int curY = 0;
 			Node normal = new Node(10, curY + 10, 40, 40, "Example", "0", new ArrayList<helper.Edge>(),
 					new ArrayList<helper.Edge>(), null);
@@ -181,19 +193,22 @@ public class MainFrame extends JFrame {
 			Node contour = new Node(10, curY + 10, 40, 40, "Example", "0", new ArrayList<helper.Edge>(),
 					new ArrayList<helper.Edge>(), null);
 			curY += 5 + 50;
-
+			
+			// Draw the example nodes
 			GraphState.drawNode(g, getStateLabel().getFont().getName(), normal, (int) normal.x, (int) normal.y, false,
 					false);
 			GraphState.drawNode(g, getStateLabel().getFont().getName(), marked, (int) marked.x, (int) marked.y, false,
 					true);
 			GraphState.drawNode(g, getStateLabel().getFont().getName(), contour, (int) contour.x, (int) contour.y, true,
 					false);
-
+			
+			// Draw example edge and thread
 			g.setColor(Color.BLACK);
 			GraphState.drawLine(g, Color.BLACK, 3, 10, curY + 15, 50, curY + 15);
 			if (!Options.hideThreads)
 				GraphState.drawDashedLine(g, 10, curY + 3 + 15 + 15, 50, curY + 3 + 15 + 15);
-
+			
+			// Draw the labels
 			g.setColor(Color.BLACK);
 			g.setFont(new Font(frame.getStateLabel().getFont().getName(), Font.PLAIN, (int) (12)));
 			g.drawString("Normal Graph Node", (int) normal.x + (int) normal.w + 10,
@@ -202,7 +217,6 @@ public class MainFrame extends JFrame {
 					(int) marked.y + (int) marked.h / 2 + g.getFontMetrics().getAscent() / 2);
 			g.drawString("Contour Graph Node", (int) contour.x + (int) contour.w + 10,
 					(int) contour.y + (int) contour.h / 2 + g.getFontMetrics().getAscent() / 2);
-
 			g.drawString("Edge", 60, curY + 16 + g.getFontMetrics().getAscent() / 2);
 			g.drawString("Reingold Tilford Thread", 60, curY + 3 + 15 + 16 + g.getFontMetrics().getAscent() / 2);
 		}
@@ -262,6 +276,9 @@ public class MainFrame extends JFrame {
 	/**
 	 * This constructor was mostly generated using WindowBuilder, the only
 	 * exceptions are the events
+	 * 
+	 * I'd advise you to use windowBuilder too to understand the depths below,
+	 * with it you can rightclick on components and jump to their events
 	 */
 	public MainFrame() {
 		// Setup file chooser
@@ -284,9 +301,8 @@ public class MainFrame extends JFrame {
 						counter++;
 						try {
 							Thread.sleep(16);
-						} catch (InterruptedException e1) {
-							e1.printStackTrace();
-						}
+						} catch (InterruptedException e1) { }
+						// Execute the rest of this block roughly 60 times per second
 
 						if (playing && counter % Options.animationFrameInterval == 0) {
 							states.forwardStep();
@@ -397,14 +413,19 @@ public class MainFrame extends JFrame {
 			public void mouseClicked(MouseEvent e) {
 				if (GraphLoader.load(editorPane.getText(), states)) {
 					enableControlElements();
+					
+					// Get file name
 					String fileName = JOptionPane.showInputDialog(frame, "How should the new file be named?");
-
+					
+					// Get folder path
 					JFileChooser folderChooser = new JFileChooser();
 					folderChooser.setCurrentDirectory(new java.io.File("."));
 					folderChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 					folderChooser.setAcceptAllFileFilterUsed(false);
 					if (folderChooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
 						String newFilePath = folderChooser.getSelectedFile().getAbsolutePath() + File.separatorChar + fileName;
+						
+						// Create and write on new File
 						File newFile = new File(newFilePath);
 						try {
 							newFile.createNewFile();
@@ -413,6 +434,7 @@ public class MainFrame extends JFrame {
 							return;
 						}
 						GraphLoader.saveTextfile(newFile.getAbsolutePath(), editorPane.getText());
+						
 						refresh();
 					}
 				}
@@ -611,16 +633,16 @@ public class MainFrame extends JFrame {
 		btnLoadFile.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				int returnVal = fc.showOpenDialog(frame);
-
-				if (returnVal == JFileChooser.APPROVE_OPTION) {
+				if (fc.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
+					// Get file to load
 					File file = fc.getSelectedFile();
 					if (file.canRead()) {
+						// Load File
 						currentFilePath = file.getAbsolutePath();
 						GraphLoader.loadFile(currentFilePath, frame);
-
 						enableControlElements();
-
+						
+						// Save last selected FilePath
 						File lastPath = new File(lastPathPath);
 						try {
 							lastPath.createNewFile();

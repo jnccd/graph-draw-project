@@ -78,7 +78,11 @@ public class GraphState {
 	public String getTitle() {
 		return title;
 	}
-
+	
+	/**
+	 * Returns the markedNodeName or an empty String if the markedNode is null
+	 * @return
+	 */
 	public String getMarkedNodeName() {
 		if (markedNode != null)
 			return markedNode.getIdentifier();
@@ -86,13 +90,23 @@ public class GraphState {
 			return "";
 	}
 
+	/**
+	 * Returns the contourNames or an empty list if the contour is null
+	 * @return
+	 */
 	public List<String> getContourNodeNames() {
 		if (contourNodes != null)
 			return contourNodes.stream().map(x -> x.getIdentifier()).collect(Collectors.toList());
 		else
 			return new ArrayList<String>();
 	}
-
+	
+	/**
+	 * Draws this state on the target component
+	 * @param g the Graphics instance to draw on
+	 * @param target the component to draw on
+	 * @param fontName the name of the font that should be used
+	 */
 	public void draw(Graphics g, Component target, String fontName) {
 		if (graph.nodes.size() == 0)
 			return;
@@ -191,7 +205,17 @@ public class GraphState {
 			}
 		}
 	}
-
+	
+	/**
+	 * Draws a Node to the specified location 
+	 * @param g the Graphics instance to draw on
+	 * @param fontName the name of the font that should be used
+	 * @param n the Node instance
+	 * @param x the x coord to draw the node to
+	 * @param y the y coord to draw the node to
+	 * @param isContour is it a contour node?
+	 * @param isMarked is the node marked?
+	 */
 	public static void drawNode(Graphics g, String fontName, Node n, int x, int y, boolean isContour,
 			boolean isMarked) {
 		g.setColor(Color.BLACK);
@@ -246,7 +270,18 @@ public class GraphState {
 					(int) (y + g.getFontMetrics().getAscent() * 1.1 - 5));
 		}
 	}
-
+	
+	/**
+	 * Draws an edge from and to the specified nodes
+	 * @param g the Graphics instance to draw on
+	 * @param src the source node
+	 * @param tar the target node
+	 * @param gridSize the current gridSize
+	 * @param pad the current padding
+	 * @param c the color of the edge
+	 * @param alwaysBottom should the edge always be routed from and to the lower parts of the nodes rectangle
+	 * @param dashed is the line dashed?
+	 */
 	public static void drawEdge(Graphics g, Node src, Node tar, int gridSize, ElkPadding pad, Color c,
 			boolean alwaysBottom, boolean dashed) {
 		int srcX, srcY, tarX, tarY;
@@ -281,6 +316,14 @@ public class GraphState {
 			drawLine(g, c, 3, srcX, srcY, tarX, tarY);
 	}
 
+	/**
+	 * Draw a dashed line
+	 * @param g the Graphics instance to draw on
+	 * @param srcX the source x coord
+	 * @param srcY the source y coord
+	 * @param tarX the target x coord
+	 * @param tarY the target y coord
+	 */
 	public static void drawDashedLine(Graphics g, int srcX, int srcY, int tarX, int tarY) {
 		Graphics2D g2d = (Graphics2D) g.create();
 
@@ -291,6 +334,16 @@ public class GraphState {
 		g2d.dispose();
 	}
 
+	/**
+	 * Draw a line
+	 * @param g the Graphics instance to draw on
+	 * @param c the color of the line
+	 * @param width the width of the line
+	 * @param srcX the source x coord
+	 * @param srcY the source y coord
+	 * @param tarX the target x coord
+	 * @param tarY the target y coord
+	 */
 	public static void drawLine(Graphics g, Color c, int width, int srcX, int srcY, int tarX, int tarY) {
 		Graphics2D g2d = (Graphics2D) g.create();
 

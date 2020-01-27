@@ -41,7 +41,12 @@ public class BinaryTreeCheckPhase implements Phase {
 		else if (groots.size() == 0)
 			throw new Exception();
 	}
-
+	
+	/**
+	 * Check if the graph contains a cycle
+	 * @param layoutGraph the ElkNode containing the graph to check
+	 * @return True, iff the graph contains a cycle
+	 */
 	boolean hasCycle(ElkNode layoutGraph) {
 		for (ElkNode node : layoutGraph.getChildren()) {
 			if (!Help.getProp(node).visiting && hasCycle(layoutGraph, node)) {
@@ -50,7 +55,6 @@ public class BinaryTreeCheckPhase implements Phase {
 		}
 		return false;
 	}
-
 	boolean hasCycle(ElkNode layoutGraph, ElkNode sourceNode) {
 		Help.getProp(sourceNode).visiting = true;
 

@@ -31,6 +31,10 @@ public class InorderLayoutPhase implements Phase {
         }
     }
     
+    /**
+     * Visit Nodes recursively in inorder and add them to a list when they are visited
+     * @param n The node to start on
+     */
     void inorder(ElkNode n) {
         List<ElkNode> childs = Help.getChildren(n);
         if (childs.size() > 0) {
