@@ -43,10 +43,14 @@ public class RTLayoutPhase implements Phase {
 		root.setX(-phase2(root) + 1);
 		states.addState(new GraphState("Phase 2: Done!", Graph.fromElk(layoutGraph)));
 
-		phase3(root, root.getX(), 0);
+		phase3(root, root.getX());
 		states.addState(new GraphState("Phase 3: Done!", Graph.fromElk(layoutGraph)));
 	}
-
+	
+	/**
+	 * This method applies the first RT phase to a graph
+	 * @param n The ElkNode to start on
+	 */
 	void phase1(ElkNode n) {
 		List<ElkNode> childs = Help.getChildren(n);
 		for (ElkNode c : childs)
@@ -102,7 +106,13 @@ public class RTLayoutPhase implements Phase {
 			states.addState(
 					new GraphState("Phase 1, Postorder: Visit " + n.getIdentifier(), Graph.fromElk(layoutGraph), n));
 	}
-
+	
+	/**
+	 * Get the contour under the left and right child
+	 * @param leftChild A pointer to the left Child
+	 * @param rightChild A pointer to the right Child
+	 * @return Two lists that contain the two contours
+	 */
 	Pair<List<ElkNode>, List<ElkNode>> getContourUsingSubtreeLayering(ElkNode leftChild, ElkNode rightChild) {
 		Pair<List<ElkNode>, List<ElkNode>> re = new Pair<List<ElkNode>, List<ElkNode>>();
 		List<ElkNode> leftContour = new ArrayList<ElkNode>(), rightContour = new ArrayList<ElkNode>();
@@ -138,11 +148,22 @@ public class RTLayoutPhase implements Phase {
 
 		return re;
 	}
-
+	
+	/**
+	 * Get all nodes from the subtree n is the root of with the specified distance to the root
+	 * @param n The subtree root node
+	 * @param layer The distance the returned nodes should have to the root
+	 * @return all nodes from the subtree n is the root of with the specified distance to the root
+	 */
 	List<ElkNode> getSubtreeLayer(ElkNode n, int layer) {
 		return Help.getSubtree(n).stream().filter(x -> Help.rootDistance(x, n) == layer).collect(Collectors.toList());
 	}
-
+	
+	/**
+	 * Add thread pointer to the graph
+	 * @param rightChild the right child of the currently visited node
+	 * @param leftChild the left child of the currently visited node
+	 */
 	void addThreads(ElkNode rightChild, ElkNode leftChild) {
 		// Find the left/rightmost nodes in the deepest layer of each subtree and link them
 		// If the left one is deeper we need to take the rightmost nodes or the other way around
@@ -165,6 +186,11 @@ public class RTLayoutPhase implements Phase {
 		}
 	}
 
+	/**
+	 * Apply the second RT phase to the graph
+	 * @param r The root node of the graph
+	 * @return The X position of the root node
+	 */
 	int phase2(ElkNode r) {
 		int re = 0;
 		while (Help.getChildren(r).size() > 0) {
@@ -177,8 +203,13 @@ public class RTLayoutPhase implements Phase {
 		states.addState(new GraphState("Phase 2, total X position of the root: " + (-re + 1), Graph.fromElk(layoutGraph), r));
 		return re;
 	}
-
-	void phase3(ElkNode r, double rootOffset, int depth) {
+	
+	/**
+	 * Apply the accumulated offsets recursively to all nodes in postorder
+	 * @param r the root node of the current subtree
+	 * @param rootOffset the offset of r
+	 */
+	void phase3(ElkNode r, double rootOffset) {
 		List<ElkNode> childs = Help.getChildren(r);
 
 		int offset = Help.getProp(r).xOffset;
@@ -190,6 +221,6 @@ public class RTLayoutPhase implements Phase {
 
 		for (ElkNode c : childs)
 			if (c != null)
-				phase3(c, r.getX(), depth + 1);
+				phase3(c, r.getX());
 	}
 }

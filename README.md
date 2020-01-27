@@ -204,6 +204,7 @@ This class contains a lot of helpful michellenious methods that are grouped in t
 #### NodeProperty
 
 An instance of this class is saved for almost every ElkNode and contains needed additional information for the BinaryCheckPhase and the RTLayoutPhase.
+Getting a pointer to an instance of this class using the Help.getProp() method is somewhat shorter than managing Elk Properties normally which is why I use this wrapper.
 
 ### phases
 
